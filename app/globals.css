@@ -6,7 +6,7 @@
 /* WRX-inspired color palette - Rally Blue primary, Red Stitch accent */
 :root {
   --background: oklch(0.99 0 0);
-  --foreground: oklch(0.15 0.01 260);
+  --foreground: oklch(0.13 0.01 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 260);
   --popover: oklch(1 0 0);
@@ -135,7 +135,344 @@
   }
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
   }
+}
+
+/* ===========================================
+   NEW CAR PAINT SHEEN EFFECT
+   =========================================== */
+
+/* Global sheen layer that follows cursor */
+.sheen-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+}
+
+.sheen-layer.active {
+  opacity: 1;
+}
+
+/* Card sheen effect */
+.card-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-sheen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.8s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.card-sheen:hover::before {
+  left: 150%;
+}
+
+/* Metallic text effect */
+.metallic-text {
+  background: linear-gradient(
+    135deg,
+    var(--foreground) 0%,
+    var(--foreground) 40%,
+    rgba(0, 94, 184, 0.8) 50%,
+    var(--foreground) 60%,
+    var(--foreground) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: metallic-shine 8s linear infinite;
+}
+
+@keyframes metallic-shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Pearlescent surface effect */
+.pearl-surface {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.pearl-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(0, 94, 184, 0.03) 25%,
+    rgba(220, 38, 38, 0.02) 50%,
+    rgba(0, 94, 184, 0.03) 75%,
+    transparent 100%
+  );
+  background-size: 400% 400%;
+  animation: pearl-shift 15s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes pearl-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ===========================================
+   HIDDEN SURPRISE INTERACTIONS
+   =========================================== */
+
+/* Konami code activated state */
+.konami-activated {
+  animation: rainbow-border 2s linear infinite;
+}
+
+@keyframes rainbow-border {
+  0% {
+    border-color: #ff0000;
+  }
+  17% {
+    border-color: #ff8000;
+  }
+  33% {
+    border-color: #ffff00;
+  }
+  50% {
+    border-color: #00ff00;
+  }
+  67% {
+    border-color: #0080ff;
+  }
+  83% {
+    border-color: #8000ff;
+  }
+  100% {
+    border-color: #ff0000;
+  }
+}
+
+/* Triple-click secret message reveal */
+.secret-reveal {
+  position: relative;
+}
+
+.secret-reveal::after {
+  content: attr(data-secret);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  background: var(--rally-blue);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.secret-reveal.revealed::after {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+/* Easter egg drum beat animation */
+@keyframes drum-beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.15);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.drum-beat-active {
+  animation: drum-beat 0.8s ease-out;
+}
+
+/* Long press surprise */
+.long-press-target {
+  transition: all 0.3s ease;
+}
+
+.long-press-target.pressing {
+  transform: scale(0.98);
+  filter: brightness(1.1);
+}
+
+.long-press-target.activated {
+  animation: surprise-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes surprise-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Particle explosion on special clicks */
+.particle-container {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: particle-fly 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes particle-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Cursor trail effect */
+.cursor-trail {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 94, 184, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out;
+}
+
+/* Magnetic cursor attraction zones */
+.magnetic-zone {
+  transition: transform 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99);
+}
+
+/* Rhythm pulse on scroll */
+@keyframes rhythm-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.rhythm-section {
+  animation: rhythm-pulse 2s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.rhythm-section.in-view {
+  animation-play-state: running;
+}
+
+/* Glitch effect for surprises */
+@keyframes glitch {
+  0%,
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+  }
+  20% {
+    clip-path: inset(20% 0 60% 0);
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    clip-path: inset(40% 0 30% 0);
+    transform: translate(2px, -2px);
+  }
+  60% {
+    clip-path: inset(60% 0 10% 0);
+    transform: translate(-1px, 1px);
+  }
+  80% {
+    clip-path: inset(10% 0 80% 0);
+    transform: translate(1px, -1px);
+  }
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text.active::before,
+.glitch-text.active::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text.active::before {
+  color: var(--rally-blue);
+  animation: glitch 0.3s linear;
+  clip-path: inset(0 0 50% 0);
+}
+
+.glitch-text.active::after {
+  color: var(--red-stitch);
+  animation: glitch 0.3s linear reverse;
+  clip-path: inset(50% 0 0 0);
 }
 
 /* Added comprehensive magical animations */
@@ -589,364 +926,5 @@
 }
 
 .logo-pulse:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(0, 94, 184, 0.4);
-}
-
-/* Hero button enhanced effect */
-.hero-btn-primary {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.hero-btn-primary::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
-}
-
-.hero-btn-primary:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.hero-btn-primary:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 24px -6px rgba(0, 94, 184, 0.4), 0 0 0 2px rgba(0, 94, 184, 0.2);
-}
-
-.hero-btn-primary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Secondary button effect */
-.hero-btn-secondary {
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.hero-btn-secondary:hover {
-  transform: translateY(-3px);
-  background: rgba(0, 94, 184, 0.08);
-  box-shadow: 0 8px 16px -4px rgba(0, 94, 184, 0.2);
-}
-
-/* Scroll indicator enhanced */
-.scroll-indicator {
-  transition: all 0.3s ease;
-}
-
-.scroll-indicator:hover {
-  transform: translateX(-50%) scale(1.1);
-}
-
-.scroll-indicator:hover .scroll-dot {
-  animation: none;
-  transform: translateY(-8px);
-}
-
-/* Arrow icon animation */
-.arrow-animate {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.group:hover .arrow-animate {
-  transform: translateX(4px);
-}
-
-/* Stat badge pop */
-.stat-badge {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.group:hover .stat-badge {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px -2px rgba(0, 94, 184, 0.3);
-}
-
-/* Project icon animation */
-.project-icon {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.group:hover .project-icon {
-  transform: scale(1.15) rotate(5deg);
-  box-shadow: 0 8px 16px -4px rgba(0, 94, 184, 0.25);
-}
-
-/* Magic Text Hover Effects - Reading Assist Feature */
-.magic-text-container,
-.magic-heading-container,
-.magic-paragraph {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.magic-char,
-.magic-heading-char {
-  will-change: transform, color, text-shadow, filter;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Subtle cursor change to indicate interactivity */
-.magic-heading-container:hover {
-  cursor: crosshair;
-}
-
-.magic-paragraph:hover {
-  cursor: text;
-}
-
-/* Add a subtle highlight effect on the active reading region */
-.magic-heading-container::before {
-  content: "";
-  position: absolute;
-  top: -4px;
-  left: -8px;
-  right: -8px;
-  bottom: -4px;
-  background: linear-gradient(90deg, transparent, rgba(0, 94, 184, 0.03), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  border-radius: 8px;
-}
-
-.magic-heading-container:hover::before {
-  opacity: 1;
-}
-
-/* Enhanced focus effect for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .magic-char,
-  .magic-heading-char,
-  .magic-word {
-    transition: none !important;
-  }
-}
-
-/* Section highlight animation for AI docent navigation */
-@keyframes section-highlight-pulse {
-  0% {
-    box-shadow: inset 0 0 0 0 rgba(0, 94, 184, 0);
-  }
-  25% {
-    box-shadow: inset 0 0 60px 20px rgba(0, 94, 184, 0.08);
-  }
-  50% {
-    box-shadow: inset 0 0 80px 30px rgba(0, 94, 184, 0.12);
-  }
-  75% {
-    box-shadow: inset 0 0 60px 20px rgba(0, 94, 184, 0.08);
-  }
-  100% {
-    box-shadow: inset 0 0 0 0 rgba(0, 94, 184, 0);
-  }
-}
-
-.section-highlight {
-  animation: section-highlight-pulse 2s ease-out forwards;
-  position: relative;
-}
-
-.section-highlight::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--rally-blue), var(--red-stitch));
-  opacity: 0;
-  animation: highlight-bar 2s ease-out forwards;
-}
-
-@keyframes highlight-bar {
-  0% {
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-  20% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-  80% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scaleX(1);
-  }
-}
-
-/* Project highlight pulse when docent focuses on it */
-@keyframes project-spotlight {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 94, 184, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 30px 10px rgba(0, 94, 184, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 94, 184, 0);
-  }
-}
-
-/* Docent thinking indicator */
-@keyframes thinking-dots {
-  0%,
-  20% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 1;
-  }
-  60%,
-  100% {
-    opacity: 0.2;
-  }
-}
-
-.thinking-dot:nth-child(1) {
-  animation: thinking-dots 1.4s infinite 0s;
-}
-.thinking-dot:nth-child(2) {
-  animation: thinking-dots 1.4s infinite 0.2s;
-}
-.thinking-dot:nth-child(3) {
-  animation: thinking-dots 1.4s infinite 0.4s;
-}
-
-/* Smooth scroll offset for fixed header */
-html {
-  scroll-padding-top: 100px;
-}
-
-/* AI Docent panel entrance */
-@keyframes docent-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.docent-panel {
-  animation: docent-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Quick action button hover */
-.quick-action {
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.quick-action:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px -2px rgba(0, 94, 184, 0.15);
-}
-
-/* Navigation indicator animation */
-@keyframes nav-indicator {
-  0% {
-    transform: translateX(-4px);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(4px);
-    opacity: 0;
-  }
-}
-
-.nav-indicator {
-  animation: nav-indicator 1.5s ease-in-out infinite;
-}
-
-/* Added gradient-shift animation for featured album cards */
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%; /* Added to complete the animation loop */
-  }
-}
-
-/* Add snowfall animation for skiing section */
-@keyframes snowfall {
-  0% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.8;
-  }
-  90% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(500px) translateX(20px) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-/* Waveform dance animation for video showcase */
-@keyframes waveform-dance {
-  0% {
-    height: 20%;
-  }
-  100% {
-    height: 80%;
-  }
-}
-
-/* Pulse ring animation for video play button */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-/* Slow spin for video decorations */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Ping animation for play button */
-@keyframes ping {
-  75%,
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+  transform: scale(1.05); /* Corrected and completed the transform property */
 }

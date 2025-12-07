@@ -261,11 +261,38 @@ const restorationDetails = [
 ]
 
 const skiingPrinciples = [
-  { icon: Compass, description: "Read the terrain before you commit to a line.", title: "Plan Ahead" },
-  { icon: Shield, description: "The mountain can be intimidating. Go anyway.", title: "Be Brave" },
-  { icon: Target, description: "Can't always turn left. Can't always turn right.", title: "Stay Balanced" },
-  { icon: Shuffle, description: "Adapt to trees, terrain, and other skiers.", title: "Be Flexible" },
+  {
+    icon: Compass,
+    description: "Read terrain and anticipate obstacles before committing to a line.",
+    title: "Plan Ahead",
+  },
+  {
+    icon: Shield,
+    description: "The mountain can be intimidating. Acknowledge fear, then go anyway.",
+    title: "Be Brave",
+  },
+  {
+    icon: Target,
+    description: "Too far left risks trees. Too far right risks rocks. Find the optimal path.",
+    title: "Stay Balanced",
+  },
+  {
+    icon: Shuffle,
+    description: "New information appears fast. Change course immediately or face consequences.",
+    title: "Adapt Quickly",
+  },
+  {
+    icon: Zap,
+    description: "Split-second choices at high speed. Hesitation is not an option.",
+    title: "Decide Fast",
+  },
+  {
+    icon: Brain,
+    description: "Process multiple variables simultaneously: speed, terrain, skiers, conditions.",
+    title: "Think Sharp",
+  },
 ]
+// </CHANGE>
 
 const instagramVideos = [
   {
@@ -1190,7 +1217,7 @@ function SkiingSection() {
   return (
     <section id="skiing" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
       <SpiralKaleidoscope opacity={0.05} className="z-0" />
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
         <RevealOnScroll variant="wave" duration={800}>
           <div className="mb-12">
             <div className="flex items-center justify-center gap-3 mb-3">
@@ -1221,33 +1248,37 @@ function SkiingSection() {
 
           {/* Philosophy and Principles */}
           <div className="space-y-8">
-            <div className="prose prose-lg">
+            <div className="prose prose-lg space-y-4">
               <p className="text-foreground/90 leading-relaxed">
-                Skiing is something you can eternally enjoy and iterate on. You have to plan ahead. You have to be brave
-                because the mountain can be intimidating. You have to be balanced. You can't always turn to the left.
-                You can't always turn to the right. You can't always just go in the middle.
+                Skiing is a masterclass in executive functioning. At high speed, you make split-second decisions with
+                real consequences. Fail to turn when an obstacle appears and you hit it. There is no room for the kind
+                of thinking that resists course correction when new information demands it.
               </p>
               <p className="text-foreground/90 leading-relaxed">
-                You have to be flexible and you have to be smart. You have to always consider your relationship to the
-                mountain, other skiers, trees, objects on your path. There's so many things about skiing that influence
-                how I see the world.
+                The mountain also teaches balanced thinking. Turn too far left and you risk the trees. Too far right and
+                you catch rocks. Charge straight down the center and you build dangerous speed. The optimal path
+                requires constant calibration between competing risks.
+              </p>
+              <p className="text-foreground/90 leading-relaxed text-sm text-muted-foreground italic">
+                These same principles apply to problem-solving: plan ahead, stay brave under pressure, adapt instantly
+                to new information, and find balance between extremes.
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               {skiingPrinciples.map((principle) => (
                 <TiltCard key={principle.title} intensity={8}>
-                  <div className="p-4 rounded-xl border border-border bg-white">
-                    <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 rounded-xl border border-border bg-white h-full">
+                    <div className="flex items-center gap-2 mb-2">
                       <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: `${RALLY_BLUE}10` }}
                       >
-                        <principle.icon size={20} style={{ color: RALLY_BLUE }} />
+                        <principle.icon size={16} style={{ color: RALLY_BLUE }} />
                       </div>
-                      <h4 className="font-semibold text-foreground">{principle.title}</h4>
+                      <h4 className="font-semibold text-foreground text-sm">{principle.title}</h4>
                     </div>
-                    <p className="text-sm text-muted-foreground">{principle.description}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{principle.description}</p>
                   </div>
                 </TiltCard>
               ))}

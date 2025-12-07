@@ -11,9 +11,8 @@ import {
   ChevronRight,
   Play,
   Headphones,
+  X,
   ExternalLink,
-  Clock,
-  Mic2,
 } from "lucide-react"
 import { RevealOnScroll } from "./reveal-on-scroll"
 import { MagicHeading } from "./magic-text"
@@ -22,8 +21,7 @@ import { SpiralKaleidoscope } from "./spiral-kaleidoscope"
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
-const PODCAST_URL =
-  "https://notebooklm.google.com/notebook/93fc1485-9146-4ccc-b45d-aeea82420f32?artifactId=b1a93ae8-9a6b-41d8-a893-1c7004d61305"
+const PODCAST_URL = "https://drive.google.com/file/d/1I4dROvOMANKDcNr-LcpA2mF8cTwgZ6UN/preview"
 
 export function HarmonizedLearningSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -65,8 +63,11 @@ export function HarmonizedLearningSection() {
   return (
     <>
       {showPodcastCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative w-full max-w-lg bg-gradient-to-br from-[#0a0a0a] to-[#1a1a2e] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+        <div
+          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-24 md:bottom-8 z-50 w-auto md:w-[420px] animate-in slide-in-from-bottom duration-500"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative bg-gradient-to-br from-[#0a0a0a] to-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
             {/* Decorative background */}
             <div className="absolute inset-0 opacity-20">
               <div
@@ -77,70 +78,58 @@ export function HarmonizedLearningSection() {
               />
             </div>
 
-            {/* Close button */}
-            <button
-              onClick={() => setShowPodcastCard(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
-            >
-              <Minimize2 className="w-4 h-4 text-white/70" />
-            </button>
-
-            <div className="relative p-8">
-              {/* Icon with animation */}
-              <div className="flex justify-center mb-6">
-                <div className="relative">
+            <div className="relative p-4">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
                   <div
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ backgroundColor: `${RALLY_BLUE}20` }}
                   >
-                    <Headphones className="w-10 h-10" style={{ color: RALLY_BLUE }} />
+                    <Headphones className="w-5 h-5" style={{ color: RALLY_BLUE }} />
                   </div>
-                  {/* Animated rings */}
-                  <div className="absolute inset-0 rounded-2xl border-2 border-[#005EB8]/30 animate-ping" />
-                  <div className="absolute -inset-2 rounded-3xl border border-[#005EB8]/20 animate-pulse" />
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-white mb-3">AI Podcast Discussion</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-4">
-                  Two AI hosts dive deep into the concepts of Harmonized Learning, exploring human intelligence,
-                  creativity, and potential in the age of AI.
-                </p>
-
-                {/* Features */}
-                <div className="flex justify-center gap-6 text-xs text-white/50">
-                  <div className="flex items-center gap-1.5">
-                    <Mic2 className="w-3.5 h-3.5" style={{ color: RALLY_BLUE }} />
-                    <span>AI Hosts</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" style={{ color: RED_STITCH }} />
-                    <span>Deep Dive</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Brain className="w-3.5 h-3.5" style={{ color: RALLY_BLUE }} />
-                    <span>Key Insights</span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">Harmonized Learning</h3>
+                    <p className="text-xs text-white/50">AI Discussion Podcast</p>
                   </div>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowPodcastCard(false)
+                  }}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <X className="w-4 h-4 text-white/70" />
+                </button>
               </div>
 
-              {/* CTA Button */}
+              {/* Google Drive embedded player */}
+              <div className="relative rounded-xl overflow-hidden bg-black/50 mb-3">
+                <iframe
+                  src={PODCAST_URL}
+                  className="w-full h-20"
+                  allow="autoplay"
+                  sandbox="allow-scripts allow-same-origin"
+                />
+              </div>
+
+              {/* Description */}
+              <p className="text-xs text-white/60 text-center mb-3">
+                AI-generated deep dive into human potential in the age of artificial intelligence
+              </p>
+
+              {/* Open in new tab option */}
               <a
-                href={PODCAST_URL}
+                href="https://drive.google.com/file/d/1I4dROvOMANKDcNr-LcpA2mF8cTwgZ6UN/view"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#005EB8] to-[#0070D4] hover:from-[#0070D4] hover:to-[#005EB8] text-white font-medium transition-all duration-500 hover:shadow-lg hover:shadow-[#005EB8]/30 hover:scale-[1.02]"
+                className="flex items-center justify-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
-                <Play className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
-                <span>Listen on NotebookLM</span>
-                <ExternalLink className="w-4 h-4 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
+                <ExternalLink className="w-3 h-3" />
+                Open in new tab for full player
               </a>
-
-              <p className="text-center text-white/30 text-xs mt-4">
-                Opens in a new tab. Continue browsing while you listen.
-              </p>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 interface SpiralKaleidoscopeProps {
   opacity?: number
@@ -10,7 +10,6 @@ interface SpiralKaleidoscopeProps {
 
 const SpiralKaleidoscope = ({ opacity = 0.12, className = "", variant = "light" }: SpiralKaleidoscopeProps) => {
   const [scrollProgress, setScrollProgress] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,64 +23,46 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "", variant = "light" 
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const filterStyle = variant === "dark" ? "invert(1)" : "none"
-
+  // The pattern radiates from center maintaining perfect radial symmetry
   return (
-    <div ref={containerRef} className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
+    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
+      {/* Center-anchored symmetrical pattern */}
       <div
-        className="grid grid-cols-2 grid-rows-2 w-full h-full transition-transform duration-700 ease-out"
+        className="absolute inset-0 flex items-center justify-center"
         style={{
-          transform: `rotate(${scrollProgress * 15}deg) scale(${1 + scrollProgress * 0.05})`,
+          opacity,
         }}
       >
-        {/* Upper left quadrant - horizontal flip */}
-        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
+        {/* Main centered pattern - scales slightly on scroll for subtle parallax */}
+        <div
+          className="relative transition-transform duration-1000 ease-out"
+          style={{
+            width: "200%",
+            height: "200%",
+            transform: `rotate(${scrollProgress * 10}deg) scale(${1 + scrollProgress * 0.03})`,
+          }}
+        >
           <img
             src="/images/cdvvarhf9x4dckd2bfpng.png"
             alt=""
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
             style={{
-              transform: `scaleX(-1) scale(${1 + scrollProgress * 0.1})`,
-            }}
-          />
-        </div>
-
-        {/* Upper right quadrant - original */}
-        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
-          <img
-            src="/images/cdvvarhf9x4dckd2bfpng.png"
-            alt=""
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out"
-            style={{
-              transform: `scale(${1 + scrollProgress * 0.1})`,
-            }}
-          />
-        </div>
-
-        {/* Lower left quadrant - both flips */}
-        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
-          <img
-            src="/images/cdvvarhf9x4dckd2bfpng.png"
-            alt=""
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out"
-            style={{
-              transform: `scaleX(-1) scaleY(-1) scale(${1 + scrollProgress * 0.1})`,
-            }}
-          />
-        </div>
-
-        {/* Lower right quadrant - vertical flip */}
-        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
-          <img
-            src="/images/cdvvarhf9x4dckd2bfpng.png"
-            alt=""
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out"
-            style={{
-              transform: `scaleY(-1) scale(${1 + scrollProgress * 0.1})`,
+              filter: variant === "dark" ? "invert(1)" : "none",
             }}
           />
         </div>
       </div>
+
+      {/* Subtle radial gradient to soften edges and enhance center focus */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            variant === "light"
+              ? "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(255,255,255,0.3) 70%, rgba(255,255,255,0.8) 100%)"
+              : "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.8) 100%)",
+        }}
+      />
     </div>
   )
 }

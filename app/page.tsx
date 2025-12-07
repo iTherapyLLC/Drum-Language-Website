@@ -24,6 +24,12 @@ import {
   Play,
   Video,
   Music,
+  Brain,
+  Award,
+  DollarSign,
+  Star,
+  Laptop,
+  Mail,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -217,6 +223,13 @@ const featuredVideos = [
     aspectRatio: "landscape" as const,
   },
   {
+    title: "Mahavishnu-ish Swing",
+    band: "Inspired by Mahavishnu Orchestra, Coltrane Quartet, Elvin Jones, Jack DeJohnette",
+    url: "https://drive.google.com/file/d/1vUar0ekOgc_sHHRnnIym3woAIt9tKTrm/view?usp=sharing",
+    platform: "googledrive" as const,
+    aspectRatio: "landscape" as const,
+  },
+  {
     title: "",
     band: "",
     url: "https://www.instagram.com/reel/DIFFIVkzg60/?igsh=NTc4MTIwNjQ2YQ==",
@@ -268,6 +281,7 @@ const navItems = [
   { label: "Philosophy", section: "philosophy" },
   { label: "Skiing", section: "skiing" },
   { label: "Credentials", section: "credentials" },
+  { label: "Contact", section: "contact" }, // Added Contact nav item
 ]
 
 function ProjectCard({
@@ -643,26 +657,157 @@ function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]
 }
 
 function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index: number }) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const chipRef = useRef<HTMLDivElement>(null)
+
+  // Icons for each credential type
+  const getIcon = () => {
+    if (cred.label.includes("National Academies")) return <Presentation size={20} />
+    if (cred.label.includes("Colloquium")) return <Users size={20} />
+    if (cred.label.includes("Journal")) return <BookOpen size={20} />
+    if (cred.label.includes("Society")) return <Brain size={20} />
+    if (cred.label.includes("Foundation")) return <Award size={20} />
+    if (cred.label.includes("Grant")) return <DollarSign size={20} />
+    return <Star size={20} />
+  }
+
+  // Magnetic tilt effect on mouse move
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!chipRef.current) return
+    const rect = chipRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left - rect.width / 2) / 10
+    const y = (e.clientY - rect.top - rect.height / 2) / 10
+    setMousePosition({ x, y })
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    setMousePosition({ x: 0, y: 0 })
+  }
+
   const content = (
     <div
-      className={`credential-chip text-center p-4 rounded-xl transition-all duration-300 ${cred.url ? "hover:scale-105" : "cursor-default"}`}
+      ref={chipRef}
+      className="credential-chip relative text-center p-6 rounded-2xl transition-all duration-500 cursor-pointer overflow-hidden group/chip"
       style={{
         animationDelay: `${index * 50}ms`,
-        backgroundColor: SOFT_GRAY,
+        background: isHovered ? `linear-gradient(135deg, ${RALLY_BLUE}15, ${RED_STITCH}10)` : "white",
+        transform: isHovered
+          ? `perspective(1000px) rotateX(${-mousePosition.y}deg) rotateY(${mousePosition.x}deg) scale(1.05)`
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+        boxShadow: isHovered
+          ? `0 20px 40px rgba(0,94,184,0.2), 0 0 0 2px ${RALLY_BLUE}40, inset 0 0 30px rgba(0,94,184,0.05)`
+          : "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05)",
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      <p className="font-medium text-sm text-foreground mb-1">{cred.label}</p>
-      <p className="text-xs text-muted-foreground">{cred.detail}</p>
+      {/* Animated border gradient */}
+      <div
+        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `linear-gradient(90deg, ${RALLY_BLUE}, ${RED_STITCH}, ${RALLY_BLUE})`,
+          backgroundSize: "200% 100%",
+          animation: isHovered ? "shimmer 2s linear infinite" : "none",
+          padding: "2px",
+          WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude",
+        }}
+      />
+
+      {/* Floating particles effect */}
+      {isHovered && (
+        <>
+          <div
+            className="absolute top-2 left-4 w-1 h-1 rounded-full animate-ping"
+            style={{ backgroundColor: RALLY_BLUE, animationDuration: "1s" }}
+          />
+          <div
+            className="absolute bottom-4 right-6 w-1.5 h-1.5 rounded-full animate-ping"
+            style={{ backgroundColor: RED_STITCH, animationDuration: "1.5s", animationDelay: "0.3s" }}
+          />
+          <div
+            className="absolute top-1/2 right-3 w-1 h-1 rounded-full animate-ping"
+            style={{ backgroundColor: RALLY_BLUE, animationDuration: "1.2s", animationDelay: "0.6s" }}
+          />
+        </>
+      )}
+
+      {/* Icon that reveals on hover */}
+      <div
+        className="mx-auto mb-3 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500"
+        style={{
+          backgroundColor: isHovered ? RALLY_BLUE : `${RALLY_BLUE}10`,
+          color: isHovered ? "white" : RALLY_BLUE,
+          transform: isHovered ? "translateY(0) scale(1)" : "translateY(-5px) scale(0.9)",
+          opacity: isHovered ? 1 : 0.7,
+        }}
+      >
+        {getIcon()}
+      </div>
+
+      {/* Label with underline animation */}
+      <div className="relative inline-block mb-2">
+        <p
+          className="font-semibold text-base transition-all duration-300"
+          style={{
+            color: isHovered ? RALLY_BLUE : "inherit",
+          }}
+        >
+          {cred.label}
+        </p>
+        <div
+          className="absolute bottom-0 left-1/2 h-0.5 rounded-full transition-all duration-500"
+          style={{
+            backgroundColor: RALLY_BLUE,
+            width: isHovered ? "100%" : "0%",
+            transform: "translateX(-50%)",
+          }}
+        />
+      </div>
+
+      {/* Detail text */}
+      <p
+        className="text-sm transition-all duration-300"
+        style={{
+          color: isHovered ? "#555" : "#888",
+        }}
+      >
+        {cred.detail}
+      </p>
+
+      {/* External link indicator that slides up */}
       {cred.url && (
-        <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <ExternalLink size={12} style={{ color: RALLY_BLUE }} />
+        <div
+          className="mt-3 flex items-center justify-center gap-1 text-xs font-medium transition-all duration-500"
+          style={{
+            color: RALLY_BLUE,
+            opacity: isHovered ? 1 : 0,
+            transform: isHovered ? "translateY(0)" : "translateY(10px)",
+          }}
+        >
+          <span>Learn more</span>
+          <ExternalLink size={12} />
         </div>
       )}
+
+      {/* Corner accent */}
+      <div
+        className="absolute -top-1 -right-1 w-8 h-8 transition-all duration-500"
+        style={{
+          background: `linear-gradient(135deg, transparent 50%, ${isHovered ? RALLY_BLUE : "transparent"} 50%)`,
+          opacity: isHovered ? 1 : 0,
+          borderRadius: "0 16px 0 0",
+        }}
+      />
     </div>
   )
 
   return cred.url ? (
-    <a href={cred.url} target="_blank" rel="noopener noreferrer" className="group block">
+    <a href={cred.url} target="_blank" rel="noopener noreferrer" className="block">
       {content}
     </a>
   ) : (
@@ -677,18 +822,20 @@ function SpeakingSection() {
     <section id="speaking" className="py-20 bg-background relative overflow-hidden z-10">
       <SpiralKaleidoscope opacity={0.06} className="z-0" />
       <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-12 text-foreground">Speaking & Writing</h2>
+        <RevealOnScroll variant="flip-up" duration={800}>
+          <h2 className="text-4xl font-bold mb-12 text-foreground">Speaking & Writing</h2>
+        </RevealOnScroll>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <RevealOnScroll direction="up" delay={0}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <RevealOnScroll variant="swing" delay={100} duration={900}>
             <a
-              href="https://www.nationalacademies.org/event/41467_10-2024_bidirectional-relationship-between-ai-and-neuroscience-a-workshop"
+              href="https://www.nationalacademies.org/projects/HMD-HSP-23-21/event/41351#sectionEventPublications"
               target="_blank"
               rel="noopener noreferrer"
               className="block h-full group perspective-container"
             >
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
@@ -769,10 +916,10 @@ function SpeakingSection() {
             </a>
           </RevealOnScroll>
 
-          <RevealOnScroll direction="up" delay={100}>
+          <RevealOnScroll variant="swing" delay={200} duration={900}>
             <div className="block h-full group perspective-container">
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
@@ -861,114 +1008,169 @@ function PhilosophySection() {
       className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden transition-all duration-500"
     >
       <SpiralKaleidoscope opacity={0.05} className="z-0" />
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <div className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3">
-            <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
-              Philosophy
-            </MagicHeading>
-          </h2>
-          <p className="text-muted-foreground text-lg">The art of restoration and renewal</p>
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        <RevealOnScroll variant="blur-scale" duration={900}>
+          <div className="mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3">
+              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+                The Intelligence Conductor
+              </MagicHeading>
+            </h2>
+            <p className="text-muted-foreground text-lg">Orchestrating AI systems into unified solutions</p>
+          </div>
+        </RevealOnScroll>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
+          <div className="space-y-8">
+            <RevealOnScroll variant="curtain" delay={200} duration={1000}>
+              <div className="relative">
+                <div
+                  className="absolute -left-4 top-0 bottom-0 w-1 rounded-full"
+                  style={{ backgroundColor: RALLY_BLUE }}
+                />
+                <blockquote className="pl-6 text-xl sm:text-2xl text-foreground/90 italic leading-relaxed">
+                  "The greatest conductors - Bernstein, Stravinsky, Mozart - didn't master every instrument. They
+                  understood each one's role in the collective whole."
+                </blockquote>
+              </div>
+            </RevealOnScroll>
+
+            <RevealOnScroll variant="fade-up" delay={400}>
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                An Intelligence Conductor understands AI technologies as individual instruments: LLMs for language,
+                computer vision for perception, speech recognition for audio, symbolic AI for logic. The skill isn't
+                building each system from scratch - it's knowing how they combine through APIs and pipelines to solve
+                novel problems.
+              </p>
+            </RevealOnScroll>
+
+            <RevealOnScroll variant="stagger-fade" delay={600}>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    label: "Individual Units",
+                    desc: "OCR, LLMs, wav2vec, generative models - each with unique capabilities",
+                    icon: "M4 6h16M4 12h16M4 18h7",
+                  },
+                  {
+                    label: "Collective Systems",
+                    desc: "Pipelines and APIs connecting units into input-process-output flows",
+                    icon: "M13 10V3L4 14h7v7l9-11h-7z",
+                  },
+                  {
+                    label: "Novel Solutions",
+                    desc: "Combining technologies in unexpected ways to solve real problems",
+                    icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
+                  },
+                  {
+                    label: "Domain Expertise",
+                    desc: "Communication sciences, education, and music as application areas",
+                    icon: "M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z",
+                  },
+                ].map((item) => (
+                  <TiltCard key={item.label} intensity={8}>
+                    <div className="p-4 rounded-xl border border-border bg-white transition-all duration-300 hover:border-[#005EB8]/30 hover:shadow-lg group">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300"
+                          style={{ backgroundColor: `${RALLY_BLUE}15` }}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            style={{ color: RALLY_BLUE }}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                          </svg>
+                        </div>
+                        <h4 className="font-semibold text-foreground">{item.label}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </TiltCard>
+                ))}
+              </div>
+            </RevealOnScroll>
+          </div>
+
+          <RevealOnScroll variant="flip-left" delay={300} duration={1000}>
+            <TiltCard className="group">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
+                <div
+                  className="absolute top-0 left-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-all duration-500 z-10"
+                  style={{
+                    background: `linear-gradient(135deg, ${RALLY_BLUE}30 0%, transparent 50%)`,
+                  }}
+                />
+                <div
+                  className="absolute bottom-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-all duration-500 z-10"
+                  style={{
+                    background: `linear-gradient(-45deg, ${RED_STITCH}30 0%, transparent 50%)`,
+                  }}
+                />
+
+                <div className="relative overflow-hidden">
+                  <img
+                    src="/images/ludwig-restored.png"
+                    alt="1966 Ludwig Club Date drum kit in silver sparkle, restored by Matthew Guggemos"
+                    className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105"
+                  />
+
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 55%, transparent 60%)`,
+                      backgroundSize: "200% 100%",
+                      animation: "shimmer 2s ease-in-out infinite",
+                    }}
+                  />
+
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-20 transition-opacity duration-500"
+                    style={{
+                      background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)",
+                    }}
+                  />
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent max-h-[70%] overflow-y-auto">
+                  <h4 className="text-white font-semibold text-lg mb-3">The Restoration Principle</h4>
+                  <div className="text-gray-200 text-sm leading-relaxed space-y-3">
+                    <p>
+                      This 1966 Ludwig kit was sitting in a second-hand shop that did not recognize its worth. My wife
+                      spotted it and brought it home.
+                    </p>
+                    <p>
+                      The restoration followed kintsugi logic: I stripped and replaced deteriorated wood, reconditioned
+                      bearing edges, polished every lug, upgraded to modern Ludwig hardware, and fitted new heads. These
+                      choices did not erase the kit's age. They highlighted it.
+                    </p>
+                    <p>
+                      Now it is configured for left-hand lead jazz, paired with a vintage A Zildjian ride. The kit
+                      sounds like my kit, with mid-century warmth serving ambidextrous playing and brush-friendly touch.
+                    </p>
+                    <p className="text-gray-300 italic border-l-2 border-[#DC2626] pl-3 mt-4">
+                      Understanding each component's role in the whole. Not manufacturing drums, but restoring them to
+                      their collective potential. The same principle applies to AI systems.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </TiltCard>
+          </RevealOnScroll>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center text-left">
-          <TiltCard className="group">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
-              <div
-                className="absolute top-0 left-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-all duration-500 z-10"
-                style={{
-                  background: `linear-gradient(135deg, ${RALLY_BLUE}30 0%, transparent 50%)`,
-                }}
-              />
-              <div
-                className="absolute bottom-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-all duration-500 z-10"
-                style={{
-                  background: `linear-gradient(-45deg, ${RED_STITCH}30 0%, transparent 50%)`,
-                }}
-              />
-
-              <div className="relative overflow-hidden">
-                <img
-                  src="/images/ludwig-restored.png"
-                  alt="1966 Ludwig Club Date drum kit in silver sparkle, restored by Matthew Guggemos"
-                  className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105"
-                />
-
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 55%, transparent 60%)`,
-                    backgroundSize: "200% 100%",
-                    animation: "shimmer 2s ease-in-out infinite",
-                  }}
-                />
-
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-20 transition-opacity duration-500"
-                  style={{
-                    background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)",
-                  }}
-                />
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
-                <div className="flex flex-wrap gap-4 mb-3">
-                  {restorationDetails.map((detail, i) => (
-                    <div
-                      key={detail.label}
-                      className="px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 hover:scale-105 text-white"
-                      style={{
-                        backgroundColor: i === 3 ? `${RED_STITCH}40` : "rgba(255,255,255,0.15)",
-                        border: `1px solid ${i === 3 ? RED_STITCH : "rgba(255,255,255,0.3)"}`,
-                      }}
-                    >
-                      {detail.label}: {detail.value}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-gray-300 text-sm">
-                  Found at a secondhand shop in Napa, restored over three months with shell repairs and hardware
-                  upgrades.
-                </p>
-              </div>
-            </div>
-          </TiltCard>
-
-          <div className="space-y-8">
-            <div className="relative">
-              <div
-                className="absolute -left-4 top-0 bottom-0 w-1 rounded-full"
-                style={{ backgroundColor: RALLY_BLUE }}
-              />
-              <blockquote className="pl-6 text-xl sm:text-2xl text-foreground/90 italic leading-relaxed">
-                "The approach to AI development mirrors conducting an orchestra - understanding how all instruments
-                harmonize rather than building each one."
-              </blockquote>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                { label: "Attack", desc: "The initial strike sets everything in motion" },
-                { label: "Sustain", desc: "Holding the note requires consistent energy" },
-                { label: "Decay", desc: "Knowing when to let go is part of the art" },
-                { label: "Release", desc: "The silence between notes defines the music" },
-              ].map((item) => (
-                <TiltCard key={item.label} intensity={8}>
-                  <div className="p-4 rounded-xl border border-border bg-white transition-all duration-300">
-                    <h4 className="font-semibold mb-1 text-foreground">{item.label}</h4>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                </TiltCard>
-              ))}
-            </div>
-
-            <p className="text-muted-foreground leading-relaxed">
-              Cross-domain expertise creates breakthrough solutions. The machine handles structure, humans bring
-              judgment. Repetition builds neural pathways. Whether restoring vintage drums, developing speech
-              technology, or mastering physical skills - the principles remain the same.
+        <RevealOnScroll variant="fade-up" delay={800}>
+          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-gray-50 to-white border border-gray-100">
+            <p className="text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              The future belongs to those who think in systems. Agentive coding tools now let us connect AWS pipelines,
+              chain API calls, and orchestrate AI services - all without building every component from scratch. The
+              question isn't "can you code it?" but "do you understand how it fits together?"
             </p>
           </div>
-        </div>
+        </RevealOnScroll>
       </div>
     </section>
   )
@@ -979,32 +1181,33 @@ function SkiingSection() {
     <section id="skiing" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
       <SpiralKaleidoscope opacity={0.05} className="z-0" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Mountain size={32} style={{ color: RALLY_BLUE }} />
-            <h2 className="text-3xl sm:text-4xl font-bold">
-              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
-                Mountain Mind
-              </MagicHeading>
-            </h2>
+        <RevealOnScroll variant="wave" duration={800}>
+          <div className="mb-12">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Mountain size={32} style={{ color: RALLY_BLUE }} />
+              <h2 className="text-3xl sm:text-4xl font-bold">
+                <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+                  Mountain Mind
+                </MagicHeading>
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-lg">What skiing teaches about problem solving</p>
           </div>
-          <p className="text-muted-foreground text-lg">What skiing teaches about problem solving</p>
-        </div>
+        </RevealOnScroll>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
           {/* Video Preview */}
-          <div className="space-y-6">
-            <VideoPreview
-              url="https://www.instagram.com/reel/C5J_i05SgrN/"
-              title="Powder Day"
-              platform="instagram"
-              aspectRatio="portrait"
-              className="max-w-sm mx-auto lg:mx-0"
-            />
-            <p className="text-sm text-muted-foreground text-center lg:text-left">
-              A lifetime of skiing teaches you to read terrain, commit to your line, and adapt in real-time.
-            </p>
-          </div>
+          <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
+            <div className="relative rounded-2xl overflow-hidden">
+              <VideoPreview
+                url="https://www.instagram.com/reel/C5J_i05SgrN/"
+                title="Powder Day"
+                platform="instagram"
+                aspectRatio="portrait"
+                className="max-w-sm mx-auto lg:mx-0"
+              />
+            </div>
+          </RevealOnScroll>
 
           {/* Philosophy and Principles */}
           <div className="space-y-8">
@@ -1040,6 +1243,107 @@ function SkiingSection() {
               ))}
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// Added Contact section
+function ContactSection() {
+  return (
+    <section id="contact" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
+      <SpiralKaleidoscope opacity={0.04} className="z-0" />
+      <div className="relative z-10 max-w-4xl mx-auto">
+        <RevealOnScroll variant="blur-scale" duration={800}>
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3">
+              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+                Get in Touch
+              </MagicHeading>
+            </h2>
+            <p className="text-muted-foreground text-lg">Choose the right channel for your inquiry</p>
+          </div>
+        </RevealOnScroll>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Tech Inquiries Card */}
+          <RevealOnScroll variant="slide-up" delay={100} duration={600}>
+            <a href="mailto:matthew@itherapyllc.com" className="group block h-full">
+              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 shadow-sm hover:shadow-xl transition-all duration-500 h-full flex flex-col items-center text-center group-hover:border-[#005EB8]/30 group-hover:bg-[#005EB8] overflow-hidden">
+                {/* Animated background glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#005EB8] to-[#004494]" />
+                </div>
+
+                <div className="relative z-10">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
+                    style={{ backgroundColor: `rgba(0, 94, 184, 0.1)` }}
+                  >
+                    <Laptop
+                      className="w-8 h-8 transition-colors duration-500 group-hover:text-white"
+                      style={{ color: RALLY_BLUE }}
+                    />
+                  </div>
+
+                  <h3 className="text-xl font-bold mb-2 transition-colors duration-500 group-hover:text-white">
+                    Technology & AI
+                  </h3>
+                  <p className="text-muted-foreground mb-4 transition-colors duration-500 group-hover:text-white/80">
+                    iTherapy products, AI development, speech technology, grants, and technical collaboration
+                  </p>
+
+                  <div
+                    className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-500 group-hover:text-white"
+                    style={{ color: RALLY_BLUE }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    matthew@itherapyllc.com
+                  </div>
+                </div>
+              </div>
+            </a>
+          </RevealOnScroll>
+
+          {/* Music & Consultation Card */}
+          <RevealOnScroll variant="slide-up" delay={200} duration={600}>
+            <a href="mailto:matthew@drumlanguage.com" className="group block h-full">
+              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 shadow-sm hover:shadow-xl transition-all duration-500 h-full flex flex-col items-center text-center group-hover:border-[#DC2626]/30 group-hover:bg-[#DC2626] overflow-hidden">
+                {/* Animated background glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#DC2626] to-[#B91C1C]" />
+                </div>
+
+                <div className="relative z-10">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3"
+                    style={{ backgroundColor: `rgba(220, 38, 38, 0.1)` }}
+                  >
+                    <Music
+                      className="w-8 h-8 transition-colors duration-500 group-hover:text-white"
+                      style={{ color: RED_STITCH }}
+                    />
+                  </div>
+
+                  <h3 className="text-xl font-bold mb-2 transition-colors duration-500 group-hover:text-white">
+                    Music & Consultation
+                  </h3>
+                  <p className="text-muted-foreground mb-4 transition-colors duration-500 group-hover:text-white/80">
+                    Drumming, recording sessions, performances, speaking engagements, and general inquiries
+                  </p>
+
+                  <div
+                    className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-500 group-hover:text-white"
+                    style={{ color: RED_STITCH }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    matthew@drumlanguage.com
+                  </div>
+                </div>
+              </div>
+            </a>
+          </RevealOnScroll>
         </div>
       </div>
     </section>
@@ -1287,24 +1591,26 @@ export default function PortfolioPage() {
         />
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4"
-              style={{ textShadow: "0 2px 15px rgba(255,255,255,0.9)" }}
-            >
-              My Projects
-            </h2>
-            <p
-              className="text-lg sm:text-xl text-muted-foreground italic px-4"
-              style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
-            >
-              Each product has its own dedicated site. Click to explore.
-            </p>
-          </div>
+          <RevealOnScroll variant="flip-up" duration={800}>
+            <div className="text-center mb-10 sm:mb-16">
+              <h2
+                className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4"
+                style={{ textShadow: "0 2px 15px rgba(255,255,255,0.9)" }}
+              >
+                My Projects
+              </h2>
+              <p
+                className="text-lg sm:text-xl text-muted-foreground italic px-4"
+                style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
+              >
+                Each product has its own dedicated site. Click to explore.
+              </p>
+            </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {projects.map((project, index) => (
-              <RevealOnScroll key={project.id} direction="up" delay={index * 100}>
+              <RevealOnScroll key={project.id} variant="scale-rotate" delay={index * 80} duration={700}>
                 <a
                   href={project.url}
                   target="_blank"
@@ -1408,7 +1714,7 @@ export default function PortfolioPage() {
       <section id="music" className="py-16 sm:py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
         <SpiralKaleidoscope opacity={0.08} variant="dark" className="z-0" />
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
-          <RevealOnScroll direction="up">
+          <RevealOnScroll variant="glitch" duration={600}>
             <div className="mb-10 sm:mb-16">
               <MagicHeading as="h2" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" baseColor="light">
                 Music
@@ -1416,7 +1722,7 @@ export default function PortfolioPage() {
             </div>
           </RevealOnScroll>
 
-          <RevealOnScroll direction="up" delay={100}>
+          <RevealOnScroll variant="blur" delay={100} duration={800}>
             <div className="mb-10 sm:mb-16">
               <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
                 <Video className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
@@ -1427,7 +1733,7 @@ export default function PortfolioPage() {
                 {featuredVideos
                   .filter((v) => v.platform === "youtube")
                   .map((video, index) => (
-                    <RevealOnScroll key={video.url} direction="up" delay={index * 100}>
+                    <RevealOnScroll key={video.url} variant="flip-left" delay={index * 150} duration={800}>
                       <div className="relative">
                         <VideoPreview
                           url={video.url}
@@ -1443,12 +1749,12 @@ export default function PortfolioPage() {
                   ))}
               </div>
 
-              {/* CHANGE: Using flex with flex-wrap to properly center the last item when alone */}
+              {/* Portrait videos with bounce animation */}
               <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
                 {featuredVideos
                   .filter((v) => v.platform !== "youtube")
                   .map((video, index) => (
-                    <RevealOnScroll key={video.url} direction="up" delay={index * 100}>
+                    <RevealOnScroll key={video.url} variant="bounce" delay={index * 100} duration={700}>
                       <div className="w-[calc(50%-6px)] sm:w-[calc(33.333%-16px)]">
                         <VideoPreview
                           url={video.url}
@@ -1463,9 +1769,9 @@ export default function PortfolioPage() {
             </div>
           </RevealOnScroll>
 
-          {/* Bands Grid - 2 columns on mobile */}
+          {/* Bands Grid */}
           <div className="mb-10 sm:mb-16">
-            <RevealOnScroll direction="up">
+            <RevealOnScroll variant="slide-blur" duration={700}>
               <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
                 <Music className="w-4 h-4 sm:w-5 sm:h-5 text-[#005EB8]" />
                 Bands & Collaborations
@@ -1473,14 +1779,16 @@ export default function PortfolioPage() {
             </RevealOnScroll>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {music.map((item, index) => (
-                <MusicCard key={item.band} item={item} index={index} />
+                <RevealOnScroll key={item.band} variant="swing" delay={index * 100} duration={800}>
+                  <MusicCard item={item} index={index} />
+                </RevealOnScroll>
               ))}
             </div>
           </div>
 
-          {/* Albums Grid - 2 columns on mobile */}
+          {/* Albums Grid */}
           <div>
-            <RevealOnScroll direction="up">
+            <RevealOnScroll variant="curtain" duration={700}>
               <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
                 <Music2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
                 Featured Albums
@@ -1508,22 +1816,29 @@ export default function PortfolioPage() {
       <section id="credentials" className="py-20 px-6 bg-gray-50 relative overflow-hidden transition-all duration-500">
         <SpiralKaleidoscope opacity={0.04} className="z-0" />
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3">
-              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
-                Credentials
-              </MagicHeading>
-            </h2>
-            <p className="text-muted-foreground text-lg">Recognition and contributions</p>
-          </div>
+          <RevealOnScroll variant="blur-scale" duration={800}>
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-3">
+                <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+                  Credentials
+                </MagicHeading>
+              </h2>
+              <p className="text-muted-foreground text-lg">Recognition and contributions</p>
+            </div>
+          </RevealOnScroll>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {credentials.map((cred, index) => (
-              <CredentialChip key={cred.label} cred={cred} index={index} />
+              <RevealOnScroll key={cred.label} variant="scale-rotate" delay={index * 60} duration={600}>
+                <CredentialChip cred={cred} index={index} />
+              </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Contact Section - Added */}
+      <ContactSection />
 
       {/* Footer */}
       <footer className="py-12 px-6 bg-[#0a0a0a] text-white relative overflow-hidden">

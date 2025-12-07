@@ -10,7 +10,7 @@ const RED_STITCH = "#DC2626"
 interface VideoPreviewProps {
   url: string
   title?: string
-  platform?: "instagram" | "youtube" | "tiktok" | "generic"
+  platform?: "instagram" | "youtube" | "tiktok" | "googledrive" | "generic"
   aspectRatio?: "portrait" | "landscape" | "square"
   className?: string
 }
@@ -24,6 +24,11 @@ function getYouTubeId(url: string): string | null {
 // Extract Instagram reel ID from URL
 function getInstagramReelId(url: string): string | null {
   const match = url.match(/instagram\.com\/reel\/([^/?]+)/)
+  return match ? match[1] : null
+}
+
+function getGoogleDriveId(url: string): string | null {
+  const match = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/)
   return match ? match[1] : null
 }
 
@@ -48,6 +53,7 @@ export function VideoPreview({
   const youtubeId = platform === "youtube" ? getYouTubeId(url) : null
   const youtubeThumbnail = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null
   const instagramReelId = platform === "instagram" ? getInstagramReelId(url) : null
+  const googleDriveId = platform === "googledrive" ? getGoogleDriveId(url) : null
 
   // 3D tilt effect
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -67,6 +73,12 @@ export function VideoPreview({
   }
 
   const handleYouTubePlay = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsPlaying(true)
+  }
+
+  const handleGoogleDrivePlay = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setIsPlaying(true)
@@ -250,6 +262,68 @@ export function VideoPreview({
           <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-black/70">
             TikTok
           </div>
+        </>
+      ) : platform === "googledrive" && googleDriveId ? (
+        <>
+          {isPlaying ? (
+            <iframe
+              src={`https://drive.google.com/file/d/${googleDriveId}/preview`}
+              className="absolute inset-0 w-full h-full border-0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              title={title || "Google Drive video"}
+            />
+          ) : (
+            <>
+              {/* Jazz-inspired gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" />
+
+              {/* Musical waveform animation */}
+              <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-30">
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-1 sm:w-1.5 rounded-full animate-pulse"
+                    style={{
+                      height: `${Math.sin(i * 0.3) * 25 + 35}%`,
+                      background: `linear-gradient(to top, ${RALLY_BLUE}, ${RED_STITCH})`,
+                      animationDelay: `${i * 0.08}s`,
+                      animationDuration: "1.2s",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Play button */}
+              <button
+                onClick={handleGoogleDrivePlay}
+                className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
+              >
+                <div
+                  className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
+                  style={{
+                    background: `linear-gradient(135deg, ${RALLY_BLUE}, ${RED_STITCH})`,
+                    boxShadow: isHovered ? `0 0 40px ${RALLY_BLUE}80` : "0 4px 20px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
+                </div>
+                {title && (
+                  <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 drop-shadow-lg text-sm sm:text-base">
+                    {title}
+                  </p>
+                )}
+              </button>
+
+              {/* Platform badge */}
+              <div
+                className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm"
+                style={{ background: `linear-gradient(135deg, ${RALLY_BLUE}cc, ${RED_STITCH}cc)` }}
+              >
+                Video
+              </div>
+            </>
+          )}
         </>
       ) : (
         // Generic fallback

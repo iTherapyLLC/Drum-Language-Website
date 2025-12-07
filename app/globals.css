@@ -919,3 +919,80 @@
 .footer-link:hover::after {
   width: 100%;
 }
+
+/* Text hover reading assist effect - brightens, enlarges slightly, and adds subtle glow */
+/* Applies to readable text content, not buttons or interactive elements */
+.readable-text,
+p:not([class*="btn"]):not([class*="button"]),
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li:not([class*="nav"]),
+blockquote,
+figcaption,
+.prose p,
+.prose li {
+  transition: color 0.2s ease, text-shadow 0.3s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: left center;
+}
+
+.readable-text:hover,
+p:not([class*="btn"]):not([class*="button"]):not([class*="badge"]):hover,
+h1:hover,
+h2:hover,
+h3:hover,
+h4:hover,
+h5:hover,
+h6:hover,
+li:not([class*="nav"]):hover,
+blockquote:hover,
+figcaption:hover,
+.prose p:hover,
+.prose li:hover {
+  text-shadow: 0 0 20px rgba(0, 94, 184, 0.15), 0 0 40px rgba(0, 94, 184, 0.08);
+  transform: scale(1.01);
+  filter: brightness(1.1);
+}
+
+/* For dark backgrounds, use a lighter glow */
+.bg-black .readable-text:hover,
+.bg-black p:hover,
+.bg-black h1:hover,
+.bg-black h2:hover,
+.bg-black h3:hover,
+[class*="bg-gray-9"] .readable-text:hover,
+[class*="bg-gray-9"] p:hover {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2), 0 0 40px rgba(0, 94, 184, 0.15);
+}
+
+/* Touch device friendly - activate on tap/touch */
+@media (hover: none) {
+  .readable-text:active,
+  p:not([class*="btn"]):not([class*="button"]):active,
+  h1:active,
+  h2:active,
+  h3:active,
+  h4:active,
+  h5:active,
+  h6:active {
+    text-shadow: 0 0 20px rgba(0, 94, 184, 0.15), 0 0 40px rgba(0, 94, 184, 0.08);
+    transform: scale(1.01);
+    filter: brightness(1.1);
+  }
+}
+
+/* Exclude elements that shouldn't have this effect */
+nav *,
+button *,
+a:not(.readable-text) *,
+[role="button"] *,
+.no-text-hover,
+.badge,
+[class*="chip"] {
+  text-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}

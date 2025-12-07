@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { X, Send, ArrowRight } from "lucide-react"
 import Image from "next/image"
 
@@ -11,18 +9,24 @@ const RED_STITCH = "#DC2626"
 
 const quickActions = [
   {
-    label: "Tell me about EASI",
+    label: "What's EASI?",
     section: "projects",
-    query: "What is EASI and how does it help with speech evaluation?",
+    query: "What is EASI?",
   },
-  { label: "See drumming work", section: "music", query: "Show me Matthew's drumming and music projects" },
+  { label: "The music stuff", section: "music", query: "Tell me about the drumming" },
   {
-    label: "View credentials",
+    label: "Credentials",
     section: "credentials",
-    query: "What are Matthew's credentials and speaking engagements?",
+    query: "What are the credentials?",
   },
-  { label: "Skiing philosophy", section: "skiing", query: "What does skiing teach about problem solving?" },
+  { label: "How it connects", section: "speaking", query: "How does the drumming connect to the AI work?" },
 ]
+
+interface Message {
+  id: string
+  role: "user" | "assistant"
+  content: string
+}
 
 interface DocentProps {
   onNavigate?: (sectionId: string) => void
@@ -33,14 +37,10 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showPulse, setShowPulse] = useState(true)
   const [inputValue, setInputValue] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/docent" }),
-  })
-
-  const isLoading = status === "in_progress"
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -53,7 +53,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     }
   }, [isOpen])
 
-  // Pulse animation periodically to draw attention
   useEffect(() => {
     if (!isOpen) {
       const interval = setInterval(() => {
@@ -64,14 +63,80 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     }
   }, [isOpen])
 
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: text,
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/docent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      })
+
+      if (!response.ok) throw new Error("Failed to get response")
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+      let assistantContent = ""
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "",
+      }
+
+      setMessages((prev) => [...prev, assistantMessage])
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = decoder.decode(value, { stream: true })
+          assistantContent += chunk
+
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantMessage.id ? { ...m, content: assistantContent } : m)),
+          )
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: "Something went wrong. Try again.",
+        },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleSend = () => {
     if (!inputValue.trim() || isLoading) return
-    sendMessage({ text: inputValue })
+    sendMessage(inputValue)
     setInputValue("")
   }
 
   const handleQuickAction = (action: (typeof quickActions)[0]) => {
-    sendMessage({ text: action.query })
+    sendMessage(action.query)
     if (onNavigate && action.section) {
       setTimeout(() => onNavigate(action.section), 500)
     }
@@ -92,9 +157,8 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
         style={{
           background: `linear-gradient(135deg, ${RALLY_BLUE}, ${RALLY_BLUE}dd)`,
         }}
-        aria-label="Open AI Guide"
+        aria-label="Open Guide"
       >
-        {/* Animated rings */}
         <div
           className={`absolute inset-0 rounded-full transition-opacity duration-500 ${showPulse ? "opacity-100" : "opacity-0"}`}
           style={{
@@ -111,16 +175,9 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
         />
 
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
-          <Image
-            src="/images/hero-drum.png"
-            alt="Ask the Guide"
-            width={48}
-            height={48}
-            className="w-full h-full object-cover"
-          />
+          <Image src="/images/hero-drum.png" alt="Ask" width={48} height={48} className="w-full h-full object-cover" />
         </div>
 
-        {/* Notification dot */}
         <span
           className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white animate-bounce"
           style={{ backgroundColor: RED_STITCH }}
@@ -143,7 +200,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           maxHeight: "min(600px, calc(100vh - 100px))",
         }}
       >
-        {/* Header */}
+        {/* Header - Updated copy to be less peppy */}
         <div
           className="p-4 flex items-center justify-between"
           style={{
@@ -154,15 +211,15 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30">
               <Image
                 src="/images/hero-drum.png"
-                alt="Exhibit Guide"
+                alt="Guide"
                 width={40}
                 height={40}
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
-              <h3 className="text-white font-semibold">Exhibit Guide</h3>
-              <p className="text-white/70 text-xs">Ask me anything about Matthew's work</p>
+              <h3 className="text-white font-semibold">Guide</h3>
+              <p className="text-white/70 text-xs">Ask me anything</p>
             </div>
           </div>
           <button
@@ -187,11 +244,9 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                 />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Welcome to Matthew's interactive portfolio. I can guide you through his work in AI, music, and speech
-                pathology.
+                Hey. There's a lot here. Tech stuff, music, the physical practice side. Where do you want to start?
               </p>
 
-              {/* Quick Actions */}
               <div className="grid grid-cols-2 gap-2 mt-4">
                 {quickActions.map((action) => (
                   <button
@@ -217,12 +272,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                       : "bg-white border border-border rounded-bl-md shadow-sm"
                   }`}
                 >
-                  {message.parts.map((part, i) => {
-                    if (part.type === "text") {
-                      return <span key={i}>{part.text}</span>
-                    }
-                    return null
-                  })}
+                  {message.content}
                 </div>
               </div>
             ))
@@ -243,7 +293,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Input - Updated placeholder */}
         <div className="p-4 border-t border-border bg-white">
           <div className="flex gap-2">
             <input
@@ -252,7 +302,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Ask about Matthew's work..."
+              placeholder="What do you want to know?"
               className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#005EB8]/20 focus:border-[#005EB8] transition-all"
               disabled={isLoading}
             />

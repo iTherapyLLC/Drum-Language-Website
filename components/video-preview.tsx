@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
 import { Play, ExternalLink } from "lucide-react"
 
@@ -11,15 +10,9 @@ const RED_STITCH = "#DC2626"
 interface VideoPreviewProps {
   url: string
   title?: string
-  platform?: "instagram" | "youtube" | "generic"
+  platform?: "instagram" | "youtube" | "tiktok" | "generic"
   aspectRatio?: "portrait" | "landscape" | "square"
   className?: string
-}
-
-// Extract Instagram post ID from URL
-function getInstagramId(url: string): string | null {
-  const match = url.match(/instagram\.com\/(?:p|reel)\/([^/?]+)/)
-  return match ? match[1] : null
 }
 
 // Extract YouTube video ID from URL
@@ -37,7 +30,7 @@ export function VideoPreview({
 }: VideoPreviewProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [showEmbed, setShowEmbed] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const aspectClasses = {
@@ -46,19 +39,17 @@ export function VideoPreview({
     square: "aspect-square",
   }
 
-  const instagramId = platform === "instagram" ? getInstagramId(url) : null
   const youtubeId = platform === "youtube" ? getYouTubeId(url) : null
-
   const youtubeThumbnail = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null
 
   // 3D tilt effect
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return
+    if (!containerRef.current || isPlaying) return
     const rect = containerRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
-    const rotateX = (y - 0.5) * -15
-    const rotateY = (x - 0.5) * 15
+    const rotateX = (y - 0.5) * -10
+    const rotateY = (x - 0.5) * 10
     containerRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
   }
 
@@ -68,14 +59,29 @@ export function VideoPreview({
     setIsHovered(false)
   }
 
+  const handleYouTubePlay = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsPlaying(true)
+  }
+
+  const handleExternalOpen = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsClicked(true)
+    // Brief animation before opening
+    setTimeout(() => {
+      window.open(url, "_blank", "noopener,noreferrer")
+      setIsClicked(false)
+    }, 200)
+  }
+
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 group cursor-pointer transition-all duration-500 ease-out ${aspectClasses[aspectRatio]} ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 group transition-all duration-500 ease-out ${aspectClasses[aspectRatio]} ${className} ${isClicked ? "scale-95 opacity-80" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      onClick={() => setShowEmbed(true)}
       style={{ transformStyle: "preserve-3d" }}
     >
       {/* Glow effect */}
@@ -86,126 +92,166 @@ export function VideoPreview({
         }}
       />
 
-      {/* Platform-specific thumbnail or embed */}
-      {showEmbed ? (
-        <div className="absolute inset-0">
-          {instagramId && (
-            <iframe
-              src={`https://www.instagram.com/p/${instagramId}/embed`}
-              className="w-full h-full"
-              frameBorder="0"
-              scrolling="no"
-              allowTransparency
-              allow="encrypted-media"
-            />
-          )}
-          {youtubeId && (
-            <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
-              className="w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          )}
-        </div>
-      ) : (
-        <>
-          {youtubeThumbnail && (
+      {platform === "youtube" && youtubeId ? (
+        isPlaying ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+            className="absolute inset-0 w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            title={title || "YouTube video"}
+          />
+        ) : (
+          <>
+            {/* YouTube thumbnail */}
             <img
               src={youtubeThumbnail || "/placeholder.svg"}
               alt={title || "Video thumbnail"}
               className="absolute inset-0 w-full h-full object-cover"
             />
-          )}
 
-          {/* Stylized placeholder - only show waveform if no thumbnail */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            {/* Animated waveform background - hide when we have thumbnail */}
-            {!youtubeThumbnail && (
-              <div className="absolute inset-0 flex items-end justify-center gap-1 p-8 opacity-20">
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-2 bg-white rounded-full transition-all duration-300"
-                    style={{
-                      height: `${Math.sin(i * 0.5 + (isHovered ? 2 : 0)) * 30 + 40}%`,
-                      animationDelay: `${i * 50}ms`,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
             {/* Play button */}
+            <button
+              onClick={handleYouTubePlay}
+              className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
+            >
+              <div
+                className="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                style={{
+                  backgroundColor: RALLY_BLUE,
+                  boxShadow: isHovered ? `0 0 40px ${RALLY_BLUE}80` : `0 4px 20px rgba(0,0,0,0.4)`,
+                }}
+              >
+                <Play className="w-8 h-8 text-white ml-1" fill="white" />
+              </div>
+              {title && <p className="mt-4 text-white font-medium text-center px-4 drop-shadow-lg">{title}</p>}
+            </button>
+
+            {/* Platform badge */}
+            <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-red-600/80">
+              YouTube
+            </div>
+          </>
+        )
+      ) : platform === "instagram" ? (
+        <>
+          {/* Instagram gradient placeholder */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]" />
+
+          {/* Shimmer animation */}
+          <div className="absolute inset-0 opacity-30 overflow-hidden">
             <div
-              className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-2xl"
+              className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite]"
+              style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+            />
+          </div>
+
+          {/* Play button - opens in new tab */}
+          <button
+            onClick={handleExternalOpen}
+            className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
+          >
+            <div
+              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20 backdrop-blur-sm ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
               style={{
-                backgroundColor: RALLY_BLUE,
-                boxShadow: isHovered ? `0 0 40px ${RALLY_BLUE}80` : "none",
+                boxShadow: isHovered ? "0 0 40px rgba(255,255,255,0.4)" : "0 4px 20px rgba(0,0,0,0.4)",
               }}
             >
               <Play className="w-8 h-8 text-white ml-1" fill="white" />
+            </div>
+            {title && <p className="mt-4 text-white font-medium text-center px-4 drop-shadow-lg">{title}</p>}
+            <p className="mt-2 text-white/80 text-xs flex items-center gap-1">
+              <ExternalLink className="w-3 h-3" />
+              Opens in Instagram
+            </p>
+          </button>
 
-              {/* Ripple effect */}
+          {/* Platform badge */}
+          <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52]">
+            Instagram
+          </div>
+        </>
+      ) : platform === "tiktok" ? (
+        <>
+          {/* TikTok animated background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#010101] via-[#161823] to-[#010101]" />
+
+          {/* Animated bars */}
+          <div className="absolute inset-0 flex items-end justify-center gap-1 p-8 opacity-30">
+            {Array.from({ length: 20 }).map((_, i) => (
               <div
-                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100"
+                key={i}
+                className="w-2 bg-gradient-to-t from-[#69C9D0] to-[#EE1D52] rounded-full animate-pulse"
                 style={{
-                  border: `2px solid ${RALLY_BLUE}`,
-                  animation: isHovered ? "ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite" : "none",
+                  height: `${Math.sin(i * 0.5) * 30 + 40}%`,
+                  animationDelay: `${i * 0.1}s`,
                 }}
               />
-            </div>
-
-            {/* Title */}
-            {title && (
-              <p className="relative z-10 mt-4 text-white font-medium text-center px-4 opacity-80 group-hover:opacity-100 transition-opacity drop-shadow-lg">
-                {title}
-              </p>
-            )}
-
-            {/* Platform badge */}
-            <div
-              className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm"
-              style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-            >
-              {platform === "instagram" ? "Instagram Reel" : platform === "youtube" ? "YouTube" : "Video"}
-            </div>
-
-            {/* External link hint */}
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/50"
-            >
-              <ExternalLink className="w-4 h-4 text-white" />
-            </a>
+            ))}
           </div>
 
-          {/* Gradient overlay - stronger when we have thumbnail */}
-          <div
-            className="absolute inset-0 transition-opacity duration-500"
-            style={{
-              background: youtubeThumbnail
-                ? "linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)"
-                : "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)",
-              opacity: isHovered ? 0.4 : 0.6,
-            }}
-          />
+          <button
+            onClick={handleExternalOpen}
+            className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
+          >
+            <div
+              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
+              style={{
+                background: "linear-gradient(135deg, #69C9D0, #EE1D52)",
+                boxShadow: isHovered ? "0 0 40px rgba(238, 29, 82, 0.5)" : "0 4px 20px rgba(0,0,0,0.4)",
+              }}
+            >
+              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+            </div>
+            {title && <p className="mt-4 text-white font-medium text-center px-4 opacity-90">{title}</p>}
+            <p className="mt-2 text-white/70 text-xs flex items-center gap-1">
+              <ExternalLink className="w-3 h-3" />
+              Opens in TikTok
+            </p>
+          </button>
+
+          {/* Platform badge */}
+          <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-black/70">
+            TikTok
+          </div>
         </>
+      ) : (
+        // Generic fallback
+        <button
+          onClick={handleExternalOpen}
+          className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer"
+        >
+          <div className="absolute inset-0 flex items-end justify-center gap-1 p-8 opacity-20">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-2 bg-white rounded-full"
+                style={{ height: `${Math.sin(i * 0.5) * 30 + 40}%` }}
+              />
+            ))}
+          </div>
+          <div
+            className="z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+            style={{ backgroundColor: RALLY_BLUE }}
+          >
+            <Play className="w-8 h-8 text-white ml-1" fill="white" />
+          </div>
+          {title && <p className="z-10 mt-4 text-white font-medium text-center px-4 opacity-80">{title}</p>}
+        </button>
       )}
 
       {/* Corner accents */}
       <div
-        className="absolute top-0 left-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        className="absolute top-0 left-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
           background: `linear-gradient(135deg, ${RALLY_BLUE}30 0%, transparent 50%)`,
         }}
       />
       <div
-        className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
           background: `linear-gradient(-45deg, ${RED_STITCH}30 0%, transparent 50%)`,
         }}

@@ -919,12 +919,3 @@
 .footer-link:hover::after {
   width: 100%;
 }
-
-/* Logo pulse effect */
-.logo-pulse {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.logo-pulse:hover {
-  transform: scale(1.05); /* Corrected and completed the transform property */
-}

@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from "react"
 interface SpiralKaleidoscopeProps {
   opacity?: number
   className?: string
+  variant?: "light" | "dark"
 }
 
-const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidoscopeProps) => {
+const SpiralKaleidoscope = ({ opacity = 0.12, className = "", variant = "light" }: SpiralKaleidoscopeProps) => {
   const [scrollProgress, setScrollProgress] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -23,6 +24,8 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidosco
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const filterStyle = variant === "dark" ? "invert(1)" : "none"
+
   return (
     <div ref={containerRef} className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <div
@@ -32,7 +35,7 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidosco
         }}
       >
         {/* Upper left quadrant - horizontal flip */}
-        <div className="overflow-hidden" style={{ opacity }}>
+        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
           <img
             src="/images/cdvvarhf9x4dckd2bfpng.png"
             alt=""
@@ -44,7 +47,7 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidosco
         </div>
 
         {/* Upper right quadrant - original */}
-        <div className="overflow-hidden" style={{ opacity }}>
+        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
           <img
             src="/images/cdvvarhf9x4dckd2bfpng.png"
             alt=""
@@ -56,7 +59,7 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidosco
         </div>
 
         {/* Lower left quadrant - both flips */}
-        <div className="overflow-hidden" style={{ opacity }}>
+        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
           <img
             src="/images/cdvvarhf9x4dckd2bfpng.png"
             alt=""
@@ -68,7 +71,7 @@ const SpiralKaleidoscope = ({ opacity = 0.12, className = "" }: SpiralKaleidosco
         </div>
 
         {/* Lower right quadrant - vertical flip */}
-        <div className="overflow-hidden" style={{ opacity }}>
+        <div className="overflow-hidden" style={{ opacity, filter: filterStyle }}>
           <img
             src="/images/cdvvarhf9x4dckd2bfpng.png"
             alt=""

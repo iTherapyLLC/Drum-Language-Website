@@ -674,187 +674,190 @@ function SpeakingSection() {
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <RevealOnScroll direction="up">
-      <section id="speaking" className="py-20 bg-background relative z-10">
-        <div className="container max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-12 text-foreground">Speaking & Writing</h2>
+    <section id="speaking" className="py-20 bg-background relative overflow-hidden z-10">
+      <SpiralKaleidoscope opacity={0.06} className="z-0" />
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <h2 className="text-4xl font-bold mb-12 text-foreground">Speaking & Writing</h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RevealOnScroll direction="up" delay={0}>
-              <a
-                href="https://www.nationalacademies.org/event/41467_10-2024_bidirectional-relationship-between-ai-and-neuroscience-a-workshop"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block h-full group perspective-container"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <RevealOnScroll direction="up" delay={0}>
+            <a
+              href="https://www.nationalacademies.org/event/41467_10-2024_bidirectional-relationship-between-ai-and-neuroscience-a-workshop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block h-full group perspective-container"
+            >
+              <div
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
+                style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
-                <div
-                  className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                >
-                  {/* Shimmer overlay */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
-                  </div>
+                {/* Shimmer overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
+                </div>
 
-                  {/* Header section */}
-                  <div className="relative z-10 h-[72px] flex flex-col justify-start">
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
-                        style={{ backgroundColor: `${RALLY_BLUE}10` }}
-                      >
-                        <Presentation
-                          size={28}
+                {/* Header section */}
+                <div className="relative z-10 h-[72px] flex flex-col justify-start">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
+                      style={{ backgroundColor: `${RALLY_BLUE}10` }}
+                    >
+                      <Presentation
+                        size={28}
+                        style={{ color: RALLY_BLUE }}
+                        className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
+                      />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-1 flex-wrap">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
+                          National Academies Workshop
+                        </h3>
+                        <span
+                          className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
+                          style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
+                        >
+                          Invited Speaker
+                        </span>
+                        <ArrowRight
+                          size={20}
+                          className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
                           style={{ color: RALLY_BLUE }}
-                          className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
                         />
                       </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1 flex-wrap">
-                          <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                            National Academies Workshop
-                          </h3>
-                          <span
-                            className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                            style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
-                          >
-                            Invited Speaker
-                          </span>
-                          <ArrowRight
-                            size={20}
-                            className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
-                            style={{ color: RALLY_BLUE }}
-                          />
-                        </div>
-                        <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
-                          AI and Neuroscience
-                        </p>
-                      </div>
+                      <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
+                        AI and Neuroscience
+                      </p>
                     </div>
-                  </div>
-
-                  {/* Description section */}
-                  <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
-                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
-                      Bidirectional Relationship Between AI and Neuroscience. October 2024 workshop exploring how
-                      advances in AI and neuroscience inform each other.
-                    </p>
-                  </div>
-
-                  {/* Footer section */}
-                  <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                    <span
-                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
-                      style={{ color: RALLY_BLUE }}
-                    >
-                      View workshop
-                      <ExternalLink
-                        size={14}
-                        className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125"
-                      />
-                    </span>
-                  </div>
-
-                  {/* Sheen sweep effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
-                    <div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
-                      style={{ width: "50%" }}
-                    />
                   </div>
                 </div>
-              </a>
-            </RevealOnScroll>
 
-            <RevealOnScroll direction="up" delay={100}>
-              <div className="block h-full group perspective-container">
-                <div
-                  className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                >
-                  {/* Shimmer overlay */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#DC2626]/5 to-transparent animate-shimmer" />
-                  </div>
+                {/* Description section */}
+                <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
+                  <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
+                    Bidirectional Relationship Between AI and Neuroscience. October 2024 workshop exploring how advances
+                    in AI and neuroscience inform each other.
+                  </p>
+                </div>
 
-                  {/* Header section */}
-                  <div className="relative z-10 h-[72px] flex flex-col justify-start">
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
-                        style={{ backgroundColor: `${RED_STITCH}10` }}
-                      >
-                        <BookOpen
-                          size={28}
-                          style={{ color: RED_STITCH }}
-                          className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
-                        />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1 flex-wrap">
-                          <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                            Mensa Research Journal
-                          </h3>
-                          <span
-                            className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                            style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
-                          >
-                            Guest Editor
-                          </span>
-                          <ArrowRight
-                            size={20}
-                            className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
-                            style={{ color: RED_STITCH }}
-                          />
-                        </div>
-                        <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
-                          Summer 2025 Edition
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description section */}
-                  <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
-                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
-                      Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
-                      technology, and human potential.
-                    </p>
-                  </div>
-
-                  {/* Footer section */}
-                  <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                    <span
-                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300"
-                      style={{ color: RED_STITCH }}
-                    >
-                      Coming Summer 2025
-                    </span>
-                  </div>
-
-                  {/* Sheen sweep effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
-                    <div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
-                      style={{ width: "50%" }}
+                {/* Footer section */}
+                <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
+                  <span
+                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
+                    style={{ color: RALLY_BLUE }}
+                  >
+                    View workshop
+                    <ExternalLink
+                      size={14}
+                      className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125"
                     />
-                  </div>
+                  </span>
+                </div>
+
+                {/* Sheen sweep effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
+                    style={{ width: "50%" }}
+                  />
                 </div>
               </div>
-            </RevealOnScroll>
-          </div>
+            </a>
+          </RevealOnScroll>
+
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="block h-full group perspective-container">
+              <div
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
+                style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
+              >
+                {/* Shimmer overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#DC2626]/5 to-transparent animate-shimmer" />
+                </div>
+
+                {/* Header section */}
+                <div className="relative z-10 h-[72px] flex flex-col justify-start">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
+                      style={{ backgroundColor: `${RED_STITCH}10` }}
+                    >
+                      <BookOpen
+                        size={28}
+                        style={{ color: RED_STITCH }}
+                        className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
+                      />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-1 flex-wrap">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
+                          Mensa Research Journal
+                        </h3>
+                        <span
+                          className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
+                          style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
+                        >
+                          Guest Editor
+                        </span>
+                        <ArrowRight
+                          size={20}
+                          className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
+                          style={{ color: RED_STITCH }}
+                        />
+                      </div>
+                      <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
+                        Summer 2025 Edition
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description section */}
+                <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
+                  <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
+                    Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
+                    technology, and human potential.
+                  </p>
+                </div>
+
+                {/* Footer section */}
+                <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
+                  <span
+                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300"
+                    style={{ color: RED_STITCH }}
+                  >
+                    Coming Summer 2025
+                  </span>
+                </div>
+
+                {/* Sheen sweep effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
+                    style={{ width: "50%" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
         </div>
-      </section>
-    </RevealOnScroll>
+      </div>
+    </section>
   )
 }
 
 function PhilosophySection() {
   return (
-    <section id="philosophy" className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white transition-all duration-500">
-      <div className="max-w-6xl mx-auto">
+    <section
+      id="philosophy"
+      className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden transition-all duration-500"
+    >
+      <SpiralKaleidoscope opacity={0.05} className="z-0" />
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
         <div className="mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold mb-3">
             <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
@@ -864,7 +867,7 @@ function PhilosophySection() {
           <p className="text-muted-foreground text-lg">The art of restoration and renewal</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center text-left">
           <TiltCard className="group">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
               <div
@@ -969,10 +972,11 @@ function PhilosophySection() {
 
 function SkiingSection() {
   return (
-    <section id="skiing" className="py-20 px-6 bg-white transition-all duration-500">
-      <div className="max-w-6xl mx-auto">
+    <section id="skiing" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
+      <SpiralKaleidoscope opacity={0.05} className="z-0" />
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
         <div className="mb-12">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center justify-center gap-3 mb-3">
             <Mountain size={32} style={{ color: RALLY_BLUE }} />
             <h2 className="text-3xl sm:text-4xl font-bold">
               <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
@@ -983,7 +987,7 @@ function SkiingSection() {
           <p className="text-muted-foreground text-lg">What skiing teaches about problem solving</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
           {/* Video Preview */}
           <div className="space-y-6">
             <VideoPreview
@@ -1397,8 +1401,9 @@ export default function PortfolioPage() {
       </section>
 
       {/* Music Section - Better mobile padding and spacing */}
-      <section id="music" className="py-16 sm:py-24 bg-[#0a0a0a] text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <section id="music" className="py-16 sm:py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
+        <SpiralKaleidoscope opacity={0.08} variant="dark" className="z-0" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
           <RevealOnScroll direction="up">
             <div className="mb-10 sm:mb-16">
               <MagicHeading as="h2" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" baseColor="light">
@@ -1434,17 +1439,20 @@ export default function PortfolioPage() {
                   ))}
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
+              {/* CHANGE: Using flex with flex-wrap to properly center the last item when alone */}
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
                 {featuredVideos
                   .filter((v) => v.platform !== "youtube")
                   .map((video, index) => (
                     <RevealOnScroll key={video.url} direction="up" delay={index * 100}>
-                      <VideoPreview
-                        url={video.url}
-                        title={video.title}
-                        platform={video.platform}
-                        aspectRatio={video.aspectRatio}
-                      />
+                      <div className="w-[calc(50%-6px)] sm:w-[calc(33.333%-16px)]">
+                        <VideoPreview
+                          url={video.url}
+                          title={video.title}
+                          platform={video.platform}
+                          aspectRatio={video.aspectRatio}
+                        />
+                      </div>
                     </RevealOnScroll>
                   ))}
               </div>
@@ -1493,8 +1501,9 @@ export default function PortfolioPage() {
       <SkiingSection />
 
       {/* Credentials Section */}
-      <section id="credentials" className="py-20 px-6 bg-gray-50 transition-all duration-500">
-        <div className="max-w-6xl mx-auto">
+      <section id="credentials" className="py-20 px-6 bg-gray-50 relative overflow-hidden transition-all duration-500">
+        <SpiralKaleidoscope opacity={0.04} className="z-0" />
+        <div className="relative z-10 max-w-6xl mx-auto">
           <div className="mb-12 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold mb-3">
               <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
@@ -1513,9 +1522,9 @@ export default function PortfolioPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-[#0a0a0a] text-white">
-        <div className="h-1 w-full mb-8" style={{ backgroundColor: RED_STITCH }} />
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className="py-12 px-6 bg-[#0a0a0a] text-white relative overflow-hidden">
+        <SpiralKaleidoscope opacity={0.06} variant="dark" className="z-0" />
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"

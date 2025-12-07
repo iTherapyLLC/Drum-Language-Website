@@ -21,6 +21,12 @@ function getYouTubeId(url: string): string | null {
   return match ? match[1] : null
 }
 
+// Extract Instagram reel ID from URL
+function getInstagramReelId(url: string): string | null {
+  const match = url.match(/instagram\.com\/reel\/([^/?]+)/)
+  return match ? match[1] : null
+}
+
 export function VideoPreview({
   url,
   title,
@@ -41,6 +47,7 @@ export function VideoPreview({
 
   const youtubeId = platform === "youtube" ? getYouTubeId(url) : null
   const youtubeThumbnail = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null
+  const instagramReelId = platform === "instagram" ? getInstagramReelId(url) : null
 
   // 3D tilt effect
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -142,43 +149,57 @@ export function VideoPreview({
         )
       ) : platform === "instagram" ? (
         <>
-          {/* Instagram gradient placeholder */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]" />
-
-          {/* Shimmer animation */}
-          <div className="absolute inset-0 opacity-30 overflow-hidden">
-            <div
-              className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite]"
-              style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+          {instagramReelId ? (
+            <iframe
+              src={`https://www.instagram.com/reel/${instagramReelId}/embed/`}
+              className="absolute inset-0 w-full h-full border-0"
+              allowFullScreen
+              scrolling="no"
+              title={title || "Instagram Reel"}
             />
-          </div>
+          ) : (
+            <>
+              {/* Fallback gradient for non-reel Instagram URLs */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]" />
 
-          {/* Play button */}
-          <button
-            onClick={handleExternalOpen}
-            className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
-          >
-            <div
-              className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20 backdrop-blur-sm ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
-              style={{
-                boxShadow: isHovered ? "0 0 40px rgba(255,255,255,0.4)" : "0 4px 20px rgba(0,0,0,0.4)",
-              }}
+              {/* Shimmer animation */}
+              <div className="absolute inset-0 opacity-30 overflow-hidden">
+                <div
+                  className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite]"
+                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Play button overlay - only show if no embed or for click-through */}
+          {!instagramReelId && (
+            <button
+              onClick={handleExternalOpen}
+              className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
             >
-              <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
-            </div>
-            {title && (
-              <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 drop-shadow-lg text-sm sm:text-base">
-                {title}
+              <div
+                className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20 backdrop-blur-sm ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
+                style={{
+                  boxShadow: isHovered ? "0 0 40px rgba(255,255,255,0.4)" : "0 4px 20px rgba(0,0,0,0.4)",
+                }}
+              >
+                <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
+              </div>
+              {title && (
+                <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 drop-shadow-lg text-sm sm:text-base">
+                  {title}
+                </p>
+              )}
+              <p className="mt-1 sm:mt-2 text-white/80 text-[10px] sm:text-xs flex items-center gap-1">
+                <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                Opens in Instagram
               </p>
-            )}
-            <p className="mt-1 sm:mt-2 text-white/80 text-[10px] sm:text-xs flex items-center gap-1">
-              <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-              Opens in Instagram
-            </p>
-          </button>
+            </button>
+          )}
 
           {/* Platform badge */}
-          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52]">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52] z-20">
             Instagram
           </div>
         </>

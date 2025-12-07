@@ -136,12 +136,16 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
   }, [])
 
   const speakMessage = async (message: Message) => {
-    console.log("[v0] speakMessage called for message:", message.id)
+    alert(`[DEBUG] speakMessage called for message: ${message.id}`)
+    console.log("[v0] === speakMessage called ===")
+    console.log("[v0] Message ID:", message.id)
+    console.log("[v0] Message content length:", message.content.length)
 
     if (speakingMessageId === message.id) {
       console.log("[v0] Stopping current playback")
       if (audioRef.current) {
         audioRef.current.pause()
+        audioRef.current.src = ""
         audioRef.current = null
       }
       setSpeakingMessageId(null)
@@ -152,6 +156,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     if (audioRef.current) {
       console.log("[v0] Stopping previous audio")
       audioRef.current.pause()
+      audioRef.current.src = ""
       audioRef.current = null
     }
 
@@ -159,40 +164,68 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     setSpeakingMessageId(message.id)
 
     try {
-      console.log("[v0] Fetching audio from /api/speak")
+      console.log("[v0] Sending request to /api/speak")
+      alert(`[DEBUG] About to call /api/speak with text: "${message.content.substring(0, 50)}..."`)
+
       const response = await fetch("/api/speak", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ text: message.content }),
       })
 
-      console.log("[v0] Speak API response status:", response.status)
-      console.log("[v0] Speak API response ok:", response.ok)
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        console.error("[v0] Speak API error response:", errorData)
-        throw new Error(`Failed to generate speech: ${JSON.stringify(errorData)}`)
-      }
+      alert(`[DEBUG] Response received: status=${response.status}, ok=${response.ok}`)
+      console.log("[v0] Response status:", response.status)
+      console.log("[v0] Response ok:", response.ok)
 
       const contentType = response.headers.get("content-type")
       console.log("[v0] Response content-type:", contentType)
 
-      const audioBlob = await response.blob()
-      console.log("[v0] Audio blob received, size:", audioBlob.size, "type:", audioBlob.type)
-
-      if (audioBlob.size === 0) {
-        throw new Error("Empty audio blob received")
+      if (!response.ok) {
+        let errorDetails = "Unknown error"
+        if (contentType?.includes("application/json")) {
+          const errorData = await response.json()
+          errorDetails = JSON.stringify(errorData)
+        } else {
+          errorDetails = await response.text()
+        }
+        console.error("[v0] API error:", errorDetails)
+        alert(`[DEBUG] API Error: ${errorDetails}`)
+        throw new Error(`API error: ${errorDetails}`)
       }
 
-      const audioUrl = URL.createObjectURL(audioBlob)
-      console.log("[v0] Audio URL created:", audioUrl)
+      if (!contentType?.includes("audio")) {
+        const textBody = await response.text()
+        console.error("[v0] Did not receive audio, got:", contentType, textBody)
+        alert(`[DEBUG] Not audio response: ${contentType} - ${textBody}`)
+        throw new Error("Did not receive audio response")
+      }
 
-      const audio = new Audio(audioUrl)
+      const audioBlob = await response.blob()
+      console.log("[v0] Audio blob size:", audioBlob.size, "type:", audioBlob.type)
+      alert(`[DEBUG] Audio blob received: size=${audioBlob.size}, type=${audioBlob.type}`)
+
+      if (audioBlob.size === 0) {
+        throw new Error("Empty audio blob")
+      }
+
+      const audioUrl = URL.createObjectURL(new Blob([audioBlob], { type: "audio/mpeg" }))
+      console.log("[v0] Created audio URL")
+
+      const audio = new Audio()
       audioRef.current = audio
 
-      audio.onloadeddata = () => {
-        console.log("[v0] Audio loaded, duration:", audio.duration)
+      audio.onloadedmetadata = () => {
+        console.log("[v0] Audio metadata loaded, duration:", audio.duration)
+      }
+
+      audio.oncanplaythrough = () => {
+        console.log("[v0] Audio can play through")
+      }
+
+      audio.onplay = () => {
+        console.log("[v0] Audio started playing")
       }
 
       audio.onended = () => {
@@ -202,16 +235,35 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       }
 
       audio.onerror = (e) => {
-        console.error("[v0] Audio playback error:", e, audio.error)
+        console.error("[v0] Audio error event:", e)
+        console.error("[v0] Audio error code:", audio.error?.code)
+        console.error("[v0] Audio error message:", audio.error?.message)
+        alert(`[DEBUG] Audio error: code=${audio.error?.code}, message=${audio.error?.message}`)
         setSpeakingMessageId(null)
         URL.revokeObjectURL(audioUrl)
       }
 
-      console.log("[v0] Starting audio playback")
-      await audio.play()
-      console.log("[v0] Audio playback started successfully")
+      // Set source and play
+      audio.src = audioUrl
+      console.log("[v0] Audio src set, attempting to play")
+
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("[v0] Playback started successfully")
+            alert("[DEBUG] Audio playback started!")
+          })
+          .catch((playError) => {
+            console.error("[v0] Play failed:", playError)
+            alert(`[DEBUG] Play failed: ${playError.message}`)
+            setSpeakingMessageId(null)
+            URL.revokeObjectURL(audioUrl)
+          })
+      }
     } catch (error) {
-      console.error("[v0] Voice playback error:", error)
+      console.error("[v0] speakMessage error:", error)
+      alert(`[DEBUG] Caught error: ${error instanceof Error ? error.message : String(error)}`)
       setSpeakingMessageId(null)
     } finally {
       setIsLoadingVoice(false)

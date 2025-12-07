@@ -826,12 +826,7 @@ function SpeakingSection() {
 
                 {/* Footer section */}
                 <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                  <span
-                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300"
-                    style={{ color: RED_STITCH }}
-                  >
-                    Coming Summer 2025
-                  </span>
+                  
                 </div>
 
                 {/* Sheen sweep effect */}

@@ -22,21 +22,8 @@ export const metadata: Metadata = {
   keywords: ["AI", "Speech Pathology", "Communication Science", "Music", "Drummer", "iTherapy", "Technology"],
   authors: [{ name: "Matthew Guggemos" }],
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 }
 

@@ -143,14 +143,14 @@ const music = [
     band: "Freighter",
     role: "Albums and tours",
     url: "https://freighter.bandcamp.com/",
-    imageUrl: "/images/freighter-anime.jpg",
+    imageUrl: "/images/freighter-band.jpg",
     hasVideo: false,
   },
   {
     band: "miRthkon",
     role: "Albums and tours",
     url: "https://mirthkon.bandcamp.com/",
-    imageUrl: "/images/mirthkon-anime.jpg",
+    imageUrl: "/images/mirthkon-band.jpg",
     hasVideo: true,
     videoCount: 8,
   },
@@ -471,18 +471,18 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
       />
 
       {/* Image with overlay */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden bg-black">
         <Image
           src={item.imageUrl || "/placeholder.svg?height=200&width=200&query=music band"}
           alt={item.band}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-contain transition-transform duration-500 group-hover:scale-105"
         />
         {/* Gradient overlay */}
         <div
           className="absolute inset-0 transition-opacity duration-300"
           style={{
-            background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)`,
+            background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, transparent 100%)`,
           }}
         />
         {/* Sheen effect on hover */}
@@ -1092,10 +1092,17 @@ export default function PortfolioPage() {
             }}
           >
             <div
-              className={`relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:scale-110 card-sheen ${drumBeatActive ? "drum-beat-active" : ""}`}
-              style={{ backgroundColor: RALLY_BLUE }}
+              className={`relative w-10 h-10 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-110 ${drumBeatActive ? "drum-beat-active" : ""}`}
+              style={{
+                border: `2px solid ${RALLY_BLUE}`,
+                boxShadow: `0 0 0 1px white inset`,
+              }}
             >
-              MG
+              <img
+                src="/images/drum-reflection-logo.png"
+                alt="Matthew Guggemos"
+                className="w-full h-full object-cover"
+              />
               {/* Sheen sweep effect */}
               <div className="absolute inset-0 rounded-full overflow-hidden">
                 <div

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { X, Send, ArrowRight } from "lucide-react"
+import { X, Send, ArrowRight, Volume2, VolumeX, Loader2, Mic, MicOff } from "lucide-react"
 import Image from "next/image"
 
 const RALLY_BLUE = "#005EB8"
@@ -42,6 +42,69 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null)
+  const [isLoadingVoice, setIsLoadingVoice] = useState(false)
+  const [autoSpeak, setAutoSpeak] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  const [isListening, setIsListening] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
+  const recognitionRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+
+      if (SpeechRecognitionAPI) {
+        setSpeechSupported(true)
+        const recognition = new SpeechRecognitionAPI()
+        recognition.continuous = false
+        recognition.interimResults = true
+        recognition.lang = "en-US"
+
+        recognition.onresult = (event: any) => {
+          const transcript = Array.from(event.results)
+            .map((result: any) => result[0].transcript)
+            .join("")
+          setInputValue(transcript)
+
+          // If this is a final result, stop listening
+          if (event.results[0].isFinal) {
+            setIsListening(false)
+          }
+        }
+
+        recognition.onerror = (event: any) => {
+          console.error("[v0] Speech recognition error:", event.error)
+          setIsListening(false)
+        }
+
+        recognition.onend = () => {
+          setIsListening(false)
+        }
+
+        recognitionRef.current = recognition
+      }
+    }
+  }, [])
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) return
+
+    if (isListening) {
+      recognitionRef.current.stop()
+      setIsListening(false)
+    } else {
+      setInputValue("")
+      try {
+        recognitionRef.current.start()
+        setIsListening(true)
+      } catch (error) {
+        console.error("[v0] Failed to start speech recognition:", error)
+      }
+    }
+  }
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
@@ -62,6 +125,98 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       return () => clearInterval(interval)
     }
   }, [isOpen])
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+    }
+  }, [])
+
+  const speakMessage = async (message: Message) => {
+    console.log("[v0] speakMessage called for message:", message.id)
+
+    if (speakingMessageId === message.id) {
+      console.log("[v0] Stopping current playback")
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      setSpeakingMessageId(null)
+      return
+    }
+
+    // Stop any existing playback
+    if (audioRef.current) {
+      console.log("[v0] Stopping previous audio")
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+
+    setIsLoadingVoice(true)
+    setSpeakingMessageId(message.id)
+
+    try {
+      console.log("[v0] Fetching audio from /api/speak")
+      const response = await fetch("/api/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: message.content }),
+      })
+
+      console.log("[v0] Speak API response status:", response.status)
+      console.log("[v0] Speak API response ok:", response.ok)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.error("[v0] Speak API error response:", errorData)
+        throw new Error(`Failed to generate speech: ${JSON.stringify(errorData)}`)
+      }
+
+      const contentType = response.headers.get("content-type")
+      console.log("[v0] Response content-type:", contentType)
+
+      const audioBlob = await response.blob()
+      console.log("[v0] Audio blob received, size:", audioBlob.size, "type:", audioBlob.type)
+
+      if (audioBlob.size === 0) {
+        throw new Error("Empty audio blob received")
+      }
+
+      const audioUrl = URL.createObjectURL(audioBlob)
+      console.log("[v0] Audio URL created:", audioUrl)
+
+      const audio = new Audio(audioUrl)
+      audioRef.current = audio
+
+      audio.onloadeddata = () => {
+        console.log("[v0] Audio loaded, duration:", audio.duration)
+      }
+
+      audio.onended = () => {
+        console.log("[v0] Audio playback ended")
+        setSpeakingMessageId(null)
+        URL.revokeObjectURL(audioUrl)
+      }
+
+      audio.onerror = (e) => {
+        console.error("[v0] Audio playback error:", e, audio.error)
+        setSpeakingMessageId(null)
+        URL.revokeObjectURL(audioUrl)
+      }
+
+      console.log("[v0] Starting audio playback")
+      await audio.play()
+      console.log("[v0] Audio playback started successfully")
+    } catch (error) {
+      console.error("[v0] Voice playback error:", error)
+      setSpeakingMessageId(null)
+    } finally {
+      setIsLoadingVoice(false)
+    }
+  }
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return
@@ -114,6 +269,10 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           )
         }
       }
+
+      if (autoSpeak && assistantContent) {
+        speakMessage({ ...assistantMessage, content: assistantContent })
+      }
     } catch (error) {
       console.error("Chat error:", error)
       setMessages((prev) => [
@@ -157,7 +316,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
         style={{
           background: `linear-gradient(135deg, ${RALLY_BLUE}, ${RALLY_BLUE}dd)`,
         }}
-        aria-label="Open Guide"
+        aria-label="Open Drum Language Docent"
       >
         <div
           className={`absolute inset-0 rounded-full transition-opacity duration-500 ${showPulse ? "opacity-100" : "opacity-0"}`}
@@ -200,7 +359,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           maxHeight: "min(600px, calc(100vh - 100px))",
         }}
       >
-        {/* Header - Updated copy to be less peppy */}
+        {/* Header */}
         <div
           className="p-4 flex items-center justify-between"
           style={{
@@ -211,23 +370,34 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30">
               <Image
                 src="/images/hero-drum.png"
-                alt="Guide"
+                alt="Drum Language Docent"
                 width={40}
                 height={40}
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
-              <h3 className="text-white font-semibold">Guide</h3>
-              <p className="text-white/70 text-xs">Ask me anything</p>
+              <h3 className="text-white font-semibold text-sm">Drum Language Docent</h3>
+              <p className="text-white/70 text-xs">Your exhibit guide</p>
             </div>
           </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-          >
-            <X className="w-4 h-4 text-white" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAutoSpeak(!autoSpeak)}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                autoSpeak ? "bg-white/30" : "bg-white/10 hover:bg-white/20"
+              }`}
+              title={autoSpeak ? "Auto-speak on" : "Auto-speak off"}
+            >
+              {autoSpeak ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white/70" />}
+            </button>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <X className="w-4 h-4 text-white" />
+            </button>
+          </div>
         </div>
 
         {/* Messages */}
@@ -237,14 +407,15 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
               <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden border-4 border-[#005EB8]/20">
                 <Image
                   src="/images/hero-drum.png"
-                  alt="Welcome"
+                  alt="Drum Language Docent"
                   width={80}
                   height={80}
                   className="w-full h-full object-cover"
                 />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Hey. There's a lot here. Tech stuff, music, the physical practice side. Where do you want to start?
+                Welcome to the exhibit. I'm the Drum Language Docent. There's a lot here: tech, music, the physical
+                practice side. Where do you want to start?
               </p>
 
               <div className="grid grid-cols-2 gap-2 mt-4">
@@ -273,6 +444,41 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                   }`}
                 >
                   {message.content}
+                  {message.role === "assistant" && message.content && (
+                    <button
+                      onClick={() => speakMessage(message)}
+                      disabled={isLoadingVoice && speakingMessageId !== message.id}
+                      className={`mt-2 flex items-center gap-1.5 text-xs transition-colors ${
+                        speakingMessageId === message.id
+                          ? "text-[#005EB8]"
+                          : "text-muted-foreground hover:text-[#005EB8]"
+                      }`}
+                    >
+                      {isLoadingVoice && speakingMessageId === message.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : speakingMessageId === message.id ? (
+                        <>
+                          <Volume2 className="w-3 h-3" />
+                          <span className="flex gap-0.5">
+                            <span className="w-1 h-3 bg-[#005EB8] rounded-full animate-pulse" />
+                            <span
+                              className="w-1 h-3 bg-[#005EB8] rounded-full animate-pulse"
+                              style={{ animationDelay: "0.2s" }}
+                            />
+                            <span
+                              className="w-1 h-3 bg-[#005EB8] rounded-full animate-pulse"
+                              style={{ animationDelay: "0.4s" }}
+                            />
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3 h-3" />
+                          <span>Listen</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             ))
@@ -293,17 +499,31 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input - Updated placeholder */}
+        {/* Input */}
         <div className="p-4 border-t border-border bg-white">
           <div className="flex gap-2">
+            {speechSupported && (
+              <button
+                onClick={toggleListening}
+                disabled={isLoading}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  isListening ? "bg-red-500 animate-pulse" : "bg-gray-100 hover:bg-gray-200"
+                }`}
+                title={isListening ? "Stop listening" : "Speak your message"}
+              >
+                {isListening ? <MicOff className="w-4 h-4 text-white" /> : <Mic className="w-4 h-4 text-gray-600" />}
+              </button>
+            )}
             <input
               ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="What do you want to know?"
-              className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#005EB8]/20 focus:border-[#005EB8] transition-all"
+              placeholder={isListening ? "Listening..." : "What do you want to know?"}
+              className={`flex-1 px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#005EB8]/20 focus:border-[#005EB8] transition-all ${
+                isListening ? "border-red-300 bg-red-50" : "border-border bg-gray-50"
+              }`}
               disabled={isLoading}
             />
             <button
@@ -315,6 +535,25 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
               <Send className="w-4 h-4 text-white" />
             </button>
           </div>
+          {isListening && (
+            <div className="mt-2 flex items-center justify-center gap-2 text-xs text-red-500">
+              <span className="flex gap-1">
+                <span
+                  className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <span
+                  className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <span
+                  className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
+              </span>
+              <span>Listening... speak now</span>
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -40,6 +40,7 @@ import { SwirledCard } from "@/components/swirled-card"
 import { ContactForm } from "@/components/contact-form"
 import { AnimatedProfile } from "@/components/animated-profile"
 import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
+import { useTouchHover } from "@/hooks/use-touch-hover"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -324,7 +325,7 @@ function ProjectCard({
   const cardRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
-  const [isHovered, setIsHovered] = useState(false)
+  const { isActive: isHovered, setIsActive: setIsHovered } = useTouchHover(2000)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100)
@@ -350,6 +351,29 @@ function ProjectCard({
     setIsHovered(false)
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!cardRef.current) return
+    setIsHovered(true)
+    const touch = e.touches[0]
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setGlowPosition({ x: x * 100, y: y * 100 })
+    // Apply a subtle tilt on touch
+    cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(1.02)`
+  }
+
+  const handleTouchEnd = () => {
+    if (!cardRef.current) return
+    // Reset after a delay so user sees the animation
+    setTimeout(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+      }
+      setIsHovered(false)
+    }, 300)
+  }
+
   const cardContent = (
     <SwirledCard className={`${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
       <div
@@ -357,6 +381,8 @@ function ProjectCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         className={`
           p-6 sm:p-8 rounded-2xl relative overflow-hidden
           cursor-pointer transition-all duration-300 ease-out
@@ -468,7 +494,7 @@ function ProjectCard({
 
 function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
+  const { isActive: isHovered, setIsActive: setIsHovered } = useTouchHover(2000)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -490,6 +516,27 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
     setIsHovered(false)
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!cardRef.current) return
+    setIsHovered(true)
+    const touch = e.touches[0]
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setGlowPosition({ x: x * 100, y: y * 100 })
+    cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(1.02)`
+  }
+
+  const handleTouchEnd = () => {
+    if (!cardRef.current) return
+    setTimeout(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+      }
+      setIsHovered(false)
+    }, 300)
+  }
+
   const content = (
     <div
       ref={cardRef}
@@ -501,6 +548,8 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Glow effect */}
       <div
@@ -575,7 +624,7 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
 }
 
 function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]; index: number }) {
-  const [isHovered, setIsHovered] = useState(false)
+  const { isActive: isHovered, setIsActive: setIsHovered } = useTouchHover(2000)
   const cardRef = useRef<HTMLDivElement>(null)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
 
@@ -598,6 +647,27 @@ function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]
     setIsHovered(false)
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!cardRef.current) return
+    setIsHovered(true)
+    const touch = e.touches[0]
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setGlowPosition({ x: x * 100, y: y * 100 })
+    cardRef.current.style.transform = `perspective(1000px) rotateX(-2deg) rotateY(2deg) scale(1.02)`
+  }
+
+  const handleTouchEnd = () => {
+    if (!cardRef.current) return
+    setTimeout(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+      }
+      setIsHovered(false)
+    }, 300)
+  }
+
   return (
     <RevealOnScroll direction="up" delay={index * 100}>
       <div
@@ -606,6 +676,8 @@ function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]
         onMouseEnter={() => setIsHovered(true)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* Glow effect */}

@@ -243,6 +243,8 @@ export function HarmonizedLearningSection() {
               className="relative rounded-2xl overflow-hidden bg-black/50 border border-white/10 shadow-2xl transition-all duration-500 hover:border-white/20 hover:shadow-[#005EB8]/10 mb-10"
               onMouseEnter={() => setIsHoveringEmbed(true)}
               onMouseLeave={() => setIsHoveringEmbed(false)}
+              onTouchStart={() => setIsHoveringEmbed(true)}
+              onTouchEnd={() => setTimeout(() => setIsHoveringEmbed(false), 1500)}
             >
               {/* Clean header bar */}
               <div className="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/10">
@@ -341,13 +343,15 @@ export function HarmonizedLearningSection() {
                   />
                   Five Movements
                 </h3>
-                <ul className="space-y-1.5 text-sm">
+                <div className="space-y-1.5">
                   {movements.map((movement, index) => (
-                    <li
+                    <div
                       key={index}
                       className="flex items-center gap-2 p-1.5 -mx-1.5 rounded-lg cursor-pointer transition-all duration-300 hover:bg-white/10"
                       onMouseEnter={() => setActiveMovement(index)}
                       onMouseLeave={() => setActiveMovement(null)}
+                      onTouchStart={() => setActiveMovement(index)}
+                      onTouchEnd={() => setTimeout(() => setActiveMovement(null), 1000)}
                     >
                       <span
                         className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-mono transition-all duration-300 shrink-0"
@@ -374,9 +378,9 @@ export function HarmonizedLearningSection() {
                           color: RALLY_BLUE,
                         }}
                       />
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </RevealOnScroll>
 

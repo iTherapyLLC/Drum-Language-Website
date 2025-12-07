@@ -28,8 +28,6 @@ import {
   Award,
   DollarSign,
   Star,
-  Laptop,
-  Mail,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -39,6 +37,7 @@ import { RevealOnScroll } from "@/components/reveal-on-scroll"
 import SpiralKaleidoscope from "@/components/spiral-kaleidoscope"
 import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
+import { ContactForm } from "@/components/contact-form"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -1249,7 +1248,6 @@ function SkiingSection() {
   )
 }
 
-// Added Contact section
 function ContactSection() {
   return (
     <section id="contact" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
@@ -1262,89 +1260,13 @@ function ContactSection() {
                 Get in Touch
               </MagicHeading>
             </h2>
-            <p className="text-muted-foreground text-lg">Choose the right channel for your inquiry</p>
+            <p className="text-muted-foreground text-lg">Send a message directly through the form below</p>
           </div>
         </RevealOnScroll>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Tech Inquiries Card */}
-          <RevealOnScroll variant="slide-up" delay={100} duration={600}>
-            <a href="mailto:matthew@itherapyllc.com" className="group block h-full">
-              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 shadow-sm hover:shadow-xl transition-all duration-500 h-full flex flex-col items-center text-center group-hover:border-[#005EB8]/30 group-hover:bg-[#005EB8] overflow-hidden">
-                {/* Animated background glow */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#005EB8] to-[#004494]" />
-                </div>
-
-                <div className="relative z-10">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
-                    style={{ backgroundColor: `rgba(0, 94, 184, 0.1)` }}
-                  >
-                    <Laptop
-                      className="w-8 h-8 transition-colors duration-500 group-hover:text-white"
-                      style={{ color: RALLY_BLUE }}
-                    />
-                  </div>
-
-                  <h3 className="text-xl font-bold mb-2 transition-colors duration-500 group-hover:text-white">
-                    Technology & AI
-                  </h3>
-                  <p className="text-muted-foreground mb-4 transition-colors duration-500 group-hover:text-white/80">
-                    iTherapy products, AI development, speech technology, grants, and technical collaboration
-                  </p>
-
-                  <div
-                    className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-500 group-hover:text-white"
-                    style={{ color: RALLY_BLUE }}
-                  >
-                    <Mail className="w-4 h-4" />
-                    matthew@itherapyllc.com
-                  </div>
-                </div>
-              </div>
-            </a>
-          </RevealOnScroll>
-
-          {/* Music & Consultation Card */}
-          <RevealOnScroll variant="slide-up" delay={200} duration={600}>
-            <a href="mailto:matthew@drumlanguage.com" className="group block h-full">
-              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-200/50 shadow-sm hover:shadow-xl transition-all duration-500 h-full flex flex-col items-center text-center group-hover:border-[#DC2626]/30 group-hover:bg-[#DC2626] overflow-hidden">
-                {/* Animated background glow */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#DC2626] to-[#B91C1C]" />
-                </div>
-
-                <div className="relative z-10">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3"
-                    style={{ backgroundColor: `rgba(220, 38, 38, 0.1)` }}
-                  >
-                    <Music
-                      className="w-8 h-8 transition-colors duration-500 group-hover:text-white"
-                      style={{ color: RED_STITCH }}
-                    />
-                  </div>
-
-                  <h3 className="text-xl font-bold mb-2 transition-colors duration-500 group-hover:text-white">
-                    Music & Consultation
-                  </h3>
-                  <p className="text-muted-foreground mb-4 transition-colors duration-500 group-hover:text-white/80">
-                    Drumming, recording sessions, performances, speaking engagements, and general inquiries
-                  </p>
-
-                  <div
-                    className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-500 group-hover:text-white"
-                    style={{ color: RED_STITCH }}
-                  >
-                    <Mail className="w-4 h-4" />
-                    matthew@drumlanguage.com
-                  </div>
-                </div>
-              </div>
-            </a>
-          </RevealOnScroll>
-        </div>
+        <RevealOnScroll variant="slide-up" delay={100} duration={600}>
+          <ContactForm />
+        </RevealOnScroll>
       </div>
     </section>
   )

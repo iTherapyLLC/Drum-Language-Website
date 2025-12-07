@@ -918,7 +918,7 @@ function SpeakingSection() {
           <RevealOnScroll variant="swing" delay={200} duration={900}>
             <div className="block h-full group perspective-container">
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
+                className="rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col sm:flex-row tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
@@ -926,62 +926,69 @@ function SpeakingSection() {
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-shimmer" />
                 </div>
 
-                {/* Header section */}
-                <div className="relative z-10 flex flex-col justify-start">
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
-                      style={{ backgroundColor: `${RED_STITCH}10` }}
-                    >
-                      <BookOpen
-                        size={28}
-                        style={{ color: RED_STITCH }}
-                        className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
-                      />
-                    </div>
+                {/* MRJ Cover Image */}
+                <div className="relative sm:w-[180px] h-[200px] sm:h-auto shrink-0 overflow-hidden">
+                  <img
+                    src="/images/mrj-summer-2025.jpg"
+                    alt="Mensa Research Journal Summer 2025 - Human Intelligence in the Age of AI"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Gradient fade on right edge */}
+                  <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white to-transparent group-hover:from-[#DC2626] transition-all duration-500" />
+                </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-1 flex-wrap">
-                        <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                          Mensa Research Journal
-                        </h3>
-                        <span
-                          className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                          style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
-                        >
-                          Guest Editor
-                        </span>
-                        <ArrowRight
-                          size={20}
-                          className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
-                          style={{ color: RED_STITCH }}
-                        />
+                {/* Content section */}
+                <div className="flex-1 p-6 sm:p-8 flex flex-col">
+                  {/* Header section */}
+                  <div className="relative z-10 flex flex-col justify-start">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-1 flex-wrap">
+                          <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
+                            Mensa Research Journal
+                          </h3>
+                          <span
+                            className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
+                            style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
+                          >
+                            Guest Editor
+                          </span>
+                          <ArrowRight
+                            size={20}
+                            className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
+                            style={{ color: RED_STITCH }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Subtitle - increased spacing with mt-6 */}
-                <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-6 relative z-10">
-                  Summer 2025 Edition
-                </p>
-
-                {/* Description section - increased spacing with mt-4 */}
-                <div className="relative z-10 flex-1 mt-4 overflow-hidden">
-                  <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
-                    Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
-                    technology, and human potential.
+                  {/* Subtitle */}
+                  <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-4 relative z-10">
+                    Summer 2025 Edition
                   </p>
-                </div>
 
-                {/* Footer section */}
-                <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                  <span
-                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:text-white transition-all duration-300"
-                    style={{ color: RED_STITCH }}
-                  >
-                    Now Available
-                  </span>
+                  {/* Description section */}
+                  <div className="relative z-10 flex-1 mt-3 overflow-hidden">
+                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
+                      Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
+                      technology, and human potential.
+                    </p>
+                  </div>
+
+                  {/* Footer section */}
+                  <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
+                    <a
+                      href="https://www.mensafoundation.org/insights/mensa-research-journal/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:text-white transition-all duration-300"
+                      style={{ color: RED_STITCH }}
+                    >
+                      Read Journal
+                      <ExternalLink size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                    </a>
+                  </div>
                 </div>
 
                 {/* Sheen sweep effect */}
@@ -1598,7 +1605,7 @@ export default function PortfolioPage() {
                     </div>
 
                     {/* Description section */}
-                    <div className="relative z-10 flex-1 mt-3 sm:mt-4 h-[72px] overflow-hidden">
+                    <div className="relative z-10 flex-1 mt-5 sm:mt-6 h-[72px] overflow-hidden">
                       <p className="text-xs sm:text-sm md:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
                         {project.description}
                       </p>

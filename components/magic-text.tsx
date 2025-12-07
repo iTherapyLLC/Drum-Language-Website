@@ -192,41 +192,28 @@ export function MagicHeading({ children, as: Component = "h2", className = "", b
       onMouseLeave={handleMouseLeave}
       style={{ color: textColor }}
     >
-      {words.map((word, wordIndex) => {
-        const wordChars = word.split("")
-        const wordElement = (
-          <span key={wordIndex} className="inline-block whitespace-nowrap">
-            {wordChars.map((char, charIndex) => {
-              const element = (
-                <span
-                  key={charIndex}
-                  className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
-                  style={{ color: textColor }}
-                >
-                  {char}
-                </span>
-              )
-              globalCharIndex++
-              return element
-            })}
-          </span>
-        )
-        if (wordIndex < words.length - 1) {
-          globalCharIndex++
+      <span className="inline-flex flex-wrap items-baseline gap-x-[0.3em]">
+        {words.map((word, wordIndex) => {
+          const wordChars = word.split("")
           return (
-            <span key={wordIndex}>
-              {wordElement}
-              <span
-                className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
-                style={{ color: textColor }}
-              >
-                {" "}
-              </span>
+            <span key={wordIndex} className="inline-block whitespace-nowrap">
+              {wordChars.map((char, charIndex) => {
+                const element = (
+                  <span
+                    key={charIndex}
+                    className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
+                    style={{ color: textColor }}
+                  >
+                    {char}
+                  </span>
+                )
+                globalCharIndex++
+                return element
+              })}
             </span>
           )
-        }
-        return wordElement
-      })}
+        })}
+      </span>
       <span
         className="absolute bottom-0 h-0.5 transition-all duration-200 ease-out rounded-full"
         style={{

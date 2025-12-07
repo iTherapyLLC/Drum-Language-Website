@@ -12,6 +12,7 @@ interface AnimatedProfileProps {
   alt: string
 }
 
+// Particles now orbit continuously at varying radiuses like electrons/photons
 export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -73,6 +74,18 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
   const rotateY = isHovered ? (mousePosition.x - 0.5) * 20 : 0
   const scrollRotate = scrollProgress * 360
 
+  const particles = Array.from({ length: 24 }, (_, i) => ({
+    id: i,
+    color: i % 3 === 0 ? RED_STITCH : RALLY_BLUE,
+    size: 4 + (i % 4) * 2, // 4px to 10px
+    orbitRadius: 70 + (i % 5) * 15, // 70% to 130% of container
+    speed: 8 + (i % 6) * 4, // 8s to 28s duration
+    startAngle: (i * 15) % 360, // Evenly distributed starting positions
+    direction: i % 2 === 0 ? 1 : -1, // Alternate directions
+    delay: (i * 0.2) % 2, // Staggered starts
+    opacity: 0.4 + (i % 3) * 0.2, // 0.4 to 0.8
+  }))
+
   return (
     <div
       ref={containerRef}
@@ -85,26 +98,40 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
       onMouseMove={handleMouseMove}
       style={{ perspective: "1000px" }}
     >
-      {/* Animated particles on hover */}
-      {isHovered && (
-        <>
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 rounded-full pointer-events-none"
-              style={{
-                background: i % 2 === 0 ? RALLY_BLUE : RED_STITCH,
-                left: "50%",
-                top: "50%",
-                transform: `rotate(${i * 30}deg) translateX(${80 + Math.sin(Date.now() / 500 + i) * 10}px)`,
-                opacity: 0.6,
-                animation: `orbit-${i % 3} 3s ease-in-out infinite`,
-                animationDelay: `${i * 0.1}s`,
-              }}
-            />
-          ))}
-        </>
-      )}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: "280%",
+          height: "280%",
+          left: "-90%",
+          top: "-90%",
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.5s ease-out",
+        }}
+      >
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full"
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: particle.color,
+              boxShadow: isHovered
+                ? `0 0 ${particle.size * 2}px ${particle.color}80, 0 0 ${particle.size * 4}px ${particle.color}40`
+                : `0 0 ${particle.size}px ${particle.color}40`,
+              left: "50%",
+              top: "50%",
+              opacity: isHovered ? Math.min(1, particle.opacity + 0.3) : particle.opacity,
+              animation: `electron-orbit-${particle.id % 6} ${particle.speed}s linear infinite`,
+              animationDirection: particle.direction === 1 ? "normal" : "reverse",
+              animationDelay: `-${particle.delay}s`,
+              transform: `rotate(${particle.startAngle}deg) translateX(${particle.orbitRadius}%) translateY(-50%)`,
+              transition: "opacity 0.3s ease, box-shadow 0.3s ease",
+            }}
+          />
+        ))}
+      </div>
 
       {/* Outer pulsing ring - scales on hover */}
       <div
@@ -219,23 +246,34 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
         }}
       />
 
-      {/* CSS Keyframes */}
       <style jsx>{`
         @keyframes pulse-glow {
           0%, 100% { opacity: 0.6; transform: scale(1.15); }
           50% { opacity: 1; transform: scale(1.2); }
         }
-        @keyframes orbit-0 {
-          0%, 100% { transform: rotate(0deg) translateX(80px) scale(1); opacity: 0.6; }
-          50% { transform: rotate(180deg) translateX(100px) scale(1.5); opacity: 1; }
+        @keyframes electron-orbit-0 {
+          0% { transform: rotate(0deg) translateX(70%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(70%) translateY(-50%); }
         }
-        @keyframes orbit-1 {
-          0%, 100% { transform: rotate(120deg) translateX(90px) scale(1.2); opacity: 0.8; }
-          50% { transform: rotate(300deg) translateX(70px) scale(0.8); opacity: 0.4; }
+        @keyframes electron-orbit-1 {
+          0% { transform: rotate(0deg) translateX(85%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(85%) translateY(-50%); }
         }
-        @keyframes orbit-2 {
-          0%, 100% { transform: rotate(240deg) translateX(75px) scale(0.9); opacity: 0.5; }
-          50% { transform: rotate(60deg) translateX(95px) scale(1.3); opacity: 0.9; }
+        @keyframes electron-orbit-2 {
+          0% { transform: rotate(0deg) translateX(100%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(100%) translateY(-50%); }
+        }
+        @keyframes electron-orbit-3 {
+          0% { transform: rotate(0deg) translateX(115%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(115%) translateY(-50%); }
+        }
+        @keyframes electron-orbit-4 {
+          0% { transform: rotate(0deg) translateX(130%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(130%) translateY(-50%); }
+        }
+        @keyframes electron-orbit-5 {
+          0% { transform: rotate(0deg) translateX(95%) translateY(-50%); }
+          100% { transform: rotate(360deg) translateX(95%) translateY(-50%); }
         }
       `}</style>
     </div>

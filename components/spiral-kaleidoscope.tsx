@@ -8,7 +8,7 @@ interface SpiralKaleidoscopeProps {
   variant?: "light" | "dark"
 }
 
-const SpiralKaleidoscope = ({ opacity = 0.12, className = "", variant = "light" }: SpiralKaleidoscopeProps) => {
+export const SpiralKaleidoscope = ({ opacity = 0.12, className = "", variant = "light" }: SpiralKaleidoscopeProps) => {
   const [scrollProgress, setScrollProgress] = useState(0)
 
   useEffect(() => {

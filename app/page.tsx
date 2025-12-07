@@ -39,6 +39,7 @@ import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
 import { ContactForm } from "@/components/contact-form"
 import { AnimatedProfile } from "@/components/animated-profile"
+import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -415,7 +416,7 @@ function ProjectCard({
           <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">{project.description}</p>
         </div>
 
-        {/* Footer section - pushed to bottom */}
+        {/* Footer section */}
         <div className="mt-auto pt-4 border-t border-border/50">
           <span
             className="inline-flex items-center gap-2 text-sm font-medium transition-all duration-300 group-hover:gap-3"
@@ -489,7 +490,7 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
           src={item.imageUrl || "/placeholder.svg?height=200&width=200&query=music band"}
           alt={item.band}
           fill
-          className="object-contain transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Gradient overlay */}
         <div
@@ -835,7 +836,7 @@ function SpeakingSection() {
               className="block h-full group perspective-container"
             >
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
+                className="h-full p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
@@ -917,9 +918,9 @@ function SpeakingSection() {
           </RevealOnScroll>
 
           <RevealOnScroll variant="swing" delay={200} duration={900}>
-            <div className="block h-full group perspective-container">
+            <div className="h-full group perspective-container">
               <div
-                className="rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col sm:flex-row tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
+                className="h-full rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col sm:flex-row tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
@@ -1264,8 +1265,8 @@ function ContactSection() {
       <SpiralKaleidoscope opacity={0.04} className="z-0" />
       <div className="relative z-10 max-w-4xl mx-auto">
         <RevealOnScroll variant="blur-scale" duration={800}>
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3">
+          <div className="mb-16 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
                 Get in Touch
               </MagicHeading>
@@ -1342,7 +1343,7 @@ export default function PortfolioPage() {
                   style={{
                     background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
                     transform: "translateX(-100%)",
-                    animation: "sheenSweep 0.8s ease forwards",
+                    animation: "sheenSweep 0.8s forwards",
                   }}
                 />
               </div>
@@ -1727,6 +1728,8 @@ export default function PortfolioPage() {
 
       <SpeakingSection />
 
+      <HarmonizedLearningSection />
+
       <PhilosophySection />
 
       <SkiingSection />
@@ -1783,7 +1786,7 @@ export default function PortfolioPage() {
               iTherapy LLC
             </a>
             <a
-              href="https://www.linkedin.com/in/matthewguggemos/"
+              href="https://www.linkedin.com/in/matthew-guggemos-slp-researcher-drummer/"
               target="_blank"
               rel="noopener noreferrer"
               className="footer-link hover:text-white transition-colors"

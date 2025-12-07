@@ -38,6 +38,7 @@ import SpiralKaleidoscope from "@/components/spiral-kaleidoscope"
 import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
 import { ContactForm } from "@/components/contact-form"
+import { AnimatedProfile } from "@/components/animated-profile"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -1421,21 +1422,8 @@ export default function PortfolioPage() {
             </span>
           </div>
 
-          <div className="relative mb-6 sm:mb-8">
-            {/* Outer blue ring */}
-            <div
-              className="absolute -inset-2 rounded-full"
-              style={{
-                background: `linear-gradient(135deg, ${RALLY_BLUE}40 0%, ${RALLY_BLUE}20 50%, ${RALLY_BLUE}40 100%)`,
-                boxShadow: `0 0 30px ${RALLY_BLUE}20`,
-              }}
-            />
-            {/* White inner border */}
-            <div className="absolute -inset-1 rounded-full bg-white" />
-            {/* Profile photo - Smaller on mobile */}
-            <div className="relative w-28 h-28 sm:w-40 sm:h-40 rounded-full overflow-hidden">
-              <img src="/images/mensa-headshot.jpeg" alt="Matthew Guggemos" className="w-full h-full object-cover" />
-            </div>
+          <div className="mb-6 sm:mb-8">
+            <AnimatedProfile src="/images/mensa-headshot.jpeg" alt="Matthew Guggemos" />
           </div>
 
           <div className="mb-4 sm:mb-6">

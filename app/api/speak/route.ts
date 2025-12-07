@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
-  const apiKey = process.env.ELEVENLABS_API_KEY
-  const voiceId = process.env.ELEVENLABS_VOICE_ID
+  const apiKey = process.env.ELEVENLABS_API_KEY?.trim().replace(/[^\x00-\x7F]/g, "")
+  const voiceId = process.env.ELEVENLABS_VOICE_ID?.trim().replace(/[^\x00-\x7F]/g, "")
 
   console.log("[v0] === Speak API Request ===")
   console.log("[v0] API Key present:", !!apiKey, "length:", apiKey?.length || 0)
@@ -28,10 +28,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 })
     }
 
+    const sanitizedText = text
+      .trim()
+      .replace(/[\u2018\u2019]/g, "'") // Smart quotes to regular
+      .replace(/[\u201C\u201D]/g, '"') // Smart double quotes
+      .replace(/[\u2013\u2014]/g, "-") // En/em dashes
+      .replace(/\u2026/g, "...") // Ellipsis
+
     const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`
 
     const requestBody = {
-      text: text.trim(),
+      text: sanitizedText,
       model_id: "eleven_multilingual_v2",
       voice_settings: {
         stability: 0.5,
@@ -42,23 +49,22 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[v0] Making ElevenLabs request to:", url)
-    console.log(
-      "[v0] Request body:",
-      JSON.stringify({ ...requestBody, text: requestBody.text.substring(0, 50) + "..." }),
-    )
+
+    const headers: Record<string, string> = {
+      Accept: "audio/mpeg",
+      "Content-Type": "application/json",
+    }
+
+    // Add API key after basic headers are constructed
+    headers["xi-api-key"] = apiKey
 
     const elevenLabsResponse = await fetch(url, {
       method: "POST",
-      headers: {
-        Accept: "audio/mpeg",
-        "Content-Type": "application/json",
-        "xi-api-key": apiKey,
-      },
+      headers,
       body: JSON.stringify(requestBody),
     })
 
     console.log("[v0] ElevenLabs response status:", elevenLabsResponse.status)
-    console.log("[v0] ElevenLabs response statusText:", elevenLabsResponse.statusText)
 
     if (!elevenLabsResponse.ok) {
       const errorBody = await elevenLabsResponse.text()
@@ -75,7 +81,6 @@ export async function POST(request: NextRequest) {
     }
 
     const contentType = elevenLabsResponse.headers.get("content-type")
-    console.log("[v0] Response content-type:", contentType)
 
     if (!contentType?.includes("audio")) {
       const textBody = await elevenLabsResponse.text()

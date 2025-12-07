@@ -19,7 +19,7 @@ export function MagicText({ children, as: Component = "span", className = "", ba
   const containerRef = useRef<HTMLElement>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [isHovering, setIsHovering] = useState(false)
-  const characters = children.split("")
+  const words = children.split(" ")
 
   const textColor = baseColor === "light" ? WHITE : FOREGROUND
 
@@ -83,18 +83,20 @@ export function MagicText({ children, as: Component = "span", className = "", ba
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={handleMouseLeave}
-      style={{ display: "inline-block", color: textColor }}
+      style={{ color: textColor }}
     >
-      {characters.map((char, index) => (
-        <span
-          key={index}
-          className="magic-char inline-block transition-all duration-150 ease-out"
-          style={{
-            whiteSpace: char === " " ? "pre" : "normal",
-            color: textColor,
-          }}
-        >
-          {char}
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="inline-block whitespace-nowrap">
+          {word.split("").map((char, charIndex) => (
+            <span
+              key={charIndex}
+              className="magic-char inline-block transition-all duration-150 ease-out"
+              style={{ color: textColor }}
+            >
+              {char}
+            </span>
+          ))}
+          {wordIndex < words.length - 1 && <span className="inline"> </span>}
         </span>
       ))}
     </Component>
@@ -105,6 +107,7 @@ export function MagicText({ children, as: Component = "span", className = "", ba
 export function MagicHeading({ children, as: Component = "h2", className = "", baseColor = "dark" }: MagicTextProps) {
   const containerRef = useRef<HTMLElement>(null)
   const [activeRange, setActiveRange] = useState<[number, number]>([-1, -1])
+  const words = children.split(" ")
   const characters = children.split("")
 
   const textColor = baseColor === "light" ? WHITE : FOREGROUND
@@ -179,27 +182,51 @@ export function MagicHeading({ children, as: Component = "h2", className = "", b
     setActiveRange([-1, -1])
   }, [textColor])
 
+  let globalCharIndex = 0
+
   return (
     <Component
       ref={containerRef as React.RefObject<HTMLHeadingElement>}
       className={`magic-heading-container relative cursor-default select-none ${className}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ display: "inline-block", color: textColor }}
+      style={{ color: textColor }}
     >
-      {characters.map((char, index) => (
-        <span
-          key={index}
-          className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
-          style={{
-            whiteSpace: char === " " ? "pre" : "normal",
-            color: textColor,
-          }}
-        >
-          {char}
-        </span>
-      ))}
-      {/* Subtle underline that follows the cursor */}
+      {words.map((word, wordIndex) => {
+        const wordChars = word.split("")
+        const wordElement = (
+          <span key={wordIndex} className="inline-block whitespace-nowrap">
+            {wordChars.map((char, charIndex) => {
+              const element = (
+                <span
+                  key={charIndex}
+                  className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
+                  style={{ color: textColor }}
+                >
+                  {char}
+                </span>
+              )
+              globalCharIndex++
+              return element
+            })}
+          </span>
+        )
+        if (wordIndex < words.length - 1) {
+          globalCharIndex++
+          return (
+            <span key={wordIndex}>
+              {wordElement}
+              <span
+                className="magic-heading-char inline-block transition-all duration-100 ease-out origin-bottom"
+                style={{ color: textColor }}
+              >
+                {" "}
+              </span>
+            </span>
+          )
+        }
+        return wordElement
+      })}
       <span
         className="absolute bottom-0 h-0.5 transition-all duration-200 ease-out rounded-full"
         style={{

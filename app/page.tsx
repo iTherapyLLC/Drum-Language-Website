@@ -1016,42 +1016,44 @@ function PhilosophySection() {
       <SpiralKaleidoscope opacity={0.05} className="z-0" />
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <RevealOnScroll variant="blur-scale" duration={900}>
-          <div className="mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3">
-              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+          <div className="mb-8 sm:mb-12 px-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-balance">
+              <MagicHeading as="span" className="text-2xl sm:text-3xl md:text-4xl font-bold">
                 The Intelligence Conductor
               </MagicHeading>
             </h2>
-            <p className="text-muted-foreground text-lg">Orchestrating AI systems into unified solutions</p>
+            <p className="text-muted-foreground text-base sm:text-lg">
+              Orchestrating AI systems into unified solutions
+            </p>
           </div>
         </RevealOnScroll>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
-          <div className="space-y-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left">
+          <div className="space-y-6 sm:space-y-8">
             <RevealOnScroll variant="curtain" delay={200} duration={1000}>
               <div className="relative">
                 <div
-                  className="absolute -left-4 top-0 bottom-0 w-1 rounded-full"
+                  className="absolute -left-3 sm:-left-4 top-0 bottom-0 w-1 rounded-full"
                   style={{ backgroundColor: RALLY_BLUE }}
                 />
-                <blockquote className="pl-6 text-xl sm:text-2xl text-foreground/90 italic leading-relaxed">
-                  "The greatest conductors - Bernstein, Stravinsky, Mozart - didn't master every instrument. They
+                <blockquote className="pl-4 sm:pl-6 text-lg sm:text-xl md:text-2xl text-foreground/90 italic leading-relaxed">
+                  "The greatest conductors - Bernstein, Stravinsky, Mozart - did not master every instrument. They
                   understood each one's role in the collective whole."
                 </blockquote>
               </div>
             </RevealOnScroll>
 
             <RevealOnScroll variant="fade-up" delay={400}>
-              <p className="text-muted-foreground leading-relaxed text-lg">
+              <p className="text-muted-foreground leading-relaxed text-base sm:text-lg">
                 An Intelligence Conductor understands AI technologies as individual instruments: LLMs for language,
-                computer vision for perception, speech recognition for audio, symbolic AI for logic. The skill isn't
-                building each system from scratch - it's knowing how they combine through APIs and pipelines to solve
+                computer vision for perception, speech recognition for audio, symbolic AI for logic. The skill is not
+                building each system from scratch. It is knowing how they combine through APIs and pipelines to solve
                 novel problems.
               </p>
             </RevealOnScroll>
 
             <RevealOnScroll variant="stagger-fade" delay={600}>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {[
                   {
                     label: "Individual Units",
@@ -1075,14 +1077,14 @@ function PhilosophySection() {
                   },
                 ].map((item) => (
                   <TiltCard key={item.label} intensity={8}>
-                    <div className="p-4 rounded-xl border border-border bg-white transition-all duration-300 hover:border-[#005EB8]/30 hover:shadow-lg group">
-                      <div className="flex items-center gap-3 mb-2">
+                    <div className="p-3 sm:p-4 rounded-xl border border-border bg-white transition-all duration-300 hover:border-[#005EB8]/30 hover:shadow-lg group">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2">
                         <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300"
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-colors duration-300 shrink-0"
                           style={{ backgroundColor: `${RALLY_BLUE}15` }}
                         >
                           <svg
-                            className="w-4 h-4"
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                             style={{ color: RALLY_BLUE }}
                             fill="none"
                             stroke="currentColor"
@@ -1091,9 +1093,9 @@ function PhilosophySection() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                           </svg>
                         </div>
-                        <h4 className="font-semibold text-foreground">{item.label}</h4>
+                        <h4 className="font-semibold text-foreground text-sm sm:text-base">{item.label}</h4>
                       </div>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{item.desc}</p>
                     </div>
                   </TiltCard>
                 ))}

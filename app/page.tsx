@@ -688,16 +688,16 @@ function SpeakingSection() {
               className="block h-full group perspective-container"
             >
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-shimmer" />
                 </div>
 
                 {/* Header section */}
-                <div className="relative z-10 h-[72px] flex flex-col justify-start">
+                <div className="relative z-10 flex flex-col justify-start">
                   <div className="flex items-start gap-4">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
@@ -727,15 +727,17 @@ function SpeakingSection() {
                           style={{ color: RALLY_BLUE }}
                         />
                       </div>
-                      <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
-                        AI and Neuroscience
-                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Description section */}
-                <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
+                {/* Subtitle - increased spacing with mt-6 */}
+                <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-6 relative z-10">
+                  AI and Neuroscience
+                </p>
+
+                {/* Description section - increased spacing with mt-4 */}
+                <div className="relative z-10 flex-1 mt-4 overflow-hidden">
                   <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
                     Bidirectional Relationship Between AI and Neuroscience. October 2024 workshop exploring how advances
                     in AI and neuroscience inform each other.
@@ -770,16 +772,16 @@ function SpeakingSection() {
           <RevealOnScroll direction="up" delay={100}>
             <div className="block h-full group perspective-container">
               <div
-                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
+                className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
                 {/* Shimmer overlay */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#DC2626]/5 to-transparent animate-shimmer" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-shimmer" />
                 </div>
 
                 {/* Header section */}
-                <div className="relative z-10 h-[72px] flex flex-col justify-start">
+                <div className="relative z-10 flex flex-col justify-start">
                   <div className="flex items-start gap-4">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
@@ -809,15 +811,17 @@ function SpeakingSection() {
                           style={{ color: RED_STITCH }}
                         />
                       </div>
-                      <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
-                        Summer 2025 Edition
-                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Description section */}
-                <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
+                {/* Subtitle - increased spacing with mt-6 */}
+                <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-6 relative z-10">
+                  Summer 2025 Edition
+                </p>
+
+                {/* Description section - increased spacing with mt-4 */}
+                <div className="relative z-10 flex-1 mt-4 overflow-hidden">
                   <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
                     Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
                     technology, and human potential.
@@ -826,7 +830,12 @@ function SpeakingSection() {
 
                 {/* Footer section */}
                 <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                  
+                  <span
+                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:text-white transition-all duration-300"
+                    style={{ color: RED_STITCH }}
+                  >
+                    Coming Summer 2025
+                  </span>
                 </div>
 
                 {/* Sheen sweep effect */}

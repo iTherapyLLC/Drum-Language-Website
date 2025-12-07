@@ -980,7 +980,7 @@ function SpeakingSection() {
                     className="inline-flex items-center gap-2 text-sm font-medium group-hover:text-white transition-all duration-300"
                     style={{ color: RED_STITCH }}
                   >
-                    Coming Summer 2025
+                    Now Available
                   </span>
                 </div>
 

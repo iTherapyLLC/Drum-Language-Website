@@ -451,9 +451,10 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
   const content = (
     <div
       ref={cardRef}
-      className="rounded-2xl overflow-hidden group relative transition-all duration-300 cursor-pointer"
+      className="rounded-2xl overflow-hidden group relative transition-all duration-300 cursor-pointer border-0 outline-none"
       style={{
         transformStyle: "preserve-3d",
+        boxShadow: "none",
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
@@ -469,7 +470,7 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
       />
 
       {/* Image with overlay */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-black">
+      <div className="relative aspect-[4/3] overflow-hidden bg-black border-0 rounded-2xl">
         <Image
           src={item.imageUrl || "/placeholder.svg?height=200&width=200&query=music band"}
           alt={item.band}
@@ -523,7 +524,7 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
   )
 
   return item.url ? (
-    <a href={item.url} target="_blank" rel="noopener noreferrer">
+    <a href={item.url} target="_blank" rel="noopener noreferrer" className="block border-0 outline-none">
       {content}
     </a>
   ) : (

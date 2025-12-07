@@ -211,9 +211,7 @@ export function VideoPreview({
           )}
 
           {/* Platform badge */}
-          <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52] z-20">
-            Instagram
-          </div>
+          
         </>
       ) : platform === "tiktok" ? (
         <>

@@ -1,7 +1,20 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Maximize2, Minimize2, Music, Brain, Sparkles, MessageCircle, ChevronRight, Play } from "lucide-react"
+import {
+  Maximize2,
+  Minimize2,
+  Music,
+  Brain,
+  Sparkles,
+  MessageCircle,
+  ChevronRight,
+  Play,
+  Headphones,
+  ExternalLink,
+  Clock,
+  Mic2,
+} from "lucide-react"
 import { RevealOnScroll } from "./reveal-on-scroll"
 import { MagicHeading } from "./magic-text"
 import { SpiralKaleidoscope } from "./spiral-kaleidoscope"
@@ -9,21 +22,26 @@ import { SpiralKaleidoscope } from "./spiral-kaleidoscope"
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
+const PODCAST_URL =
+  "https://notebooklm.google.com/notebook/93fc1485-9146-4ccc-b45d-aeea82420f32?artifactId=b1a93ae8-9a6b-41d8-a893-1c7004d61305"
+
 export function HarmonizedLearningSection() {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isHoveringEmbed, setIsHoveringEmbed] = useState(false)
   const [activeMovement, setActiveMovement] = useState<number | null>(null)
+  const [showPodcastCard, setShowPodcastCard] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isExpanded) {
-        setIsExpanded(false)
+      if (e.key === "Escape") {
+        if (isExpanded) setIsExpanded(false)
+        if (showPodcastCard) setShowPodcastCard(false)
       }
     }
     window.addEventListener("keydown", handleEscape)
     return () => window.removeEventListener("keydown", handleEscape)
-  }, [isExpanded])
+  }, [isExpanded, showPodcastCard])
 
   useEffect(() => {
     if (isExpanded) {
@@ -46,6 +64,88 @@ export function HarmonizedLearningSection() {
 
   return (
     <>
+      {showPodcastCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative w-full max-w-lg bg-gradient-to-br from-[#0a0a0a] to-[#1a1a2e] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+            {/* Decorative background */}
+            <div className="absolute inset-0 opacity-20">
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `radial-gradient(circle at 20% 20%, ${RALLY_BLUE}40 0%, transparent 50%), radial-gradient(circle at 80% 80%, ${RED_STITCH}30 0%, transparent 50%)`,
+                }}
+              />
+            </div>
+
+            {/* Close button */}
+            <button
+              onClick={() => setShowPodcastCard(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
+            >
+              <Minimize2 className="w-4 h-4 text-white/70" />
+            </button>
+
+            <div className="relative p-8">
+              {/* Icon with animation */}
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  <div
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center"
+                    style={{ backgroundColor: `${RALLY_BLUE}20` }}
+                  >
+                    <Headphones className="w-10 h-10" style={{ color: RALLY_BLUE }} />
+                  </div>
+                  {/* Animated rings */}
+                  <div className="absolute inset-0 rounded-2xl border-2 border-[#005EB8]/30 animate-ping" />
+                  <div className="absolute -inset-2 rounded-3xl border border-[#005EB8]/20 animate-pulse" />
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-white mb-3">AI Podcast Discussion</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4">
+                  Two AI hosts dive deep into the concepts of Harmonized Learning, exploring human intelligence,
+                  creativity, and potential in the age of AI.
+                </p>
+
+                {/* Features */}
+                <div className="flex justify-center gap-6 text-xs text-white/50">
+                  <div className="flex items-center gap-1.5">
+                    <Mic2 className="w-3.5 h-3.5" style={{ color: RALLY_BLUE }} />
+                    <span>AI Hosts</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" style={{ color: RED_STITCH }} />
+                    <span>Deep Dive</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Brain className="w-3.5 h-3.5" style={{ color: RALLY_BLUE }} />
+                    <span>Key Insights</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <a
+                href={PODCAST_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#005EB8] to-[#0070D4] hover:from-[#0070D4] hover:to-[#005EB8] text-white font-medium transition-all duration-500 hover:shadow-lg hover:shadow-[#005EB8]/30 hover:scale-[1.02]"
+              >
+                <Play className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                <span>Listen on NotebookLM</span>
+                <ExternalLink className="w-4 h-4 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
+              </a>
+
+              <p className="text-center text-white/30 text-xs mt-4">
+                Opens in a new tab. Continue browsing while you listen.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Expanded overlay - covers summary text but leaves room for docent */}
       {isExpanded && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm animate-in fade-in duration-300">
@@ -125,6 +225,26 @@ export function HarmonizedLearningSection() {
               <p className="text-white/60 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                 A symphony of ideas exploring human potential in the age of AI
               </p>
+
+              <button
+                onClick={() => setShowPodcastCard(true)}
+                className="mt-6 group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#005EB8]/20 to-[#DC2626]/10 border border-white/10 hover:border-[#005EB8]/30 hover:from-[#005EB8]/30 hover:to-[#DC2626]/20 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-[#005EB8]/20"
+              >
+                <div className="relative">
+                  <Headphones
+                    className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+                    style={{ color: RALLY_BLUE }}
+                  />
+                  <div
+                    className="absolute inset-0 rounded-full animate-ping opacity-0 group-hover:opacity-30"
+                    style={{ backgroundColor: RALLY_BLUE }}
+                  />
+                </div>
+                <span className="text-white/80 text-sm font-medium group-hover:text-white transition-colors">
+                  Listen to AI Podcast Discussion
+                </span>
+                <Play className="w-4 h-4 text-white/50 group-hover:text-white transition-all duration-300 group-hover:translate-x-1" />
+              </button>
             </div>
           </RevealOnScroll>
 
@@ -271,55 +391,56 @@ export function HarmonizedLearningSection() {
               </div>
             </RevealOnScroll>
 
-            {/* Ask the Docent */}
+            {/* Ask the Docent card */}
             <RevealOnScroll variant="slide-up" delay={400} duration={600}>
-              <div
-                className="group h-full bg-gradient-to-br from-[#005EB8]/10 to-[#DC2626]/5 rounded-2xl p-5 sm:p-6 border border-white/10 cursor-pointer hover:border-[#005EB8]/30 hover:from-[#005EB8]/20 hover:to-[#DC2626]/10 transition-all duration-500 hover:shadow-xl hover:shadow-[#005EB8]/10 hover:-translate-y-1"
-                onClick={() => {
-                  const chatButton = document.querySelector('[aria-label="Open chat"]') as HTMLButtonElement
-                  if (chatButton) chatButton.click()
-                }}
-              >
-                <div className="flex items-center gap-3 mb-3">
+              <div className="group h-full bg-gradient-to-br from-[#005EB8]/10 to-transparent backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-[#005EB8]/20 hover:border-[#005EB8]/40 hover:from-[#005EB8]/15 transition-all duration-500 hover:shadow-lg hover:shadow-[#005EB8]/10 hover:-translate-y-1 cursor-pointer">
+                <div className="flex items-center gap-3 mb-4">
                   <div className="relative">
-                    <MessageCircle
-                      className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
-                      style={{ color: RALLY_BLUE }}
-                    />
                     <div
-                      className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
                       style={{ backgroundColor: `${RALLY_BLUE}30` }}
+                    >
+                      <MessageCircle className="w-5 h-5" style={{ color: RALLY_BLUE }} />
+                    </div>
+                    <div
+                      className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
+                      style={{ backgroundColor: RED_STITCH }}
                     />
                   </div>
-                  <h3 className="text-white font-semibold group-hover:text-white transition-colors">Ask the Docent</h3>
-                  <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ChevronRight className="w-4 h-4" style={{ color: RALLY_BLUE }} />
-                  </div>
+                  <h3 className="text-white font-semibold text-lg">Ask the Docent</h3>
                 </div>
-                <p className="text-white/60 text-sm leading-relaxed group-hover:text-white/70 transition-colors duration-300">
-                  Questions about Moravec's Paradox, instrumentive AI, or how jazz improvisation connects to human
-                  cognition? The AI docent knows this material deeply.
+                <p className="text-white/70 text-sm leading-relaxed mb-4 group-hover:text-white/80 transition-colors">
+                  Curious about Moravec's Paradox? Want to understand instrumentive AI? The docent can explain any
+                  concept from the presentation.
                 </p>
-                <div className="mt-4 flex items-center gap-2 text-xs text-white/40 group-hover:text-white/60 transition-colors">
-                  <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-                  <span>Click to start a conversation</span>
+                <div className="flex items-center gap-2 text-xs" style={{ color: RALLY_BLUE }}>
+                  <span className="group-hover:underline transition-all">Click the chat button</span>
+                  <ChevronRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </div>
             </RevealOnScroll>
           </div>
 
-          {/* Key insight - full width below */}
-          <RevealOnScroll variant="slide-up" delay={500} duration={600}>
-            <div
-              className="group mt-8 p-5 sm:p-6 rounded-xl bg-gradient-to-r from-white/5 to-transparent border-l-2 transition-all duration-500 hover:from-white/10 hover:bg-white/[0.02]"
-              style={{ borderColor: RED_STITCH }}
-            >
-              <p className="text-white/80 text-sm sm:text-base leading-relaxed group-hover:text-white/90 transition-colors duration-300 max-w-4xl">
-                This presentation explores how humans maintain cognitive advantages through continuous low-cost
-                learning, improvisational skills, and the ability to integrate diverse perspectives. The structure
-                itself demonstrates the concept: organized like a musical score with themes, variations, and movements
-                that build toward a unified understanding.
-              </p>
+          {/* Key Insight Callout */}
+          <RevealOnScroll variant="blur-scale" delay={500} duration={600}>
+            <div className="mt-10 p-6 rounded-2xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-white/20 transition-all duration-500">
+              <div className="flex items-start gap-4">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${RED_STITCH}15` }}
+                >
+                  <Sparkles className="w-6 h-6" style={{ color: RED_STITCH }} />
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold mb-2">Key Insight</h4>
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    This presentation explores how humans maintain cognitive advantages through continuous low-cost
+                    learning, improvisational skills, and the ability to integrate diverse perspectives. The structure
+                    itself demonstrates the concept: organized like a musical score with themes, variations, and
+                    movements that build toward a unified vision of human-AI collaboration.
+                  </p>
+                </div>
+              </div>
             </div>
           </RevealOnScroll>
         </div>

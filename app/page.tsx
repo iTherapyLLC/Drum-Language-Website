@@ -29,9 +29,7 @@ import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
 import { VideoPreview } from "@/components/video-preview"
 import { TiltCard } from "@/components/tilt-card"
-import { SheenEffect } from "@/components/sheen-effect"
 import { RevealOnScroll } from "@/components/reveal-on-scroll"
-import { InteractiveSurprises } from "@/components/interactive-surprises"
 import SpiralKaleidoscope from "@/components/spiral-kaleidoscope"
 import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
@@ -1069,22 +1067,14 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pearl-surface">
-      <InteractiveSurprises />
-      <SheenEffect />
-      <AIDocent />
-      <SpiralKaleidoscope opacity={0.12} className="z-0" />
-
+    <div className="min-h-screen bg-white text-foreground overflow-x-hidden">
       {/* Header */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          {/* Logo */}
           <a
             href="#"
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2 sm:gap-3 group relative overflow-hidden rounded-full pr-2 sm:pr-3"
             onClick={(e) => {
               e.preventDefault()
               handleDrumClick()
@@ -1092,11 +1082,8 @@ export default function PortfolioPage() {
             }}
           >
             <div
-              className={`relative w-10 h-10 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-110 ${drumBeatActive ? "drum-beat-active" : ""}`}
-              style={{
-                border: `2px solid ${RALLY_BLUE}`,
-                boxShadow: `0 0 0 1px white inset`,
-              }}
+              className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg overflow-hidden border-2 group-hover:border-white transition-colors"
+              style={{ backgroundColor: RALLY_BLUE, borderColor: RALLY_BLUE }}
             >
               <img
                 src="/images/drum-reflection-logo.png"
@@ -1115,11 +1102,11 @@ export default function PortfolioPage() {
                 />
               </div>
             </div>
-            <span className="font-semibold text-foreground hidden sm:block">Matthew Guggemos</span>
+            <span className="font-semibold text-foreground hidden xs:block text-sm sm:text-base">Matthew Guggemos</span>
           </a>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-8">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -1135,6 +1122,7 @@ export default function PortfolioPage() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center border border-border card-sheen"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -1164,7 +1152,7 @@ export default function PortfolioPage() {
       {/* Hero - Redesigned with mandala spiral as core visual identity */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-8"
+        className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-8"
       >
         <SpiralKaleidoscope opacity={0.12} className="z-0" />
 
@@ -1179,17 +1167,17 @@ export default function PortfolioPage() {
         />
 
         <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-          {/* Brand tagline pill */}
+          {/* Brand tagline pill - smaller text on mobile */}
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-8"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border mb-6 sm:mb-8"
             style={{ borderColor: `${RALLY_BLUE}30`, backgroundColor: "rgba(255,255,255,0.95)" }}
           >
-            <span className="text-sm font-medium" style={{ color: RALLY_BLUE }}>
+            <span className="text-xs sm:text-sm font-medium text-center" style={{ color: RALLY_BLUE }}>
               Communication Scientist / AI Innovator / Musician
             </span>
           </div>
 
-          <div className="relative mb-8">
+          <div className="relative mb-6 sm:mb-8">
             {/* Outer blue ring */}
             <div
               className="absolute -inset-2 rounded-full"
@@ -1200,36 +1188,36 @@ export default function PortfolioPage() {
             />
             {/* White inner border */}
             <div className="absolute -inset-1 rounded-full bg-white" />
-            {/* Profile photo */}
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden">
+            {/* Profile photo - Smaller on mobile */}
+            <div className="relative w-28 h-28 sm:w-40 sm:h-40 rounded-full overflow-hidden">
               <img src="/images/mensa-headshot.jpeg" alt="Matthew Guggemos" className="w-full h-full object-cover" />
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <h1
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-foreground"
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tight text-foreground"
               style={{ textShadow: "0 2px 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.7)" }}
             >
               <span className="block">
                 <MagicHeading as="span">Matthew</MagicHeading>
               </span>
-              <span className="block mt-2">
+              <span className="block mt-1 sm:mt-2">
                 <MagicHeading as="span">Guggemos</MagicHeading>
               </span>
             </h1>
           </div>
 
           <p
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2"
             style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
           >
             <span className="font-semibold text-foreground">Intelligence Conductor.</span> Orchestrating AI, speech
             science, and rhythm into breakthrough solutions.
           </p>
 
-          {/* Stats row */}
-          <div className="flex flex-wrap justify-center gap-8 mb-10">
+          {/* Stats row - Better mobile layout with smaller gaps */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-8 mb-8 sm:mb-10 px-2">
             {[
               { value: "20+", label: "Years Clinical" },
               { value: "30+", label: "Years Drumming" },
@@ -1237,21 +1225,21 @@ export default function PortfolioPage() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="px-6 py-3 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm transition-transform duration-300 hover:scale-105"
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm transition-transform duration-300 hover:scale-105"
               >
-                <span className="text-2xl font-bold" style={{ color: RALLY_BLUE }}>
+                <span className="text-xl sm:text-2xl font-bold" style={{ color: RALLY_BLUE }}>
                   {stat.value}
                 </span>
-                <span className="ml-2 text-sm text-muted-foreground">{stat.label}</span>
+                <span className="ml-1 sm:ml-2 text-xs sm:text-sm text-muted-foreground">{stat.label}</span>
               </div>
             ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 pb-4">
+          {/* CTA Buttons - Stack vertically on mobile, smaller padding */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pb-4 w-full sm:w-auto px-4 sm:px-0">
             <a
               href="#projects"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold transition-all duration-500 hover:scale-105 hover:shadow-2xl group magnetic-btn ripple-container animate-pulse-glow"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-white font-semibold transition-all duration-500 hover:scale-105 hover:shadow-2xl group magnetic-btn ripple-container animate-pulse-glow text-sm sm:text-base"
               style={{ backgroundColor: RALLY_BLUE }}
               onMouseEnter={(e) => {
                 const btn = e.currentTarget
@@ -1263,11 +1251,11 @@ export default function PortfolioPage() {
               }}
             >
               Explore My Work
-              <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2 group-hover:scale-125" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-2 group-hover:scale-125" />
             </a>
             <a
               href="#philosophy"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/90 backdrop-blur-sm border-2 font-semibold transition-all duration-500 hover:bg-white hover:shadow-2xl hover:scale-105 scale-shadow"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-white/90 backdrop-blur-sm border-2 font-semibold transition-all duration-500 hover:bg-white hover:shadow-2xl hover:scale-105 scale-shadow text-sm sm:text-base"
               style={{ borderColor: RALLY_BLUE, color: RALLY_BLUE }}
             >
               The Conductor Approach
@@ -1276,8 +1264,8 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* Projects Section - Clean cards against mandala background */}
-      <section id="projects" className="relative py-24 px-6 overflow-hidden">
+      {/* Projects Section */}
+      <section id="projects" className="relative py-16 sm:py-24 px-4 sm:px-6 overflow-hidden">
         <SpiralKaleidoscope opacity={0.08} className="z-0" />
 
         {/* Gradient fade from white at top */}
@@ -1290,23 +1278,22 @@ export default function PortfolioPage() {
         />
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 sm:mb-16">
             <h2
-              className="text-4xl sm:text-5xl font-bold text-foreground mb-4"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4"
               style={{ textShadow: "0 2px 15px rgba(255,255,255,0.9)" }}
             >
               My Projects
             </h2>
             <p
-              className="text-xl text-muted-foreground italic"
+              className="text-lg sm:text-xl text-muted-foreground italic px-4"
               style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
             >
               Each product has its own dedicated site. Click to explore.
             </p>
           </div>
 
-          {/* Enhanced project cards with exciting hover animations */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {projects.map((project, index) => (
               <RevealOnScroll key={project.id} direction="up" delay={index * 100}>
                 <a
@@ -1316,7 +1303,7 @@ export default function PortfolioPage() {
                   className="block h-full group perspective-container"
                 >
                   <div
-                    className="p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[280px] flex flex-col tilt-card glow-border"
+                    className="p-5 sm:p-6 md:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[260px] sm:h-[280px] flex flex-col tilt-card glow-border"
                     style={{
                       transitionDelay: `${index * 100}ms`,
                       transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -1326,70 +1313,70 @@ export default function PortfolioPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
                     </div>
 
-                    {/* Header section - fixed height */}
+                    {/* Header section */}
                     <div className="relative z-10 h-[72px] flex flex-col justify-start">
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-start gap-3 sm:gap-4">
                         <div
-                          className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
                           style={{ backgroundColor: `${RALLY_BLUE}10` }}
                         >
                           {project.logoUrl ? (
                             <img
                               src={project.logoUrl || "/placeholder.svg"}
                               alt={`${project.name} logo`}
-                              className="w-10 h-10 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
+                              className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
                               style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))" }}
                             />
                           ) : (
                             <project.Icon
-                              size={28}
+                              size={24}
                               color={RALLY_BLUE}
-                              className="transition-transform duration-500 group-hover:scale-125"
+                              className="transition-transform duration-500 group-hover:scale-125 sm:w-7 sm:h-7"
                             />
                           )}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1 flex-wrap">
-                            <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-1 flex-wrap">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
                               {project.name}
                             </h3>
                             <span
-                              className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
+                              className="px-2 py-0.5 sm:py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
                               style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
                             >
                               {project.stat}
                             </span>
                             <ArrowRight
-                              size={20}
-                              className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
+                              size={18}
+                              className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto hidden sm:block"
                               style={{ color: RALLY_BLUE }}
                             />
                           </div>
-                          <p className="text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
+                          <p className="text-sm sm:text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
                             {project.tagline}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Description section - fixed height */}
-                    <div className="relative z-10 flex-1 mt-4 h-[72px] overflow-hidden">
-                      <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
+                    {/* Description section */}
+                    <div className="relative z-10 flex-1 mt-3 sm:mt-4 h-[72px] overflow-hidden">
+                      <p className="text-xs sm:text-sm md:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
                         {project.description}
                       </p>
                     </div>
 
-                    {/* Footer section - pushed to bottom */}
-                    <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
+                    {/* Footer section */}
+                    <div className="relative z-10 mt-auto pt-3 sm:pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
                       <span
-                        className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
+                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
                         style={{ color: RALLY_BLUE }}
                       >
                         Visit site
                         <ExternalLink
-                          size={14}
-                          className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125"
+                          size={12}
+                          className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125 sm:w-3.5 sm:h-3.5"
                         />
                       </span>
                     </div>
@@ -1408,26 +1395,25 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* Music Section */}
-      <section id="music" className="py-24 bg-[#0a0a0a] text-white">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* Music Section - Better mobile padding and spacing */}
+      <section id="music" className="py-16 sm:py-24 bg-[#0a0a0a] text-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <RevealOnScroll direction="up">
-            <div className="mb-16">
-              <MagicHeading as="h2" className="text-4xl md:text-5xl font-bold mb-4" baseColor="light">
+            <div className="mb-10 sm:mb-16">
+              <MagicHeading as="h2" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" baseColor="light">
                 Music
               </MagicHeading>
             </div>
           </RevealOnScroll>
 
           <RevealOnScroll direction="up" delay={100}>
-            <div className="mb-16">
-              <h3 className="text-xl font-semibold text-white/90 mb-6 flex items-center gap-2">
-                <Video className="w-5 h-5 text-[#DC2626]" />
+            <div className="mb-10 sm:mb-16">
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
+                <Video className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
                 Featured Performances
               </h3>
 
-              {/* Main YouTube videos - landscape */}
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 {featuredVideos
                   .filter((v) => v.platform === "youtube")
                   .map((video, index) => (
@@ -1439,14 +1425,15 @@ export default function PortfolioPage() {
                           platform={video.platform}
                           aspectRatio={video.aspectRatio}
                         />
-                        {video.band && <p className="mt-2 text-sm text-white/60 text-center">{video.band}</p>}
+                        {video.band && (
+                          <p className="mt-2 text-xs sm:text-sm text-white/60 text-center">{video.band}</p>
+                        )}
                       </div>
                     </RevealOnScroll>
                   ))}
               </div>
 
-              {/* Social media videos - portrait */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
                 {featuredVideos
                   .filter((v) => v.platform !== "youtube")
                   .map((video, index) => (
@@ -1463,65 +1450,38 @@ export default function PortfolioPage() {
             </div>
           </RevealOnScroll>
 
-          {/* Bands Grid */}
-          <div className="mb-16">
+          {/* Bands Grid - 2 columns on mobile */}
+          <div className="mb-10 sm:mb-16">
             <RevealOnScroll direction="up">
-              <h3 className="text-xl font-semibold text-white/90 mb-6 flex items-center gap-2">
-                <Music className="w-5 h-5 text-[#005EB8]" />
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
+                <Music className="w-4 h-4 sm:w-5 sm:h-5 text-[#005EB8]" />
                 Bands & Collaborations
               </h3>
             </RevealOnScroll>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {music.map((item, index) => (
                 <MusicCard key={item.band} item={item} index={index} />
               ))}
             </div>
           </div>
 
-          {/* Albums Grid */}
+          {/* Albums Grid - 2 columns on mobile */}
           <div>
             <RevealOnScroll direction="up">
-              <h3 className="text-xl font-semibold text-white/90 mb-6 flex items-center gap-2">
-                <Music2 className="w-5 h-5 text-[#DC2626]" />
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
+                <Music2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
                 Featured Albums
                 <span className="ml-2 px-2 py-0.5 rounded-full bg-white/10 text-xs">
                   {featuredAlbums.length} releases
                 </span>
               </h3>
             </RevealOnScroll>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {featuredAlbums.map((album, index) => (
                 <FeaturedAlbumCard key={album.album} album={album} index={index} />
               ))}
             </div>
           </div>
-
-          {/* Featured Videos Grid - DEPRECATED AND REPLACED ABOVE */}
-          {/* <div className="mt-16">
-            <RevealOnScroll direction="up">
-              <h3 className="text-xl font-semibold text-white/90 mb-6 flex items-center gap-2">
-                <Play className="w-5 h-5 text-[#DC2626]" />
-                Featured Videos
-                <span className="ml-2 px-2 py-0.5 rounded-full bg-white/10 text-xs">
-                  {featuredVideos.length} clips
-                </span>
-              </h3>
-            </RevealOnScroll>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredVideos.map((video, index) => (
-                <RevealOnScroll key={index} direction="up" delay={index * 100}>
-                  <VideoPreview
-                    key={index}
-                    url={video.url}
-                    title={video.title}
-                    platform={video.platform}
-                    aspectRatio={video.aspectRatio}
-                    className="shadow-lg rounded-xl"
-                  />
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div> */}
         </div>
       </section>
 

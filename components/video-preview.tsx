@@ -78,7 +78,7 @@ export function VideoPreview({
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 group transition-all duration-500 ease-out ${aspectClasses[aspectRatio]} ${className} ${isClicked ? "scale-95 opacity-80" : ""}`}
+      className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 group transition-all duration-500 ease-out ${aspectClasses[aspectRatio]} ${className} ${isClicked ? "scale-95 opacity-80" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -86,7 +86,7 @@ export function VideoPreview({
     >
       {/* Glow effect */}
       <div
-        className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
+        className="absolute -inset-1 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
         style={{
           background: `linear-gradient(135deg, ${RALLY_BLUE}60, ${RED_STITCH}40)`,
         }}
@@ -119,19 +119,23 @@ export function VideoPreview({
               className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
             >
               <div
-                className="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                className="w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                 style={{
                   backgroundColor: RALLY_BLUE,
                   boxShadow: isHovered ? `0 0 40px ${RALLY_BLUE}80` : `0 4px 20px rgba(0,0,0,0.4)`,
                 }}
               >
-                <Play className="w-8 h-8 text-white ml-1" fill="white" />
+                <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
               </div>
-              {title && <p className="mt-4 text-white font-medium text-center px-4 drop-shadow-lg">{title}</p>}
+              {title && (
+                <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 drop-shadow-lg text-sm sm:text-base">
+                  {title}
+                </p>
+              )}
             </button>
 
             {/* Platform badge */}
-            <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-red-600/80">
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-red-600/80">
               YouTube
             </div>
           </>
@@ -149,28 +153,32 @@ export function VideoPreview({
             />
           </div>
 
-          {/* Play button - opens in new tab */}
+          {/* Play button */}
           <button
             onClick={handleExternalOpen}
             className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
           >
             <div
-              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20 backdrop-blur-sm ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
+              className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20 backdrop-blur-sm ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
               style={{
                 boxShadow: isHovered ? "0 0 40px rgba(255,255,255,0.4)" : "0 4px 20px rgba(0,0,0,0.4)",
               }}
             >
-              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+              <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
             </div>
-            {title && <p className="mt-4 text-white font-medium text-center px-4 drop-shadow-lg">{title}</p>}
-            <p className="mt-2 text-white/80 text-xs flex items-center gap-1">
-              <ExternalLink className="w-3 h-3" />
+            {title && (
+              <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 drop-shadow-lg text-sm sm:text-base">
+                {title}
+              </p>
+            )}
+            <p className="mt-1 sm:mt-2 text-white/80 text-[10px] sm:text-xs flex items-center gap-1">
+              <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               Opens in Instagram
             </p>
           </button>
 
           {/* Platform badge */}
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52]">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-gradient-to-r from-[#833AB4] to-[#FD1D52]">
             Instagram
           </div>
         </>
@@ -180,11 +188,11 @@ export function VideoPreview({
           <div className="absolute inset-0 bg-gradient-to-br from-[#010101] via-[#161823] to-[#010101]" />
 
           {/* Animated bars */}
-          <div className="absolute inset-0 flex items-end justify-center gap-1 p-8 opacity-30">
-            {Array.from({ length: 20 }).map((_, i) => (
+          <div className="absolute inset-0 flex items-end justify-center gap-0.5 sm:gap-1 p-4 sm:p-8 opacity-30">
+            {Array.from({ length: 12 }).map((_, i) => (
               <div
                 key={i}
-                className="w-2 bg-gradient-to-t from-[#69C9D0] to-[#EE1D52] rounded-full animate-pulse"
+                className="w-1.5 sm:w-2 bg-gradient-to-t from-[#69C9D0] to-[#EE1D52] rounded-full animate-pulse"
                 style={{
                   height: `${Math.sin(i * 0.5) * 30 + 40}%`,
                   animationDelay: `${i * 0.1}s`,
@@ -198,23 +206,27 @@ export function VideoPreview({
             className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer z-10"
           >
             <div
-              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
+              className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 ${isClicked ? "scale-90" : "group-hover:scale-110"}`}
               style={{
                 background: "linear-gradient(135deg, #69C9D0, #EE1D52)",
                 boxShadow: isHovered ? "0 0 40px rgba(238, 29, 82, 0.5)" : "0 4px 20px rgba(0,0,0,0.4)",
               }}
             >
-              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+              <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
             </div>
-            {title && <p className="mt-4 text-white font-medium text-center px-4 opacity-90">{title}</p>}
-            <p className="mt-2 text-white/70 text-xs flex items-center gap-1">
-              <ExternalLink className="w-3 h-3" />
+            {title && (
+              <p className="mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 opacity-90 text-sm sm:text-base">
+                {title}
+              </p>
+            )}
+            <p className="mt-1 sm:mt-2 text-white/70 text-[10px] sm:text-xs flex items-center gap-1">
+              <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               Opens in TikTok
             </p>
           </button>
 
           {/* Platform badge */}
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm bg-black/70">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white/90 backdrop-blur-sm bg-black/70">
             TikTok
           </div>
         </>
@@ -234,24 +246,28 @@ export function VideoPreview({
             ))}
           </div>
           <div
-            className="z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+            className="z-10 w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
             style={{ backgroundColor: RALLY_BLUE }}
           >
-            <Play className="w-8 h-8 text-white ml-1" fill="white" />
+            <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white ml-0.5 sm:ml-1" fill="white" />
           </div>
-          {title && <p className="z-10 mt-4 text-white font-medium text-center px-4 opacity-80">{title}</p>}
+          {title && (
+            <p className="z-10 mt-3 sm:mt-4 text-white font-medium text-center px-3 sm:px-4 opacity-80 text-sm sm:text-base">
+              {title}
+            </p>
+          )}
         </button>
       )}
 
       {/* Corner accents */}
       <div
-        className="absolute top-0 left-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        className="absolute top-0 left-0 w-10 h-10 sm:w-16 sm:h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
           background: `linear-gradient(135deg, ${RALLY_BLUE}30 0%, transparent 50%)`,
         }}
       />
       <div
-        className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        className="absolute bottom-0 right-0 w-10 h-10 sm:w-16 sm:h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
           background: `linear-gradient(-45deg, ${RED_STITCH}30 0%, transparent 50%)`,
         }}

@@ -927,6 +927,7 @@ function SpeakingSection() {
         </RevealOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          {/* National Academies card - image on top, content below */}
           <RevealOnScroll variant="swing" delay={100} duration={900}>
             <a
               href="https://www.nationalacademies.org/projects/HMD-HSP-23-21/event/41351#sectionEventPublications"
@@ -935,172 +936,124 @@ function SpeakingSection() {
               className="block h-full group perspective-container"
             >
               <div
-                className="h-full p-6 sm:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col tilt-card glow-border group-hover:bg-[#005EB8] group-hover:border-transparent"
+                className="h-full rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col tilt-card glow-border"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
-                {/* Shimmer overlay */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-shimmer" />
+                {/* National Academies Workshop Image */}
+                <div className="relative w-full aspect-[16/9] shrink-0 overflow-hidden">
+                  <img
+                    src="/images/national-20academies-20image.jpg"
+                    alt="National Academies Workshop - Exploring the Bidirectional Relationship Between AI and Neuroscience"
+                    className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
 
-                {/* Header section */}
-                <div className="relative z-10 flex flex-col justify-start">
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
-                      style={{ backgroundColor: `${RALLY_BLUE}10` }}
+                {/* Content section */}
+                <div className="flex-1 p-6 flex flex-col">
+                  {/* Header with title and badge */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-all duration-300">
+                      National Academies Workshop
+                    </h3>
+                    <span
+                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300"
+                      style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
                     >
-                      <Presentation
-                        size={28}
-                        style={{ color: RALLY_BLUE }}
-                        className="transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-1 flex-wrap">
-                        <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                          National Academies Workshop
-                        </h3>
-                        <span
-                          className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                          style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
-                        >
-                          Invited Speaker
-                        </span>
-                        <ArrowRight
-                          size={20}
-                          className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
-                          style={{ color: RALLY_BLUE }}
-                        />
-                      </div>
-                    </div>
+                      Invited Speaker
+                    </span>
+                    <ArrowRight
+                      size={20}
+                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 ml-auto"
+                      style={{ color: RALLY_BLUE }}
+                    />
                   </div>
-                </div>
 
-                {/* Subtitle - increased spacing with mt-6 */}
-                <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-6 relative z-10">
-                  AI and Neuroscience
-                </p>
+                  {/* Subtitle */}
+                  <p className="text-lg text-foreground/80 transition-colors duration-300 mt-4">AI and Neuroscience</p>
 
-                {/* Description section - increased spacing with mt-4 */}
-                <div className="relative z-10 flex-1 mt-4 overflow-hidden">
-                  <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
+                  {/* Description */}
+                  <p className="text-sm sm:text-base text-muted-foreground mt-3 flex-1">
                     Bidirectional Relationship Between AI and Neuroscience. October 2024 workshop exploring how advances
                     in AI and neuroscience inform each other.
                   </p>
-                </div>
 
-                {/* Footer section */}
-                <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                  <span
-                    className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
-                    style={{ color: RALLY_BLUE }}
-                  >
-                    View workshop
-                    <ExternalLink
-                      size={14}
-                      className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125"
-                    />
-                  </span>
-                </div>
-
-                {/* Shimmer sweep effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
-                  <div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
-                    style={{ width: "50%" }}
-                  />
+                  {/* Footer link */}
+                  <div className="mt-auto pt-4 border-t border-border/50 transition-colors duration-300">
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all duration-300"
+                      style={{ color: RALLY_BLUE }}
+                    >
+                      View workshop
+                      <ExternalLink size={14} className="transition-all duration-500 group-hover:translate-x-1" />
+                    </span>
+                  </div>
                 </div>
               </div>
             </a>
           </RevealOnScroll>
 
           <RevealOnScroll variant="swing" delay={200} duration={900}>
-            <div className="h-full group perspective-container">
+            <a
+              href="https://www.mensafoundation.org/insights/mensa-research-journal/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block h-full group perspective-container"
+            >
               <div
-                className="h-full rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 min-h-[280px] flex flex-col sm:flex-row tilt-card glow-border group-hover:bg-[#DC2626] group-hover:border-transparent"
+                className="h-full rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col tilt-card glow-border"
                 style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
               >
-                {/* Shimmer overlay */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-shimmer" />
-                </div>
-
                 {/* MRJ Cover Image */}
-                <div className="relative sm:w-[180px] h-[200px] sm:h-auto shrink-0 overflow-hidden">
+                <div className="relative w-full aspect-[16/9] shrink-0 overflow-hidden">
                   <img
                     src="/images/mrj-summer-2025.jpg"
                     alt="Mensa Research Journal Summer 2025 - Human Intelligence in the Age of AI"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Gradient fade on right edge */}
-                  <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white to-transparent group-hover:from-[#DC2626] transition-all duration-500" />
                 </div>
 
                 {/* Content section */}
-                <div className="flex-1 p-6 sm:p-8 flex flex-col">
-                  {/* Header section */}
-                  <div className="relative z-10 flex flex-col justify-start">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1 flex-wrap">
-                          <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                            Mensa Research Journal
-                          </h3>
-                          <span
-                            className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                            style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
-                          >
-                            Guest Editor
-                          </span>
-                          <ArrowRight
-                            size={20}
-                            className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
-                            style={{ color: RED_STITCH }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                <div className="flex-1 p-6 flex flex-col">
+                  {/* Header with title and badge */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-all duration-300">
+                      Mensa Research Journal
+                    </h3>
+                    <span
+                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300"
+                      style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
+                    >
+                      Guest Editor
+                    </span>
+                    <ArrowRight
+                      size={20}
+                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 ml-auto"
+                      style={{ color: RED_STITCH }}
+                    />
                   </div>
 
                   {/* Subtitle */}
-                  <p className="text-lg text-foreground/80 group-hover:text-white/90 transition-colors duration-300 mt-4 relative z-10">
-                    Summer 2025 Edition
+                  <p className="text-lg text-foreground/80 transition-colors duration-300 mt-4">Summer 2025 Edition</p>
+
+                  {/* Description */}
+                  <p className="text-sm sm:text-base text-muted-foreground mt-3 flex-1">
+                    Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
+                    technology, and human potential.
                   </p>
 
-                  {/* Description section */}
-                  <div className="relative z-10 flex-1 mt-3 overflow-hidden">
-                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
-                      Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
-                      technology, and human potential.
-                    </p>
-                  </div>
-
-                  {/* Footer section */}
-                  <div className="relative z-10 mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                    <a
-                      href="https://www.mensafoundation.org/insights/mensa-research-journal/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:text-white transition-all duration-300"
+                  {/* Footer link */}
+                  <div className="mt-auto pt-4 border-t border-border/50 transition-colors duration-300">
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all duration-300"
                       style={{ color: RED_STITCH }}
                     >
                       Read Journal
-                      <ExternalLink size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-                    </a>
+                      <ExternalLink size={14} className="transition-all duration-500 group-hover:translate-x-1" />
+                    </span>
                   </div>
                 </div>
-
-                {/* Sheen sweep effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
-                  <div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
-                    style={{ width: "50%" }}
-                  />
-                </div>
               </div>
-            </div>
+            </a>
           </RevealOnScroll>
         </div>
       </div>

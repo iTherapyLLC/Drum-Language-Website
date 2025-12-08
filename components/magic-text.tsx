@@ -12,16 +12,16 @@ interface MagicTextProps {
   children: string
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span"
   className?: string
-  baseColor?: "dark" | "light"
+  variant?: "light" | "dark"
 }
 
-export function MagicText({ children, as: Component = "span", className = "", baseColor = "dark" }: MagicTextProps) {
+export function MagicText({ children, as: Component = "span", className = "", variant = "light" }: MagicTextProps) {
   const containerRef = useRef<HTMLElement>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [isHovering, setIsHovering] = useState(false)
   const words = children.split(" ")
 
-  const textColor = baseColor === "light" ? WHITE : FOREGROUND
+  const textColor = variant === "light" ? FOREGROUND : WHITE
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -104,13 +104,13 @@ export function MagicText({ children, as: Component = "span", className = "", ba
 }
 
 // Enhanced version with more dramatic reading-assist effect
-export function MagicHeading({ children, as: Component = "h2", className = "", baseColor = "dark" }: MagicTextProps) {
+export function MagicHeading({ children, as: Component = "h2", className = "", variant = "light" }: MagicTextProps) {
   const containerRef = useRef<HTMLElement>(null)
   const [activeRange, setActiveRange] = useState<[number, number]>([-1, -1])
   const words = children.split(" ")
   const characters = children.split("")
 
-  const textColor = baseColor === "light" ? WHITE : FOREGROUND
+  const textColor = variant === "light" ? FOREGROUND : WHITE
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -231,12 +231,12 @@ export function MagicHeading({ children, as: Component = "h2", className = "", b
 export function MagicParagraph({
   children,
   className = "",
-  baseColor = "dark",
-}: { children: string; className?: string; baseColor?: "dark" | "light" }) {
+  variant = "light",
+}: { children: string; className?: string; variant?: "light" | "dark" }) {
   const containerRef = useRef<HTMLParagraphElement>(null)
   const words = children.split(" ")
 
-  const textColor = baseColor === "light" ? WHITE : FOREGROUND
+  const textColor = variant === "light" ? FOREGROUND : WHITE
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {

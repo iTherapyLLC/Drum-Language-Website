@@ -30,11 +30,13 @@ function InteractiveCard({
   className = "",
   glowColor = "#005EB8",
   delay = 0,
+  featured = false,
 }: {
   children: React.ReactNode
   className?: string
   glowColor?: string
   delay?: number
+  featured?: boolean
 }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -46,10 +48,12 @@ function InteractiveCard({
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
 
-    const rotateX = (y - 0.5) * -8
-    const rotateY = (x - 0.5) * 8
+    const tiltMultiplier = featured ? 10 : 8
+    const scaleAmount = featured ? 1.04 : 1.02
+    const rotateX = (y - 0.5) * -tiltMultiplier
+    const rotateY = (x - 0.5) * tiltMultiplier
 
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scaleAmount})`
     setGlowPosition({ x: x * 100, y: y * 100 })
   }
 
@@ -67,7 +71,8 @@ function InteractiveCard({
     const x = (touch.clientX - rect.left) / rect.width
     const y = (touch.clientY - rect.top) / rect.height
     setGlowPosition({ x: x * 100, y: y * 100 })
-    cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(1.02)`
+    const scaleAmount = featured ? 1.04 : 1.02
+    cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(${scaleAmount})`
   }
 
   const handleTouchEnd = () => {
@@ -83,10 +88,10 @@ function InteractiveCard({
   return (
     <div
       ref={cardRef}
-      className={`relative transition-all duration-300 ease-out ${className}`}
+      className={`relative transition-all duration-500 ease-out cursor-pointer ${className}`}
       style={{
         transformStyle: "preserve-3d",
-        transitionDelay: `${delay}ms`,
+        animationDelay: `${delay}ms`,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
@@ -94,28 +99,51 @@ function InteractiveCard({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Glow effect */}
+      {featured && (
+        <div
+          className="absolute -inset-[3px] rounded-2xl opacity-0 transition-opacity duration-500 -z-10"
+          style={{
+            opacity: isHovered ? 1 : 0,
+            background: `linear-gradient(135deg, ${glowColor}, ${glowColor}66, ${glowColor})`,
+            filter: "blur(8px)",
+          }}
+        />
+      )}
+
+      {featured && isHovered && (
+        <div
+          className="absolute -inset-[2px] rounded-2xl -z-10 transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, ${glowColor} 0%, transparent 60%)`,
+            opacity: 0.8,
+          }}
+        />
+      )}
+
       <div
-        className="absolute -inset-2 rounded-3xl pointer-events-none transition-opacity duration-500 blur-xl -z-10"
+        className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 pointer-events-none"
         style={{
-          opacity: isHovered ? 0.6 : 0,
-          background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, ${glowColor}50 0%, transparent 60%)`,
+          opacity: isHovered ? (featured ? 0.4 : 0.2) : 0,
+          background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, ${glowColor}40 0%, transparent 60%)`,
         }}
       />
-      {/* Sheen effect */}
+
       <div
-        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 overflow-hidden"
-        style={{ opacity: isHovered ? 1 : 0 }}
+        className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 pointer-events-none overflow-hidden"
+        style={{
+          opacity: isHovered ? (featured ? 0.25 : 0.15) : 0,
+        }}
       >
         <div
-          className="absolute inset-0"
+          className="absolute w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2"
           style={{
-            background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)`,
-            transform: `translateX(${isHovered ? "100%" : "-100%"})`,
-            transition: "transform 0.6s ease-out",
+            left: `${glowPosition.x}%`,
+            top: `${glowPosition.y}%`,
+            background: `conic-gradient(from 0deg, transparent 0deg, ${glowColor}20 60deg, ${glowColor}40 120deg, transparent 180deg)`,
           }}
         />
       </div>
+
       {children}
     </div>
   )
@@ -166,7 +194,6 @@ export function HarmonizedLearningSection() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative bg-gradient-to-br from-[#0a0a0a] to-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-            {/* Decorative background */}
             <div className="absolute inset-0 opacity-20">
               <div
                 className="absolute inset-0"
@@ -177,7 +204,6 @@ export function HarmonizedLearningSection() {
             </div>
 
             <div className="relative p-4">
-              {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div
@@ -202,7 +228,6 @@ export function HarmonizedLearningSection() {
                 </button>
               </div>
 
-              {/* Google Drive embedded player */}
               <div className="relative rounded-xl overflow-hidden bg-black/50 mb-3">
                 <iframe
                   src={PODCAST_URL}
@@ -212,12 +237,10 @@ export function HarmonizedLearningSection() {
                 />
               </div>
 
-              {/* Description */}
               <p className="text-xs text-white/60 text-center mb-3">
                 AI-generated deep dive into human potential in the age of artificial intelligence
               </p>
 
-              {/* Open in new tab option */}
               <a
                 href="https://drive.google.com/file/d/1I4dROvOMANKDcNr-LcpA2mF8cTwgZ6UN/view"
                 target="_blank"
@@ -233,7 +256,6 @@ export function HarmonizedLearningSection() {
         </div>
       )}
 
-      {/* Expanded overlay - covers summary text but leaves room for docent */}
       {isExpanded && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm animate-in fade-in duration-300">
           <button
@@ -297,7 +319,6 @@ export function HarmonizedLearningSection() {
         />
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          {/* Section Header */}
           <RevealOnScroll variant="blur-scale" duration={800}>
             <div className="mb-10 sm:mb-12 text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm mb-6 hover:bg-white/15 transition-colors duration-300 cursor-default">
@@ -305,7 +326,7 @@ export function HarmonizedLearningSection() {
                 <span className="text-white/80 text-sm font-medium">Mensa Foundation Presentation</span>
               </div>
               <h2 className="text-2xl sm:text-4xl font-bold mb-4 text-white">
-                <MagicHeading as="span" className="text-2xl sm:text-4xl font-bold text-white">
+                <MagicHeading as="span" className="text-2xl sm:text-4xl font-bold text-white" variant="dark">
                   Harmonized Learning
                 </MagicHeading>
               </h2>
@@ -335,7 +356,6 @@ export function HarmonizedLearningSection() {
             </div>
           </RevealOnScroll>
 
-          {/* Gamma Embed - Full width */}
           <RevealOnScroll variant="blur-scale" delay={100} duration={800}>
             <div
               className="relative rounded-2xl overflow-hidden bg-black/50 border border-white/10 shadow-2xl transition-all duration-500 hover:border-white/20 hover:shadow-[#005EB8]/10 mb-10"
@@ -344,7 +364,6 @@ export function HarmonizedLearningSection() {
               onTouchStart={() => setIsHoveringEmbed(true)}
               onTouchEnd={() => setTimeout(() => setIsHoveringEmbed(false), 1500)}
             >
-              {/* Clean header bar */}
               <div className="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   <div
@@ -373,7 +392,6 @@ export function HarmonizedLearningSection() {
                 </button>
               </div>
 
-              {/* Gamma iframe - wider aspect ratio for horizontal layout */}
               <div className="relative aspect-[16/9] group/iframe">
                 <iframe
                   ref={iframeRef}
@@ -383,7 +401,6 @@ export function HarmonizedLearningSection() {
                   allow="fullscreen"
                   title="Harmonized Learning - Mensa Foundation Presentation"
                 />
-                {/* Play hint overlay on hover */}
                 <div
                   className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none transition-opacity duration-500"
                   style={{ opacity: isHoveringEmbed ? 0 : 0 }}
@@ -394,7 +411,6 @@ export function HarmonizedLearningSection() {
                 </div>
               </div>
 
-              {/* Footer with keyboard hints */}
               <div className="px-4 py-3 bg-white/5 border-t border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
@@ -408,9 +424,7 @@ export function HarmonizedLearningSection() {
             </div>
           </RevealOnScroll>
 
-          {/* Cards Grid - replace static divs with InteractiveCard */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            {/* Central Question card */}
             <RevealOnScroll variant="slide-up" delay={200} duration={600}>
               <InteractiveCard className="h-full" glowColor={RALLY_BLUE} delay={0}>
                 <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500">
@@ -434,7 +448,6 @@ export function HarmonizedLearningSection() {
               </InteractiveCard>
             </RevealOnScroll>
 
-            {/* Five Movements card */}
             <RevealOnScroll variant="slide-up" delay={300} duration={600}>
               <InteractiveCard className="h-full" glowColor={RED_STITCH} delay={100}>
                 <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500">
@@ -487,7 +500,6 @@ export function HarmonizedLearningSection() {
               </InteractiveCard>
             </RevealOnScroll>
 
-            {/* Ask the Docent card */}
             <RevealOnScroll variant="slide-up" delay={400} duration={600}>
               <InteractiveCard className="h-full cursor-pointer" glowColor={RALLY_BLUE} delay={200}>
                 <div className="group h-full bg-gradient-to-br from-[#005EB8]/10 to-transparent backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-[#005EB8]/20 hover:border-[#005EB8]/40 hover:from-[#005EB8]/15 transition-all duration-500">
@@ -519,16 +531,15 @@ export function HarmonizedLearningSection() {
             </RevealOnScroll>
           </div>
 
-          {/* Key Insight Callout */}
           <RevealOnScroll variant="blur-scale" delay={500} duration={600}>
-            <InteractiveCard className="mt-10" glowColor={RED_STITCH} delay={300}>
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-white/20 transition-all duration-500">
+            <InteractiveCard className="mt-10" glowColor={RED_STITCH} delay={300} featured>
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-red-500/40 transition-all duration-500">
                 <div className="flex items-start gap-4">
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 hover:scale-110 hover:rotate-3"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 hover:scale-110 hover:rotate-3"
                     style={{ backgroundColor: `${RED_STITCH}15` }}
                   >
-                    <Sparkles className="w-6 h-6" style={{ color: RED_STITCH }} />
+                    <Sparkles className="w-6 h-6 transition-all duration-300" style={{ color: RED_STITCH }} />
                   </div>
                   <div>
                     <h4 className="text-white font-semibold mb-2">Key Insight</h4>

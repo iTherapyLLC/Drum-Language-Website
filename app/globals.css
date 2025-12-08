@@ -658,6 +658,74 @@
   animation: border-trace 3s ease infinite;
 }
 
+/* Special kaleidoscope-framed image for important sections */
+.kaleidoscope-frame {
+  position: relative;
+  z-index: 1;
+}
+
+.kaleidoscope-frame::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 1rem;
+  background: conic-gradient(from 0deg, var(--rally-blue), #1e3a5f, var(--rally-blue), #1e3a5f, var(--rally-blue));
+  background-size: 100% 100%;
+  opacity: 0.7;
+  z-index: -1;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: kaleidoscope-rotate 20s linear infinite;
+}
+
+.kaleidoscope-frame::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 1.25rem;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 94, 184, 0.15) 80%,
+    rgba(0, 94, 184, 0.3) 100%
+  );
+  opacity: 0;
+  z-index: -2;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: blur(8px);
+}
+
+.kaleidoscope-frame:hover::before {
+  inset: -6px;
+  opacity: 1;
+  background: conic-gradient(
+    from 0deg,
+    var(--rally-blue),
+    var(--red-stitch),
+    var(--rally-blue),
+    #1e3a5f,
+    var(--rally-blue),
+    var(--red-stitch),
+    var(--rally-blue)
+  );
+  animation: kaleidoscope-rotate 8s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 94, 184, 0.4), 0 0 40px rgba(0, 94, 184, 0.2), inset 0 0 20px rgba(0, 94, 184, 0.1);
+}
+
+.kaleidoscope-frame:hover::after {
+  opacity: 1;
+  inset: -16px;
+  filter: blur(12px);
+}
+
+@keyframes kaleidoscope-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Magnetic button effect */
 .magnetic-btn {
   transition: transform 0.2s cubic-bezier(0.03, 0.98, 0.52, 0.99);

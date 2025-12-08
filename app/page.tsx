@@ -296,7 +296,6 @@ const skiingPrinciples = [
     title: "Think Sharp",
   },
 ]
-// </CHANGE>
 
 const instagramVideos = [
   {
@@ -927,7 +926,9 @@ function SpeakingSection() {
       <SpiralKaleidoscope opacity={0.06} className="z-0" />
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <RevealOnScroll variant="flip-up" duration={800}>
-          <h2 className="text-4xl font-bold mb-12 text-foreground">Speaking & Writing</h2>
+          <MagicHeading as="h2" className="text-4xl font-bold mb-12" variant="light">
+            Speaking & Writing
+          </MagicHeading>
         </RevealOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
@@ -1009,7 +1010,7 @@ function SpeakingSection() {
                   </span>
                 </div>
 
-                {/* Sheen sweep effect */}
+                {/* Shimmer sweep effect */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
                   <div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
@@ -1394,18 +1395,20 @@ function BJJSection() {
     },
   ]
 
+  // Updated prompt hierarchy
   const promptHierarchy = [
-    { level: "Full Physical", desc: "Hand-over-hand guidance through technique" },
-    { level: "Partial Physical", desc: "Light touch to initiate movement" },
-    { level: "Gestural", desc: "Pointing or demonstrating direction" },
+    { level: "Full Physical", desc: "Hand-over-hand guidance through the entire technique" },
+    { level: "Partial Physical", desc: "Light touch to initiate or shape part of the movement" },
+    { level: "Visual / Modeling", desc: "Demonstrating the movement without words" },
     { level: "Direct Verbal", desc: "Explicit verbal instruction" },
     { level: "Indirect Verbal", desc: "Questions that guide discovery" },
-    { level: "Visual", desc: "Modeling without words" },
+    { level: "Gestural", desc: "Pointing or indicating direction" },
+    { level: "Independent", desc: "Performing the skill without any prompts" },
   ]
 
   return (
     <section id="bjj" className="py-24 px-6 bg-black text-white relative overflow-hidden transition-all duration-500">
-      <SpiralKaleidoscope opacity={0.06} className="z-0 invert" />
+      <SpiralKaleidoscope opacity={0.15} variant="dark" className="z-0" />
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header */}
         <RevealOnScroll variant="blur-scale" duration={900}>
@@ -1420,45 +1423,30 @@ function BJJSection() {
               </MagicHeading>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Ten years of study. Monthly drives from Napa to Brentwood. A practice in persistence, pedagogy, and human
-              connection.
+              Ten years. When distance made weekly training impossible, I shifted to what was sustainable. Skill development is more about maintaining connection through some form of consistency than maintaining high frequency, especially when circumstances change.
             </p>
           </div>
         </RevealOnScroll>
 
-        {/* Hero photos - side by side, equal prominence */}
-        <RevealOnScroll variant="swing" delay={100} duration={900}>
-          <div className="grid md:grid-cols-2 gap-6 mb-16">
-            {/* Crosley photo */}
-            <div className="group relative">
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-                <img
-                  src="/images/blue-20belt-20graduation-20crosley.jpg"
-                  alt="Matthew receiving blue belt from Crosley Gracie"
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p className="text-white/60 text-sm uppercase tracking-wider mb-1">Lineage</p>
-                  <p className="text-white text-xl font-semibold mb-1">Crosley Gracie</p>
-                  <p className="text-gray-400 text-sm">Academy founder and direct Gracie lineage holder</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Ryan photo */}
-            <div className="group relative">
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-                <img
-                  src="/images/blue-20belt-20graduation-20ryan.jpg"
-                  alt="Matthew with instructor Ryan at blue belt graduation"
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p className="text-white/60 text-sm uppercase tracking-wider mb-1">Primary Instructor</p>
-                  <p className="text-white text-xl font-semibold mb-1">Ryan Murphy</p>
-                  <p className="text-gray-400 text-sm">Ten years of guidance, pedagogy, and friendship</p>
+        {/* Hero photos - Replace two photos with single centered anime image */}
+        <RevealOnScroll variant="curtain" delay={100} duration={900}>
+          <div className="flex justify-center mb-16">
+            <div className="group relative max-w-lg cursor-pointer">
+              <div className="kaleidoscope-frame rounded-2xl overflow-hidden aspect-[4/3] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:shadow-2xl">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                  <img
+                    src="/images/bjj-promotion-anime.jpg"
+                    alt="Matthew receiving blue belt - anime style illustration"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-t from-[#005EB8]/20 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-center transform transition-transform duration-500 group-hover:translate-y-[-4px]">
+                    <p className="text-white text-xl font-semibold mb-1">Crosley Gracie Jiu-Jitsu</p>
+                    <p className="text-gray-400 text-sm transition-colors duration-500 group-hover:text-gray-300">
+                      Ten years of study under Ryan Murphy
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1788,10 +1776,14 @@ export default function PortfolioPage() {
               style={{ textShadow: "0 2px 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.7)" }}
             >
               <span className="block">
-                <MagicHeading as="span">Matthew</MagicHeading>
+                <MagicHeading as="span" variant="light">
+                  Matthew
+                </MagicHeading>
               </span>
               <span className="block mt-1 sm:mt-2">
-                <MagicHeading as="span">Guggemos</MagicHeading>
+                <MagicHeading as="span" variant="light">
+                  Guggemos
+                </MagicHeading>
               </span>
             </h1>
           </div>

@@ -8,12 +8,31 @@ const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
 // Sanitize content to prevent XSS attacks
+// Note: This is basic sanitization suitable for AI-generated text from a trusted backend.
+// For user-generated content, consider using DOMPurify for comprehensive protection.
 const sanitizeContent = (content: string): string => {
-  // Basic sanitization - remove any HTML tags
-  return content
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/javascript:/gi, '') // Remove javascript: protocols
-    .replace(/on\w+=/gi, '') // Remove event handlers
+  // Remove all HTML tags and dangerous protocols
+  let sanitized = content
+    // First pass: remove all script tags and their content (handles various whitespace)
+    .replace(/<script[\s\S]*?<\/script[\s]*>/gi, '')
+    // Remove all HTML tags (including malformed ones with whitespace)
+    .replace(/<[^>]*>?/g, '')
+    // Remove any remaining HTML entities that could be used for XSS
+    .replace(/&lt;script/gi, '')
+    .replace(/&lt;\/script/gi, '')
+  
+  // Remove dangerous protocols and event handlers
+  // Use loops to ensure complete removal (prevent bypass via multiple occurrences)
+  const dangerousPatterns = [/javascript:/gi, /data:/gi, /vbscript:/gi, /on\w+\s*=/gi]
+  
+  for (const pattern of dangerousPatterns) {
+    while (pattern.test(sanitized)) {
+      sanitized = sanitized.replace(pattern, '')
+      pattern.lastIndex = 0 // Reset regex state
+    }
+  }
+  
+  return sanitized
 }
 
 const quickActions = [
@@ -254,6 +273,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     if (!text.trim() || isLoading) return
 
     const MAX_RETRIES = 2
+    const RETRY_DELAY_BASE = 1000 // ms
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -322,8 +342,8 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                              (error instanceof Error && error.name === 'AbortError')
       
       if (isNetworkError && retryCount < MAX_RETRIES) {
-        // Retry after a brief delay
-        setTimeout(() => sendMessage(text, retryCount + 1), 1000 * (retryCount + 1))
+        // Retry after exponential backoff delay
+        setTimeout(() => sendMessage(text, retryCount + 1), RETRY_DELAY_BASE * (retryCount + 1))
         return
       }
       

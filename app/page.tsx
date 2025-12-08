@@ -28,6 +28,9 @@ import {
   Award,
   DollarSign,
   Star,
+  MessageSquare,
+  Sparkles,
+  Lightbulb,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -309,8 +312,9 @@ const navItems = [
   { label: "Speaking", section: "speaking" },
   { label: "Philosophy", section: "philosophy" },
   { label: "Skiing", section: "skiing" },
+  { label: "BJJ", section: "bjj" },
   { label: "Credentials", section: "credentials" },
-  { label: "Contact", section: "contact" }, // Added Contact nav item
+  { label: "Contact", section: "contact" },
 ]
 
 function ProjectCard({
@@ -1362,6 +1366,254 @@ function SkiingSection() {
   )
 }
 
+function BJJSection() {
+  const domains = [
+    {
+      domain: "Language",
+      content: "Words & meanings",
+      form: "Grammar & syntax",
+      use: "Conversation",
+      icon: MessageSquare,
+      color: RALLY_BLUE,
+    },
+    {
+      domain: "Jazz",
+      content: "Scales & chords",
+      form: "Song structures",
+      use: "Improvisation",
+      icon: Music,
+      color: RED_STITCH,
+    },
+    {
+      domain: "BJJ",
+      content: "Techniques",
+      form: "Combinations",
+      use: "Rolling",
+      icon: Shield,
+      color: "#10B981",
+    },
+  ]
+
+  const promptHierarchy = [
+    { level: "Full Physical", desc: "Hand-over-hand guidance through technique" },
+    { level: "Partial Physical", desc: "Light touch to initiate movement" },
+    { level: "Gestural", desc: "Pointing or demonstrating direction" },
+    { level: "Direct Verbal", desc: "Explicit verbal instruction" },
+    { level: "Indirect Verbal", desc: "Questions that guide discovery" },
+    { level: "Visual", desc: "Modeling without words" },
+  ]
+
+  return (
+    <section id="bjj" className="py-24 px-6 bg-black text-white relative overflow-hidden transition-all duration-500">
+      <SpiralKaleidoscope opacity={0.06} className="z-0 invert" />
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* Header */}
+        <RevealOnScroll variant="blur-scale" duration={900}>
+          <div className="mb-16 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <Shield size={16} style={{ color: RALLY_BLUE }} />
+              <span className="text-sm text-gray-400 tracking-wide uppercase">A Decade on the Mat</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              <MagicHeading as="span" className="text-4xl sm:text-5xl font-bold text-white">
+                The Language of Movement
+              </MagicHeading>
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Ten years of study. Monthly drives from Napa to Brentwood. A practice in persistence, pedagogy, and human
+              connection.
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        {/* Hero photos - side by side, equal prominence */}
+        <RevealOnScroll variant="swing" delay={100} duration={900}>
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            {/* Crosley photo */}
+            <div className="group relative">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
+                <img
+                  src="/images/blue-20belt-20graduation-20crosley.jpg"
+                  alt="Matthew receiving blue belt from Crosley Gracie"
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="text-white/60 text-sm uppercase tracking-wider mb-1">Lineage</p>
+                  <p className="text-white text-xl font-semibold mb-1">Crosley Gracie</p>
+                  <p className="text-gray-400 text-sm">Academy founder and direct Gracie lineage holder</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Ryan photo */}
+            <div className="group relative">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
+                <img
+                  src="/images/blue-20belt-20graduation-20ryan.jpg"
+                  alt="Matthew with instructor Ryan at blue belt graduation"
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="text-white/60 text-sm uppercase tracking-wider mb-1">Primary Instructor</p>
+                  <p className="text-white text-xl font-semibold mb-1">Ryan Murphy</p>
+                  <p className="text-gray-400 text-sm">Ten years of guidance, pedagogy, and friendship</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* Journey stats */}
+        <RevealOnScroll variant="curtain" delay={150} duration={900}>
+          <div className="grid grid-cols-3 gap-4 mb-16 max-w-2xl mx-auto">
+            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
+              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
+                10
+              </p>
+              <p className="text-gray-500 text-sm mt-1">Years Training</p>
+            </div>
+            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
+              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
+                5+
+              </p>
+              <p className="text-gray-500 text-sm mt-1">Years Commuting</p>
+            </div>
+            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
+              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
+                90%
+              </p>
+              <p className="text-gray-500 text-sm mt-1">Quit Rate</p>
+            </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* Philosophy content - two columns */}
+        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+          {/* Left: The philosophy */}
+          <RevealOnScroll variant="slide-up" delay={200} duration={900}>
+            <div className="space-y-6">
+              <h3 className="text-2xl font-semibold text-white">The Language of Movement</h3>
+              <p className="text-gray-300 leading-relaxed">
+                BJJ is physical problem-solving against a resisting opponent. Someone is trying to control you, submit
+                you, take away your options. You are doing the same to them. The learning happens in that exchange. Your
+                development comes through confronting what scares you, repeatedly, with increasing competence.
+              </p>
+              <blockquote
+                className="text-xl font-serif italic text-gray-400 border-l-4 pl-6 py-2"
+                style={{ borderColor: RALLY_BLUE }}
+              >
+                "Learning Brazilian Jiu-Jitsu follows the same framework as learning language."
+              </blockquote>
+              <p className="text-gray-300 leading-relaxed">
+                The Bloom-Lahey model describes language through content, form, and use. BJJ works identically. Content
+                is vocabulary: hip escapes, guard passes, kimuras. Form is grammar: how techniques chain together. Use
+                is conversation: reading your partner, responding in real time.
+              </p>
+            </div>
+          </RevealOnScroll>
+
+          {/* Right: Prompt hierarchy - the SLP connection */}
+          <RevealOnScroll variant="slide-up" delay={300} duration={900}>
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: `${RALLY_BLUE}20` }}
+                >
+                  <Lightbulb size={20} style={{ color: RALLY_BLUE }} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-white">The Prompt Hierarchy</h4>
+                  <p className="text-gray-500 text-sm">Where speech therapy meets martial arts</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+                Working with Ryan, we discuss pedagogy and teaching theory. The prompt hierarchy is essential to BJJ
+                education at Crosley's gym, the same hierarchy used in speech-language pathology.
+              </p>
+              <div className="space-y-3">
+                {promptHierarchy.map((p, i) => (
+                  <div key={p.level} className="flex items-start gap-3 group">
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 mt-0.5 transition-colors"
+                      style={{
+                        background: `${RALLY_BLUE}${20 + i * 10}`,
+                        color: i > 2 ? RALLY_BLUE : "white",
+                      }}
+                    >
+                      {i + 1}
+                    </div>
+                    <div>
+                      <p className="text-white text-sm font-medium">{p.level}</p>
+                      <p className="text-gray-500 text-xs">{p.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </RevealOnScroll>
+        </div>
+
+        {/* Bloom-Lahey Framework Cards */}
+        <RevealOnScroll variant="wave" delay={400} duration={900}>
+          <div>
+            <h3 className="text-xl font-semibold text-center mb-8 text-white">
+              The Bloom-Lahey Framework Across Domains
+            </h3>
+            <div className="grid sm:grid-cols-3 gap-6">
+              {domains.map((d) => (
+                <div
+                  key={d.domain}
+                  className="group bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <d.icon size={24} style={{ color: d.color }} />
+                    <h4 className="font-semibold text-white">{d.domain}</h4>
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Content</span>
+                      <span className="text-gray-300">{d.content}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Form</span>
+                      <span className="text-gray-300">{d.form}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Use</span>
+                      <span className="text-gray-300">{d.use}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* Key insight - the improvisation principle */}
+        <RevealOnScroll variant="flip-up" delay={500} duration={900}>
+          <div className="mt-16 text-center">
+            <div className="inline-block bg-gradient-to-r from-[#005EB8]/10 to-[#10B981]/10 rounded-2xl p-8 border border-white/10 max-w-3xl">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles size={20} style={{ color: RED_STITCH }} />
+                <span className="text-sm text-gray-500 uppercase tracking-wider">The Improvisation Principle</span>
+              </div>
+              <p className="text-lg text-gray-300 leading-relaxed">
+                Jazz musicians work within chord changes, song forms, rhythmic structures. The constraints enable
+                creativity. BJJ operates identically. Training builds neural pathways that let the prefrontal cortex
+                maintain control under stress. You don't eliminate the stress response. You develop capacity to{" "}
+                <span className="text-white font-medium">think alongside it</span>.
+              </p>
+            </div>
+          </div>
+        </RevealOnScroll>
+      </div>
+    </section>
+  )
+}
+
 function ContactSection() {
   return (
     <section id="contact" className="py-20 px-6 bg-white relative overflow-hidden transition-all duration-500">
@@ -1836,6 +2088,8 @@ export default function PortfolioPage() {
       <PhilosophySection />
 
       <SkiingSection />
+
+      <BJJSection />
 
       {/* Credentials Section */}
       <section id="credentials" className="py-20 px-6 bg-gray-50 relative overflow-hidden transition-all duration-500">

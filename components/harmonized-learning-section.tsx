@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useRef, useEffect } from "react"
 import {
   Maximize2,
@@ -22,6 +24,102 @@ const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
 const PODCAST_URL = "https://drive.google.com/file/d/1I4dROvOMANKDcNr-LcpA2mF8cTwgZ6UN/preview"
+
+function InteractiveCard({
+  children,
+  className = "",
+  glowColor = "#005EB8",
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  glowColor?: string
+  delay?: number
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+
+    const rotateX = (y - 0.5) * -8
+    const rotateY = (x - 0.5) * 8
+
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+    setGlowPosition({ x: x * 100, y: y * 100 })
+  }
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return
+    cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+    setIsHovered(false)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!cardRef.current) return
+    setIsHovered(true)
+    const touch = e.touches[0]
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setGlowPosition({ x: x * 100, y: y * 100 })
+    cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(1.02)`
+  }
+
+  const handleTouchEnd = () => {
+    if (!cardRef.current) return
+    setTimeout(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+      }
+      setIsHovered(false)
+    }, 300)
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      className={`relative transition-all duration-300 ease-out ${className}`}
+      style={{
+        transformStyle: "preserve-3d",
+        transitionDelay: `${delay}ms`,
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Glow effect */}
+      <div
+        className="absolute -inset-2 rounded-3xl pointer-events-none transition-opacity duration-500 blur-xl -z-10"
+        style={{
+          opacity: isHovered ? 0.6 : 0,
+          background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, ${glowColor}50 0%, transparent 60%)`,
+        }}
+      />
+      {/* Sheen effect */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 overflow-hidden"
+        style={{ opacity: isHovered ? 1 : 0 }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)`,
+            transform: `translateX(${isHovered ? "100%" : "-100%"})`,
+            transition: "transform 0.6s ease-out",
+          }}
+        />
+      </div>
+      {children}
+    </div>
+  )
+}
 
 export function HarmonizedLearningSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -310,131 +408,140 @@ export function HarmonizedLearningSection() {
             </div>
           </RevealOnScroll>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Cards Grid - replace static divs with InteractiveCard */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             {/* Central Question card */}
             <RevealOnScroll variant="slide-up" delay={200} duration={600}>
-              <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-lg hover:shadow-[#005EB8]/5 hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
-                    style={{ backgroundColor: `${RALLY_BLUE}20` }}
-                  >
-                    <Brain className="w-5 h-5 transition-colors duration-300" style={{ color: RALLY_BLUE }} />
+              <InteractiveCard className="h-full" glowColor={RALLY_BLUE} delay={0}>
+                <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+                      style={{ backgroundColor: `${RALLY_BLUE}20` }}
+                    >
+                      <Brain className="w-5 h-5 transition-colors duration-300" style={{ color: RALLY_BLUE }} />
+                    </div>
+                    <h3 className="text-white font-semibold text-lg group-hover:text-white transition-colors">
+                      The Central Question
+                    </h3>
                   </div>
-                  <h3 className="text-white font-semibold text-lg group-hover:text-white transition-colors">
-                    The Central Question
-                  </h3>
+                  <p className="text-white/70 leading-relaxed text-sm sm:text-base italic group-hover:text-white/80 transition-colors duration-300">
+                    "What if our greatest intellectual asset in the age of AI is our unique ability to connect different
+                    ideas, sparking creativity and innovation on our own terms?"
+                  </p>
+                  <div className="mt-4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                 </div>
-                <p className="text-white/70 leading-relaxed text-sm sm:text-base italic group-hover:text-white/80 transition-colors duration-300">
-                  "What if our greatest intellectual asset in the age of AI is our unique ability to connect different
-                  ideas, sparking creativity and innovation on our own terms?"
-                </p>
-                <div className="mt-4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-              </div>
+              </InteractiveCard>
             </RevealOnScroll>
 
-            {/* Five Movements - horizontal list */}
+            {/* Five Movements card */}
             <RevealOnScroll variant="slide-up" delay={300} duration={600}>
-              <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-lg hover:shadow-[#DC2626]/5">
-                <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                  <Sparkles
-                    className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
-                    style={{ color: RED_STITCH }}
-                  />
-                  Five Movements
-                </h3>
-                <div className="space-y-1.5">
-                  {movements.map((movement, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 p-1.5 -mx-1.5 rounded-lg cursor-pointer transition-all duration-300 hover:bg-white/10"
-                      onMouseEnter={() => setActiveMovement(index)}
-                      onMouseLeave={() => setActiveMovement(null)}
-                      onTouchStart={() => setActiveMovement(index)}
-                      onTouchEnd={() => setTimeout(() => setActiveMovement(null), 1000)}
-                    >
-                      <span
-                        className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-mono transition-all duration-300 shrink-0"
-                        style={{
-                          backgroundColor: activeMovement === index ? `${RALLY_BLUE}30` : "transparent",
-                          color: activeMovement === index ? RALLY_BLUE : "rgba(255,255,255,0.4)",
-                        }}
+              <InteractiveCard className="h-full" glowColor={RED_STITCH} delay={100}>
+                <div className="group h-full bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-all duration-500">
+                  <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                    <Sparkles
+                      className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                      style={{ color: RED_STITCH }}
+                    />
+                    Five Movements
+                  </h3>
+                  <div className="space-y-1.5">
+                    {movements.map((movement, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 p-1.5 -mx-1.5 rounded-lg cursor-pointer transition-all duration-300 hover:bg-white/10"
+                        onMouseEnter={() => setActiveMovement(index)}
+                        onMouseLeave={() => setActiveMovement(null)}
+                        onTouchStart={() => setActiveMovement(index)}
+                        onTouchEnd={() => setTimeout(() => setActiveMovement(null), 1000)}
                       >
-                        {movement.num}
-                      </span>
-                      <span
-                        className="flex-1 text-xs transition-colors duration-300 leading-tight"
-                        style={{
-                          color: activeMovement === index ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
-                        }}
-                      >
-                        {movement.title}
-                      </span>
-                      <ChevronRight
-                        className="w-3 h-3 transition-all duration-300 shrink-0"
-                        style={{
-                          opacity: activeMovement === index ? 1 : 0,
-                          transform: activeMovement === index ? "translateX(0)" : "translateX(-4px)",
-                          color: RALLY_BLUE,
-                        }}
-                      />
-                    </div>
-                  ))}
+                        <span
+                          className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-mono transition-all duration-300 shrink-0"
+                          style={{
+                            backgroundColor: activeMovement === index ? `${RALLY_BLUE}30` : "transparent",
+                            color: activeMovement === index ? RALLY_BLUE : "rgba(255,255,255,0.4)",
+                          }}
+                        >
+                          {movement.num}
+                        </span>
+                        <span
+                          className="flex-1 text-xs transition-colors duration-300 leading-tight"
+                          style={{
+                            color: activeMovement === index ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
+                          }}
+                        >
+                          {movement.title}
+                        </span>
+                        <ChevronRight
+                          className="w-3 h-3 transition-all duration-300 shrink-0"
+                          style={{
+                            opacity: activeMovement === index ? 1 : 0,
+                            transform: activeMovement === index ? "translateX(0)" : "translateX(-4px)",
+                            color: RALLY_BLUE,
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </InteractiveCard>
             </RevealOnScroll>
 
             {/* Ask the Docent card */}
             <RevealOnScroll variant="slide-up" delay={400} duration={600}>
-              <div className="group h-full bg-gradient-to-br from-[#005EB8]/10 to-transparent backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-[#005EB8]/20 hover:border-[#005EB8]/40 hover:from-[#005EB8]/15 transition-all duration-500 hover:shadow-lg hover:shadow-[#005EB8]/10 hover:-translate-y-1 cursor-pointer">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-                      style={{ backgroundColor: `${RALLY_BLUE}30` }}
-                    >
-                      <MessageCircle className="w-5 h-5" style={{ color: RALLY_BLUE }} />
+              <InteractiveCard className="h-full cursor-pointer" glowColor={RALLY_BLUE} delay={200}>
+                <div className="group h-full bg-gradient-to-br from-[#005EB8]/10 to-transparent backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-[#005EB8]/20 hover:border-[#005EB8]/40 hover:from-[#005EB8]/15 transition-all duration-500">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="relative">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                        style={{ backgroundColor: `${RALLY_BLUE}30` }}
+                      >
+                        <MessageCircle className="w-5 h-5" style={{ color: RALLY_BLUE }} />
+                      </div>
+                      <div
+                        className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
+                        style={{ backgroundColor: RED_STITCH }}
+                      />
                     </div>
-                    <div
-                      className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
-                      style={{ backgroundColor: RED_STITCH }}
-                    />
+                    <h3 className="text-white font-semibold text-lg">Ask the Docent</h3>
                   </div>
-                  <h3 className="text-white font-semibold text-lg">Ask the Docent</h3>
+                  <p className="text-white/70 text-sm leading-relaxed mb-4 group-hover:text-white/80 transition-colors">
+                    Curious about Moravec's Paradox? Want to understand instrumentive AI? The docent can explain any
+                    concept from the presentation.
+                  </p>
+                  <div className="flex items-center gap-2 text-xs" style={{ color: RALLY_BLUE }}>
+                    <span className="group-hover:underline transition-all">Click the chat button</span>
+                    <ChevronRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
                 </div>
-                <p className="text-white/70 text-sm leading-relaxed mb-4 group-hover:text-white/80 transition-colors">
-                  Curious about Moravec's Paradox? Want to understand instrumentive AI? The docent can explain any
-                  concept from the presentation.
-                </p>
-                <div className="flex items-center gap-2 text-xs" style={{ color: RALLY_BLUE }}>
-                  <span className="group-hover:underline transition-all">Click the chat button</span>
-                  <ChevronRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
-                </div>
-              </div>
+              </InteractiveCard>
             </RevealOnScroll>
           </div>
 
           {/* Key Insight Callout */}
           <RevealOnScroll variant="blur-scale" delay={500} duration={600}>
-            <div className="mt-10 p-6 rounded-2xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-white/20 transition-all duration-500">
-              <div className="flex items-start gap-4">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: `${RED_STITCH}15` }}
-                >
-                  <Sparkles className="w-6 h-6" style={{ color: RED_STITCH }} />
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold mb-2">Key Insight</h4>
-                  <p className="text-white/70 text-sm leading-relaxed">
-                    This presentation explores how humans maintain cognitive advantages through continuous low-cost
-                    learning, improvisational skills, and the ability to integrate diverse perspectives. The structure
-                    itself demonstrates the concept: organized like a musical score with themes, variations, and
-                    movements that build toward a unified vision of human-AI collaboration.
-                  </p>
+            <InteractiveCard className="mt-10" glowColor={RED_STITCH} delay={300}>
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-white/20 transition-all duration-500">
+                <div className="flex items-start gap-4">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 hover:scale-110 hover:rotate-3"
+                    style={{ backgroundColor: `${RED_STITCH}15` }}
+                  >
+                    <Sparkles className="w-6 h-6" style={{ color: RED_STITCH }} />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold mb-2">Key Insight</h4>
+                    <p className="text-white/70 text-sm leading-relaxed">
+                      This presentation explores how humans maintain cognitive advantages through continuous low-cost
+                      learning, improvisational skills, and the ability to integrate diverse perspectives. The structure
+                      itself demonstrates the concept: organized like a musical score with themes, variations, and
+                      movements that build toward a unified vision of human-AI collaboration.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </InteractiveCard>
           </RevealOnScroll>
         </div>
       </section>

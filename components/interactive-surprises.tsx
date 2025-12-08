@@ -1,51 +1,25 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useKonamiCode } from "@/hooks/use-konami-code"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
 export function InteractiveSurprises() {
-  const [konamiActivated, setKonamiActivated] = useState(false)
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string }>>([])
   const [secretMessage, setSecretMessage] = useState("")
 
-  // Konami code detection
-  useEffect(() => {
-    const konamiCode = [
-      "ArrowUp",
-      "ArrowUp",
-      "ArrowDown",
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-      "ArrowLeft",
-      "ArrowRight",
-      "KeyB",
-      "KeyA",
-    ]
-    let konamiIndex = 0
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === konamiCode[konamiIndex]) {
-        konamiIndex++
-        if (konamiIndex === konamiCode.length) {
-          setKonamiActivated(true)
-          setSecretMessage("Drummer Mode Activated!")
-          setTimeout(() => {
-            setKonamiActivated(false)
-            setSecretMessage("")
-          }, 3000)
-          konamiIndex = 0
-        }
-      } else {
-        konamiIndex = 0
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  // Use shared Konami code hook
+  const konamiActivated = useKonamiCode({
+    onActivate: () => {
+      setSecretMessage("Drummer Mode Activated!")
+      setTimeout(() => {
+        setSecretMessage("")
+      }, 3000)
+    },
+    duration: 3000
+  })
 
   // Triple-click particle burst
   useEffect(() => {

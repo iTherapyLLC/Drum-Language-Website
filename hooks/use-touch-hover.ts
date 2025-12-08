@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 
 /**
  * Hook that provides hover-like behavior for both mouse and touch devices
@@ -54,6 +54,16 @@ export function useTouchHover(duration = 1500) {
       setIsActive(false)
     }, duration)
   }, [duration, clearActiveTimeout])
+
+  // Add cleanup effect to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+    }
+  }, [])
 
   return {
     isActive,

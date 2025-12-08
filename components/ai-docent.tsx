@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { X, Send, ArrowRight, Volume2, VolumeX, Loader2, Mic, MicOff } from "lucide-react"
 import Image from "next/image"
 
@@ -88,22 +88,39 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     }
   }, [])
 
-  const toggleListening = () => {
+  const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return
 
     if (isListening) {
-      recognitionRef.current.stop()
+      try {
+        recognitionRef.current.stop()
+      } catch (error) {
+        console.error("[v0] Failed to stop speech recognition:", error)
+      }
       setIsListening(false)
     } else {
       setInputValue("")
+      
+      // Abort any pending recognition first to prevent race conditions
       try {
-        recognitionRef.current.start()
-        setIsListening(true)
-      } catch (error) {
-        console.error("[v0] Failed to start speech recognition:", error)
+        recognitionRef.current.abort()
+      } catch (e) {
+        // Ignore - may not be running
       }
+      
+      // Small delay to ensure clean state before starting
+      setTimeout(() => {
+        if (!recognitionRef.current) return
+        try {
+          recognitionRef.current.start()
+          setIsListening(true)
+        } catch (error) {
+          console.error("[v0] Failed to start speech recognition:", error)
+          setIsListening(false)
+        }
+      }, 50)
     }
-  }
+  }, [isListening])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -130,6 +147,11 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause()
+        // Revoke blob URL if it exists to prevent memory leak
+        const src = audioRef.current.src
+        if (src && src.startsWith('blob:')) {
+          URL.revokeObjectURL(src)
+        }
         audioRef.current = null
       }
     }
@@ -142,6 +164,10 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     if (speakingMessageId === message.id) {
       if (audioRef.current) {
         audioRef.current.pause()
+        const src = audioRef.current.src
+        if (src && src.startsWith('blob:')) {
+          URL.revokeObjectURL(src)
+        }
         audioRef.current = null
       }
       setSpeakingMessageId(null)
@@ -151,12 +177,18 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     // Stop any existing playback
     if (audioRef.current) {
       audioRef.current.pause()
+      const src = audioRef.current.src
+      if (src && src.startsWith('blob:')) {
+        URL.revokeObjectURL(src)
+      }
       audioRef.current = null
     }
 
     setIsLoadingVoice(true)
     setSpeakingMessageId(message.id)
 
+    let audioUrl: string | null = null
+    
     try {
       const response = await fetch("/api/speak", {
         method: "POST",
@@ -179,21 +211,27 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
         throw new Error("Empty audio response")
       }
 
-      // Create audio element and play
-      const audioUrl = URL.createObjectURL(audioBlob)
+      audioUrl = URL.createObjectURL(audioBlob)
       const audio = new Audio(audioUrl)
       audioRef.current = audio
+
+      const cleanup = () => {
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl)
+          audioUrl = null
+        }
+      }
 
       audio.onended = () => {
         console.log("[v0] Audio ended")
         setSpeakingMessageId(null)
-        URL.revokeObjectURL(audioUrl)
+        cleanup()
       }
 
       audio.onerror = () => {
         console.error("[v0] Audio playback error")
         setSpeakingMessageId(null)
-        URL.revokeObjectURL(audioUrl)
+        cleanup()
       }
 
       await audio.play()
@@ -201,6 +239,9 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     } catch (error) {
       console.error("[v0] speakMessage error:", error)
       setSpeakingMessageId(null)
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl)
+      }
     } finally {
       setIsLoadingVoice(false)
     }

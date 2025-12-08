@@ -30,7 +30,6 @@ import {
   Star,
   MessageSquare,
   Sparkles,
-  Lightbulb,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -1420,97 +1419,6 @@ function BJJSection() {
             </div>
           </div>
         </RevealOnScroll>
-
-        {/* Journey stats */}
-        <RevealOnScroll variant="curtain" delay={150} duration={900}>
-          <div className="grid grid-cols-3 gap-4 mb-16 max-w-2xl mx-auto">
-            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
-              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
-                10
-              </p>
-              <p className="text-gray-500 text-sm mt-1">Years Training</p>
-            </div>
-            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
-              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
-                5+
-              </p>
-              <p className="text-gray-500 text-sm mt-1">Years Commuting</p>
-            </div>
-            <div className="text-center p-6 bg-white/5 rounded-xl border border-white/10">
-              <p className="text-3xl font-bold" style={{ color: RALLY_BLUE }}>
-                90%
-              </p>
-              <p className="text-gray-500 text-sm mt-1">Quit Rate</p>
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* Philosophy content - two columns */}
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          {/* Left: The philosophy */}
-          <RevealOnScroll variant="slide-up" delay={200} duration={900}>
-            <div className="space-y-6">
-              <h3 className="text-2xl font-semibold text-white">The Language of Movement</h3>
-              <p className="text-gray-300 leading-relaxed">
-                BJJ is physical problem-solving against a resisting opponent. Someone is trying to control you, submit
-                you, take away your options. You are doing the same to them. The learning happens in that exchange. Your
-                development comes through confronting what scares you, repeatedly, with increasing competence.
-              </p>
-              <blockquote
-                className="text-xl font-serif italic text-gray-400 border-l-4 pl-6 py-2"
-                style={{ borderColor: RALLY_BLUE }}
-              >
-                "Learning Brazilian Jiu-Jitsu follows the same framework as learning language."
-              </blockquote>
-              <p className="text-gray-300 leading-relaxed">
-                The Bloom-Lahey model describes language through content, form, and use. BJJ works identically. Content
-                is vocabulary: hip escapes, guard passes, kimuras. Form is grammar: how techniques chain together. Use
-                is conversation: reading your partner, responding in real time.
-              </p>
-            </div>
-          </RevealOnScroll>
-
-          {/* Right: Prompt hierarchy - the SLP connection */}
-          <RevealOnScroll variant="slide-up" delay={300} duration={900}>
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: `${RALLY_BLUE}20` }}
-                >
-                  <Lightbulb size={20} style={{ color: RALLY_BLUE }} />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-white">The Prompt Hierarchy</h4>
-                  <p className="text-gray-500 text-sm">Where speech therapy meets martial arts</p>
-                </div>
-              </div>
-              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                Working with Ryan, we discuss pedagogy and teaching theory. The prompt hierarchy is essential to BJJ
-                education at Crosley's gym, the same hierarchy used in speech-language pathology.
-              </p>
-              <div className="space-y-3">
-                {promptHierarchy.map((p, i) => (
-                  <div key={p.level} className="flex items-start gap-3 group">
-                    <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 mt-0.5 transition-colors"
-                      style={{
-                        background: `${RALLY_BLUE}${20 + i * 10}`,
-                        color: i > 2 ? RALLY_BLUE : "white",
-                      }}
-                    >
-                      {i + 1}
-                    </div>
-                    <div>
-                      <p className="text-white text-sm font-medium">{p.level}</p>
-                      <p className="text-gray-500 text-xs">{p.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealOnScroll>
-        </div>
 
         {/* Bloom-Lahey Framework Cards */}
         <RevealOnScroll variant="wave" delay={400} duration={900}>

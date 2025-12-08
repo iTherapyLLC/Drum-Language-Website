@@ -6,9 +6,46 @@ const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
 export function InteractiveSurprises() {
+  const [konamiActivated, setKonamiActivated] = useState(false)
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string }>>([])
+  const [secretMessage, setSecretMessage] = useState("")
 
-  // Note: Konami code detection has been moved to sheen-effect.tsx to avoid duplicate event listeners
+  // Konami code detection
+  useEffect(() => {
+    const konamiCode = [
+      "ArrowUp",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowLeft",
+      "ArrowRight",
+      "KeyB",
+      "KeyA",
+    ]
+    let konamiIndex = 0
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === konamiCode[konamiIndex]) {
+        konamiIndex++
+        if (konamiIndex === konamiCode.length) {
+          setKonamiActivated(true)
+          setSecretMessage("Drummer Mode Activated!")
+          setTimeout(() => {
+            setKonamiActivated(false)
+            setSecretMessage("")
+          }, 3000)
+          konamiIndex = 0
+        }
+      } else {
+        konamiIndex = 0
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   // Triple-click particle burst
   useEffect(() => {
@@ -48,6 +85,21 @@ export function InteractiveSurprises() {
 
   return (
     <>
+      {/* Konami activation overlay */}
+      {konamiActivated && (
+        <div className="fixed inset-0 pointer-events-none z-[9999] flex items-center justify-center">
+          <div
+            className="px-8 py-4 rounded-2xl text-white text-2xl font-bold animate-bounce"
+            style={{
+              background: `linear-gradient(135deg, ${RALLY_BLUE}, ${RED_STITCH})`,
+              boxShadow: `0 0 60px ${RALLY_BLUE}80`,
+            }}
+          >
+            {secretMessage}
+          </div>
+        </div>
+      )}
+
       {/* Particle container */}
       <div className="fixed inset-0 pointer-events-none z-[9998]">
         {particles.map((particle, index) => {

@@ -2,7 +2,8 @@
 
 import type React from "react"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
+import { useKonamiCode } from "@/hooks/use-konami-code"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -20,23 +21,35 @@ export function SheenEffect() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isActive, setIsActive] = useState(false)
   const [particles, setParticles] = useState<Particle[]>([])
-  const [clickCount, setClickCount] = useState(0)
-  const [konamiIndex, setKonamiIndex] = useState(0)
-  const [konamiActivated, setKonamiActivated] = useState(false)
   const [cursorTrail, setCursorTrail] = useState<{ x: number; y: number }[]>([])
+  const clickCountRef = useRef(0)
 
-  const konamiCode = [
-    "ArrowUp",
-    "ArrowUp",
-    "ArrowDown",
-    "ArrowDown",
-    "ArrowLeft",
-    "ArrowRight",
-    "ArrowLeft",
-    "ArrowRight",
-    "KeyB",
-    "KeyA",
-  ]
+  const createParticleBurst = useCallback((x: number, y: number, count: number) => {
+    const newParticles: Particle[] = []
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count
+      const velocity = 50 + Math.random() * 100
+      newParticles.push({
+        id: Date.now() + i,
+        x,
+        y,
+        tx: Math.cos(angle) * velocity,
+        ty: Math.sin(angle) * velocity,
+        color: Math.random() > 0.5 ? RALLY_BLUE : RED_STITCH,
+      })
+    }
+    setParticles((prev) => [...prev, ...newParticles])
+
+    // Clean up particles after animation
+    setTimeout(() => {
+      setParticles((prev) => prev.filter((p) => !newParticles.find((np) => np.id === p.id)))
+    }, 1000)
+  }, [])
+
+  // Use shared Konami code hook
+  const konamiActivated = useKonamiCode({
+    onActivate: () => createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, 30)
+  })
 
   // Mouse move handler for sheen effect
   useEffect(() => {
@@ -71,74 +84,29 @@ export function SheenEffect() {
     }
   }, [])
 
-  // Konami code detector
+  // Triple-click easter egg with fixed memory leak
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === konamiCode[konamiIndex]) {
-        const nextIndex = konamiIndex + 1
-        setKonamiIndex(nextIndex)
-
-        if (nextIndex === konamiCode.length) {
-          setKonamiActivated(true)
-          setKonamiIndex(0)
-          // Create celebration particles
-          createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, 30)
-          setTimeout(() => setKonamiActivated(false), 5000)
-        }
-      } else {
-        setKonamiIndex(0)
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [konamiIndex])
-
-  // Triple-click easter egg
-  useEffect(() => {
-    let clickTimer: NodeJS.Timeout
+    let clickTimer: NodeJS.Timeout | null = null
 
     const handleClick = (e: MouseEvent) => {
-      setClickCount((prev) => prev + 1)
+      clickCountRef.current += 1
 
-      clearTimeout(clickTimer)
+      if (clickTimer) clearTimeout(clickTimer)
+      
       clickTimer = setTimeout(() => {
-        if (clickCount >= 2) {
-          // Triple click detected!
+        if (clickCountRef.current === 3) {
           createParticleBurst(e.clientX, e.clientY, 12)
         }
-        setClickCount(0)
+        clickCountRef.current = 0
       }, 300)
     }
 
     window.addEventListener("click", handleClick)
     return () => {
       window.removeEventListener("click", handleClick)
-      clearTimeout(clickTimer)
+      if (clickTimer) clearTimeout(clickTimer)
     }
-  }, [clickCount])
-
-  const createParticleBurst = useCallback((x: number, y: number, count: number) => {
-    const newParticles: Particle[] = []
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count
-      const velocity = 50 + Math.random() * 100
-      newParticles.push({
-        id: Date.now() + i,
-        x,
-        y,
-        tx: Math.cos(angle) * velocity,
-        ty: Math.sin(angle) * velocity,
-        color: Math.random() > 0.5 ? RALLY_BLUE : RED_STITCH,
-      })
-    }
-    setParticles((prev) => [...prev, ...newParticles])
-
-    // Clean up particles after animation
-    setTimeout(() => {
-      setParticles((prev) => prev.filter((p) => !newParticles.find((np) => np.id === p.id)))
-    }, 1000)
-  }, [])
+  }, [createParticleBurst])
 
   return (
     <>

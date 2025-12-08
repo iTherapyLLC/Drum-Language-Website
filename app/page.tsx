@@ -29,7 +29,6 @@ import {
   DollarSign,
   Star,
   MessageSquare,
-  Sparkles,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -1332,43 +1331,33 @@ function SkiingSection() {
   )
 }
 
+// CHANGE: Updated BJJ section with rich scrollable text card similar to drum section pattern
 function BJJSection() {
   const domains = [
     {
       domain: "Language",
-      content: "Words & meanings",
-      form: "Grammar & syntax",
-      use: "Conversation",
       icon: MessageSquare,
       color: RALLY_BLUE,
+      content: "Vocabulary",
+      form: "Grammar",
+      use: "Conversation",
     },
     {
       domain: "Jazz",
-      content: "Scales & chords",
-      form: "Song structures",
-      use: "Improvisation",
       icon: Music,
-      color: RED_STITCH,
+      color: "#10B981",
+      content: "Scales & Voicings",
+      form: "Song Structure",
+      use: "Improvisation",
     },
     {
       domain: "BJJ",
-      content: "Techniques",
-      form: "Combinations",
-      use: "Rolling",
       icon: Shield,
-      color: "#10B981",
+      color: RED_STITCH,
+      content: "Techniques",
+      form: "Sequences",
+      use: "Live Rolling",
     },
-  ]
-
-  // Updated prompt hierarchy
-  const promptHierarchy = [
-    { level: "Full Physical", desc: "Hand-over-hand guidance through the entire technique" },
-    { level: "Partial Physical", desc: "Light touch to initiate or shape part of the movement" },
-    { level: "Visual / Modeling", desc: "Demonstrating the movement without words" },
-    { level: "Direct Verbal", desc: "Explicit verbal instruction" },
-    { level: "Indirect Verbal", desc: "Questions that guide discovery" },
-    { level: "Gestural", desc: "Pointing or indicating direction" },
-    { level: "Independent", desc: "Performing the skill without any prompts" },
   ]
 
   return (
@@ -1383,30 +1372,26 @@ function BJJSection() {
               <span className="text-sm text-gray-400 tracking-wide uppercase">A Decade on the Mat</span>
             </div>
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-              <MagicHeading as="span" className="text-4xl sm:text-5xl font-bold text-white">
+              <MagicHeading as="span" className="text-4xl sm:text-5xl font-bold text-white" variant="dark">
                 The Language of Movement
               </MagicHeading>
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Ten years. When distance made weekly training impossible, I shifted to what was sustainable. Skill
-              development is more about maintaining connection through some form of consistency than maintaining high
-              frequency, especially when circumstances change.
-            </p>
           </div>
         </RevealOnScroll>
 
-        {/* Hero photos - Replace two photos with single centered anime image */}
+        {/* Main content grid - image with scrollable text card overlay */}
         <RevealOnScroll variant="curtain" delay={100} duration={900}>
-          <div className="flex justify-center mb-16">
-            <div className="group relative max-w-lg cursor-pointer">
-              <div className="kaleidoscope-frame rounded-2xl overflow-hidden aspect-[4/3] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:shadow-2xl">
+          <div className="grid lg:grid-cols-2 gap-8 mb-16">
+            {/* Left: Image with overlay card */}
+            <div className="group relative">
+              <div className="kaleidoscope-frame rounded-2xl overflow-hidden aspect-[4/3] transition-all duration-700 ease-out group-hover:scale-[1.02] group-hover:shadow-2xl">
                 <div className="relative w-full h-full rounded-2xl overflow-hidden">
                   <img
                     src="/images/bjj-promotion-anime.jpg"
                     alt="Matthew receiving blue belt - anime style illustration"
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-50" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-t from-[#005EB8]/20 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-center transform transition-transform duration-500 group-hover:translate-y-[-4px]">
                     <p className="text-white text-xl font-semibold mb-1">Crosley Gracie Jiu-Jitsu</p>
@@ -1414,6 +1399,71 @@ function BJJSection() {
                       Ten years of study under Ryan Murphy
                     </p>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Scrollable text card */}
+            <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-[#005EB8]/50 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)]">
+              {/* Glow effect on hover */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 0%, rgba(0,94,184,0.15) 0%, transparent 60%)`,
+                }}
+              />
+
+              {/* Scrollable content */}
+              <div className="relative p-6 max-h-[400px] lg:max-h-[450px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                <h3 className="text-white font-semibold text-xl mb-4 sticky top-0 bg-gradient-to-b from-black/80 via-black/60 to-transparent pb-4 -mt-2 pt-2 -mx-6 px-6">
+                  Brazilian Jiu-Jitsu: The Language of Movement
+                </h3>
+                <div className="text-gray-300 text-sm leading-relaxed space-y-4">
+                  <p>
+                    Learning Brazilian Jiu-Jitsu follows the same framework as learning language. The Bloom-Lahey model
+                    describes language through content, form, and use. BJJ works the same way.
+                  </p>
+                  <p>
+                    <span className="text-white font-medium">Content</span> is the vocabulary: hip escapes, guard
+                    passes, kimuras, leg locks. Individual moves you drill until they become automatic.
+                  </p>
+                  <p>
+                    <span className="text-white font-medium">Form</span> is grammar: how these techniques chain
+                    together. A failed sweep becomes a submission attempt. A blocked pass opens a different angle.
+                    Natural sequences emerge from understanding how positions connect.
+                  </p>
+                  <p>
+                    <span className="text-white font-medium">Use</span> is conversation: reading your partner,
+                    responding in real time, adapting to what they give you. This is where improvisation lives.
+                  </p>
+                  <p className="border-l-2 border-[#005EB8] pl-4 italic text-gray-400">
+                    Improvisation is one of the most overlooked aspects of communication. It's the ability to create
+                    within constraints. Jazz musicians don't play whatever they want. They work within chord changes,
+                    song forms, rhythmic structures. The constraints enable creativity rather than limiting it.
+                  </p>
+                  <p>
+                    BJJ operates the same way. You can't just do anything. There are rules, positions, physics. But
+                    within those constraints, the combinations become infinite.{" "}
+                    <span className="text-white font-medium">Finite moves, infinite responses.</span>
+                  </p>
+                  <p>
+                    This is why having millions of techniques doesn't make you more creative. What creates creative
+                    potential is understanding how elements combine. A musician with three chords can write a thousand
+                    songs. A practitioner with five submissions can find them from anywhere.
+                  </p>
+                  <p>
+                    The training also teaches something harder to articulate: how to respond rather than react. When
+                    someone larger and stronger has pinned you, panic wants to take over. The amygdala fires, triggering
+                    fear and reactivity. But training builds pathways that let the prefrontal cortex maintain regulatory
+                    control even under stress.
+                  </p>
+                  <p className="text-white">
+                    You don't eliminate the stress response. You develop the capacity to think alongside it.
+                  </p>
+                  <p className="border-l-2 border-[#DC2626] pl-4 italic text-gray-400">
+                    This is dissonance resolution in physical form. The uncomfortable position doesn't disappear. You
+                    learn to work within it until you find your way back to balance.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1452,24 +1502,6 @@ function BJJSection() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* Key insight - the improvisation principle */}
-        <RevealOnScroll variant="flip-up" delay={500} duration={900}>
-          <div className="mt-16 text-center">
-            <div className="inline-block bg-gradient-to-r from-[#005EB8]/10 to-[#10B981]/10 rounded-2xl p-8 border border-white/10 max-w-3xl">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Sparkles size={20} style={{ color: RED_STITCH }} />
-                <span className="text-sm text-gray-500 uppercase tracking-wider">The Improvisation Principle</span>
-              </div>
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Jazz musicians work within chord changes, song forms, rhythmic structures. The constraints enable
-                creativity. BJJ operates identically. Training builds neural pathways that let the prefrontal cortex
-                maintain control under stress. You don't eliminate the stress response. You develop capacity to{" "}
-                <span className="text-white font-medium">think alongside it</span>.
-              </p>
             </div>
           </div>
         </RevealOnScroll>

@@ -282,8 +282,9 @@ function ContextKits() {
 
 // Component 4: Fill Timeline
 function FillTimeline() {
+  // Starting with right hand (R) is standard drumming technique
   const notes = Array.from({ length: 16 }, (_, i) => ({
-    hand: i % 2 === 0 ? "L" : "R",
+    hand: i % 2 === 0 ? "R" : "L",
     beat: i + 1,
   }))
 
@@ -294,7 +295,7 @@ function FillTimeline() {
           <div
             key={i}
             className={`w-8 h-12 sm:w-10 sm:h-14 rounded flex items-center justify-center text-xs font-mono font-bold
-              ${note.hand === "L" ? "bg-[#005EB8]" : "bg-gray-700"}
+              ${note.hand === "R" ? "bg-[#005EB8]" : "bg-gray-700"}
             `}
             style={{
               animationDelay: `${i * 0.05}s`,
@@ -307,7 +308,7 @@ function FillTimeline() {
         ))}
       </div>
       <p className="text-center text-gray-400 mt-6 text-sm">
-        16th notes starting on left hand. Where does the downbeat land?
+        16th notes starting on right hand. Where does the downbeat land?
       </p>
     </div>
   )
@@ -339,6 +340,7 @@ function LanguageParallel() {
 function ImprovisationOrbit() {
   const [isVisible, setIsVisible] = useState(false)
   const items = ["Skiing", "Jiu-Jitsu", "Language", "Drumming"]
+  const ORBIT_RADIUS = 35 // Percentage from center
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 500)
@@ -359,7 +361,6 @@ function ImprovisationOrbit() {
       {/* Orbiting elements */}
       {items.map((item, i) => {
         const angle = (i * Math.PI) / 2
-        const radius = 35
         return (
           <div key={item}>
             {/* Connecting line */}
@@ -374,8 +375,8 @@ function ImprovisationOrbit() {
               <line
                 x1="50%"
                 y1="50%"
-                x2={`${50 + radius * Math.cos(angle)}%`}
-                y2={`${50 + radius * Math.sin(angle)}%`}
+                x2={`${50 + ORBIT_RADIUS * Math.cos(angle)}%`}
+                y2={`${50 + ORBIT_RADIUS * Math.sin(angle)}%`}
                 stroke={RALLY_BLUE}
                 strokeWidth="2"
                 strokeDasharray="4 4"
@@ -386,8 +387,8 @@ function ImprovisationOrbit() {
             <div
               className={`absolute w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-xs font-medium transition-all duration-1000 hover:bg-gray-700 hover:border-[#005EB8] cursor-pointer`}
               style={{
-                top: `${50 + radius * Math.sin(angle)}%`,
-                left: `${50 + radius * Math.cos(angle)}%`,
+                top: `${50 + ORBIT_RADIUS * Math.sin(angle)}%`,
+                left: `${50 + ORBIT_RADIUS * Math.cos(angle)}%`,
                 transform: isVisible ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0)",
                 transitionDelay: `${i * 0.15}s`,
               }}

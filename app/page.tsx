@@ -32,7 +32,7 @@ import SpiralKaleidoscope from "@/components/spiral-kaleidoscope"
 import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
 import { useTouchHover } from "@/hooks/use-touch-hover"
-import { DrummingSection } from "@/components/drumming-section"
+import { AnimatedProfile } from "@/components/animated-profile"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -290,11 +290,11 @@ const instagramVideos = [
 ]
 
 const navItems = [
+  { label: "Home", section: "hero" },
   { label: "Projects", section: "projects" },
   { label: "Music", section: "music" },
   { label: "Speaking", section: "speaking" },
   { label: "Philosophy", section: "philosophy" },
-  { label: "Drumming", section: "drumming" },
   { label: "Skiing", section: "skiing" },
   { label: "BJJ", section: "bjj" },
   { label: "Credentials", section: "credentials" },
@@ -611,7 +611,7 @@ function MusicCard({ item, index }: { item: (typeof music)[0]; index: number }) 
   )
 }
 
-function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]; index: number }) {
+function AlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]; index: number }) {
   const { isActive: isHovered, setIsActive: setIsHovered } = useTouchHover(2000)
   const cardRef = useRef<HTMLDivElement>(null)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
@@ -1496,13 +1496,311 @@ function BJJSection() {
 }
 
 export default function Page() {
+  const [activeSection, setActiveSection] = useState("hero")
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+
+      // Update active section based on scroll position
+      const sections = [
+        "hero",
+        "projects",
+        "music",
+        "speaking",
+        "philosophy",
+        "skiing",
+        "bjj",
+        "credentials",
+        "contact",
+      ]
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
-    <main>
+    <main className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Profile photo as logo */}
+            <button onClick={() => scrollToSection("hero")} className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#005EB8]/20">
+                <img src="/images/profile-photo.png" alt="Matthew Guggemos" className="w-full h-full object-cover" />
+              </div>
+            </button>
+
+            {/* Nav items */}
+            <div className="hidden md:flex items-center gap-6">
+              {navItems.map((item) => (
+                <button
+                  key={item.section}
+                  onClick={() => scrollToSection(item.section)}
+                  className={`text-sm font-medium transition-colors hover:text-[#005EB8] ${
+                    activeSection === item.section ? "text-[#005EB8]" : "text-foreground/70"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section with Kaleidoscope */}
+      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Centered Kaleidoscope Mandala */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.12]">
+            <SpiralKaleidoscope opacity={1} className="w-full h-full" />
+          </div>
+        </div>
+
+        {/* Gradient fade to white at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+
+        {/* Hero Content */}
+        <div className="relative z-10 text-center px-6 pt-20">
+          {/* Animated Profile Photo at Mandala Focal Point */}
+          <div className="flex justify-center mb-8">
+            <AnimatedProfile src="/images/profile-photo.png" alt="Matthew Guggemos" />
+          </div>
+
+          {/* Name with Magic Text */}
+          <MagicHeading as="h1" className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+            Matthew Guggemos
+          </MagicHeading>
+
+          {/* Subtitle */}
+          <p className="text-lg sm:text-xl text-foreground/70 mb-6 max-w-2xl mx-auto">
+            Communication Scientist. AI Innovator. Professional Drummer.
+          </p>
+
+          {/* Credential highlights */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <span className="px-3 py-1 text-sm bg-[#005EB8]/10 text-[#005EB8] rounded-full">
+              National Academies Speaker
+            </span>
+            <span className="px-3 py-1 text-sm bg-[#005EB8]/10 text-[#005EB8] rounded-full">
+              M.S. Speech Pathology, CCC-ASHA
+            </span>
+            <span className="px-3 py-1 text-sm bg-[#005EB8]/10 text-[#005EB8] rounded-full">
+              Co-Founder/CTO iTherapy
+            </span>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="animate-bounce mt-12">
+            <ArrowRight className="w-6 h-6 rotate-90 text-foreground/40 mx-auto" />
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="py-20 bg-background relative overflow-hidden">
+        <SpiralKaleidoscope opacity={0.04} className="z-0" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <RevealOnScroll>
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
+              <MagicHeading as="span">Products & Projects</MagicHeading>
+            </h2>
+            <p className="text-center text-foreground/70 mb-12 max-w-2xl mx-auto">
+              AI-powered tools transforming speech therapy, communication, and education.
+            </p>
+          </RevealOnScroll>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Music Section */}
+      <section id="music" className="py-20 bg-[#0a0a0a] relative overflow-hidden">
+        <SpiralKaleidoscope opacity={0.06} baseHue={210} className="mix-blend-screen" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <RevealOnScroll>
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-white">
+              <MagicHeading as="span" variant="dark">
+                Music
+              </MagicHeading>
+            </h2>
+            <p className="text-center text-white/70 mb-12 max-w-2xl mx-auto">
+              30+ years of professional drumming. International touring and recording.
+            </p>
+          </RevealOnScroll>
+
+          {/* Bands */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {music.map((item, index) => (
+              <MusicCard key={item.band} item={item} index={index} />
+            ))}
+          </div>
+
+          {/* Featured Albums */}
+          <RevealOnScroll>
+            <h3 className="text-xl font-semibold text-white/90 mb-6 text-center">Featured Albums</h3>
+          </RevealOnScroll>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {featuredAlbums.map((album, index) => (
+              <AlbumCard key={`${album.band}-${album.album}`} album={album} index={index} />
+            ))}
+          </div>
+
+          {/* Featured Videos */}
+          <RevealOnScroll>
+            <h3 className="text-xl font-semibold text-white/90 mb-6 text-center">Featured Videos</h3>
+          </RevealOnScroll>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {featuredVideos.map((video, index) => (
+              <VideoPreview key={index} {...video} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Speaking Section */}
       <SpeakingSection />
+
+      {/* Philosophy Section */}
       <PhilosophySection />
-      <DrummingSection />
+
+      {/* Skiing Section */}
       <SkiingSection />
+
+      {/* BJJ Section */}
       <BJJSection />
+
+      {/* Credentials Section */}
+      <section id="credentials" className="py-20 bg-background relative overflow-hidden">
+        <SpiralKaleidoscope opacity={0.04} className="z-0" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <RevealOnScroll>
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
+              <MagicHeading as="span">Credentials & Recognition</MagicHeading>
+            </h2>
+            <p className="text-center text-foreground/70 mb-12 max-w-2xl mx-auto">
+              Building credibility through research, leadership, and federal funding.
+            </p>
+          </RevealOnScroll>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {credentials.map((cred, index) => (
+              <RevealOnScroll key={cred.label} delay={index * 100}>
+                <CredentialChip cred={cred} index={index} />
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-[#f8f9fa] relative overflow-hidden">
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <RevealOnScroll>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              <MagicHeading as="span">Start a Conversation</MagicHeading>
+            </h2>
+            <p className="text-foreground/70 mb-8 max-w-2xl mx-auto">
+              Interested in collaboration, consulting, or just want to connect? Reach out and let's explore how we can
+              work together.
+            </p>
+          </RevealOnScroll>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="mailto:matt@itherapyllc.com"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#005EB8] text-white rounded-lg font-medium hover:bg-[#004a93] transition-colors"
+            >
+              <ExternalLink size={18} />
+              Email Me
+            </a>
+            <a
+              href="https://www.linkedin.com/in/matthewguggemos/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-[#005EB8] text-[#005EB8] rounded-lg font-medium hover:bg-[#005EB8]/10 transition-colors"
+            >
+              <ExternalLink size={18} />
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-[#0a0a0a] text-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+                <img src="/images/profile-photo.png" alt="Matthew Guggemos" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <p className="font-semibold">Matthew Guggemos</p>
+                <p className="text-sm text-white/60">Intelligence Conductor</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <a
+                href="https://www.itherapyllc.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/70 hover:text-white transition-colors text-sm"
+              >
+                iTherapy LLC
+              </a>
+              <a
+                href="https://www.linkedin.com/in/matthewguggemos/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/70 hover:text-white transition-colors text-sm"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="https://www.instagram.com/drumlanguage/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/70 hover:text-white transition-colors text-sm"
+              >
+                Instagram
+              </a>
+            </div>
+
+            <p className="text-white/50 text-sm">© 2025 Matthew Guggemos. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </main>
   )
 }

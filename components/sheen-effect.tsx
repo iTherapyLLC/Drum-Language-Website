@@ -94,7 +94,7 @@ export function SheenEffect() {
       if (clickTimer) clearTimeout(clickTimer)
       
       clickTimer = setTimeout(() => {
-        if (clickCountRef.current >= 3) {
+        if (clickCountRef.current === 3) {
           createParticleBurst(e.clientX, e.clientY, 12)
         }
         clickCountRef.current = 0

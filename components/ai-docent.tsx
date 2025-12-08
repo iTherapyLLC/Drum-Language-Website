@@ -215,23 +215,20 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       const audio = new Audio(audioUrl)
       audioRef.current = audio
 
-      const cleanup = () => {
-        if (audioUrl) {
-          URL.revokeObjectURL(audioUrl)
-          audioUrl = null
-        }
-      }
-
       audio.onended = () => {
         console.log("[v0] Audio ended")
         setSpeakingMessageId(null)
-        cleanup()
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl)
+        }
       }
 
       audio.onerror = () => {
         console.error("[v0] Audio playback error")
         setSpeakingMessageId(null)
-        cleanup()
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl)
+        }
       }
 
       await audio.play()

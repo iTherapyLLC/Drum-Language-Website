@@ -7,6 +7,15 @@ import Image from "next/image"
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 
+// Sanitize content to prevent XSS attacks
+const sanitizeContent = (content: string): string => {
+  // Basic sanitization - remove any HTML tags
+  return content
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/javascript:/gi, '') // Remove javascript: protocols
+    .replace(/on\w+=/gi, '') // Remove event handlers
+}
+
 const quickActions = [
   {
     label: "What's EASI?",
@@ -92,16 +101,32 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     if (!recognitionRef.current) return
 
     if (isListening) {
-      recognitionRef.current.stop()
+      try {
+        recognitionRef.current.stop()
+      } catch (error) {
+        console.error("[v0] Failed to stop speech recognition:", error)
+      }
       setIsListening(false)
     } else {
       setInputValue("")
+      // Ensure previous session is fully stopped before starting new one
       try {
-        recognitionRef.current.start()
-        setIsListening(true)
-      } catch (error) {
-        console.error("[v0] Failed to start speech recognition:", error)
+        recognitionRef.current.abort() // Force abort any pending recognition
+      } catch (e) {
+        // Ignore - may not be running
       }
+      
+      // Small delay to ensure clean state
+      setTimeout(() => {
+        try {
+          recognitionRef.current?.start()
+          setIsListening(true)
+        } catch (error) {
+          console.error("[v0] Failed to start speech recognition:", error)
+          setIsListening(false)
+          // Could add a toast notification here for user feedback
+        }
+      }, 100)
     }
   }
 
@@ -130,6 +155,11 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause()
+        // The audio element's src should be revoked if it's a blob URL
+        const src = audioRef.current.src
+        if (src && src.startsWith('blob:')) {
+          URL.revokeObjectURL(src)
+        }
         audioRef.current = null
       }
     }
@@ -157,6 +187,8 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     setIsLoadingVoice(true)
     setSpeakingMessageId(message.id)
 
+    let audioUrl: string | null = null
+    
     try {
       const response = await fetch("/api/speak", {
         method: "POST",
@@ -180,20 +212,29 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       }
 
       // Create audio element and play
-      const audioUrl = URL.createObjectURL(audioBlob)
+      audioUrl = URL.createObjectURL(audioBlob)
       const audio = new Audio(audioUrl)
       audioRef.current = audio
+
+      // Store URL reference for cleanup
+      const currentUrl = audioUrl
+
+      const cleanup = () => {
+        if (currentUrl) {
+          URL.revokeObjectURL(currentUrl)
+        }
+      }
 
       audio.onended = () => {
         console.log("[v0] Audio ended")
         setSpeakingMessageId(null)
-        URL.revokeObjectURL(audioUrl)
+        cleanup()
       }
 
       audio.onerror = () => {
         console.error("[v0] Audio playback error")
         setSpeakingMessageId(null)
-        URL.revokeObjectURL(audioUrl)
+        cleanup()
       }
 
       await audio.play()
@@ -201,13 +242,18 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     } catch (error) {
       console.error("[v0] speakMessage error:", error)
       setSpeakingMessageId(null)
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl)
+      }
     } finally {
       setIsLoadingVoice(false)
     }
   }
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = async (text: string, retryCount = 0) => {
     if (!text.trim() || isLoading) return
+
+    const MAX_RETRIES = 2
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -219,6 +265,9 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
     setIsLoading(true)
 
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30s timeout
+
       const response = await fetch("/api/docent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -228,9 +277,14 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
             content: m.content,
           })),
         }),
+        signal: controller.signal,
       })
 
-      if (!response.ok) throw new Error("Failed to get response")
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
 
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
@@ -263,12 +317,24 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       }
     } catch (error) {
       console.error("Chat error:", error)
+      
+      const isNetworkError = error instanceof TypeError || 
+                             (error instanceof Error && error.name === 'AbortError')
+      
+      if (isNetworkError && retryCount < MAX_RETRIES) {
+        // Retry after a brief delay
+        setTimeout(() => sendMessage(text, retryCount + 1), 1000 * (retryCount + 1))
+        return
+      }
+      
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content: "Something went wrong. Try again.",
+          content: isNetworkError 
+            ? "I'm having trouble connecting. Check your internet and try again."
+            : "Something went wrong. Try again in a moment.",
         },
       ])
     } finally {
@@ -431,7 +497,7 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                       : "bg-white border border-border rounded-bl-md shadow-sm"
                   }`}
                 >
-                  {message.content}
+                  {sanitizeContent(message.content)}
                   {message.role === "assistant" && message.content && (
                     <button
                       onClick={() => speakMessage(message)}

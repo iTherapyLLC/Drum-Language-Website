@@ -32,6 +32,7 @@ import SpiralKaleidoscope from "@/components/spiral-kaleidoscope"
 import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
 import { useTouchHover } from "@/hooks/use-touch-hover"
+import { DrummingSection } from "@/components/drumming-section"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -293,6 +294,7 @@ const navItems = [
   { label: "Music", section: "music" },
   { label: "Speaking", section: "speaking" },
   { label: "Philosophy", section: "philosophy" },
+  { label: "Drumming", section: "drumming" },
   { label: "Skiing", section: "skiing" },
   { label: "BJJ", section: "bjj" },
   { label: "Credentials", section: "credentials" },
@@ -1498,6 +1500,7 @@ export default function Page() {
     <main>
       <SpeakingSection />
       <PhilosophySection />
+      <DrummingSection />
       <SkiingSection />
       <BJJSection />
     </main>

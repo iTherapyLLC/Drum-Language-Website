@@ -2759,7 +2759,7 @@ export default function PortfolioPage() {
             className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2"
             style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
           >
-            <span className="font-semibold text-foreground">Intelligence Conductor.</span> Orchestrating AI, speech
+            <span className="font-semibold text-foreground">{"Systems Conductor."}</span> Orchestrating AI, speech
             science, and rhythm into breakthrough solutions.
           </p>
 

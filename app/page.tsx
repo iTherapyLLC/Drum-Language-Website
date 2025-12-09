@@ -2831,7 +2831,9 @@ export default function PortfolioPage() {
                 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4"
                 style={{ textShadow: "0 2px 15px rgba(255,255,255,0.9)" }}
               >
-                My Projects
+                <MagicHeading as="span" className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  My Projects
+                </MagicHeading>
               </h2>
               <p
                 className="text-lg sm:text-xl text-muted-foreground italic px-4"

@@ -1064,3 +1064,314 @@ a:not(.readable-text) *,
   transform: none !important;
   filter: none !important;
 }
+
+/* ===========================================
+   TOUCH DEVICE SUPPORT & MOBILE OPTIMIZATIONS
+   =========================================== */
+
+/* Touch-activated animations for devices without hover */
+@media (hover: none) and (pointer: coarse) {
+  /* Card sheen effect on touch */
+  .card-sheen:active::before {
+    left: 150%;
+  }
+
+  /* Card lift effect on touch */
+  .card-lift:active {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 24px -8px rgba(0, 94, 184, 0.2);
+  }
+
+  /* Glow border on touch */
+  .glow-border:active::before {
+    opacity: 1;
+    animation: border-trace 3s ease infinite;
+  }
+
+  /* Music card effect on touch */
+  .music-card:active {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 32px -8px rgba(0, 94, 184, 0.2);
+    border-color: var(--rally-blue);
+  }
+
+  .music-card:active::before {
+    left: 100%;
+  }
+
+  /* About card 3D effect on touch */
+  .about-card:active {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-8px);
+    box-shadow: 8px 16px 32px -8px rgba(0, 94, 184, 0.2), -4px -8px 16px -4px rgba(220, 38, 38, 0.05);
+  }
+
+  /* Text reveal on touch */
+  .text-reveal:active {
+    background-position: 100% center;
+  }
+
+  /* Underline slide on touch */
+  .underline-slide:active::after {
+    width: 100%;
+  }
+
+  /* Icon morph on touch */
+  .icon-morph:active {
+    border-radius: 50%;
+    transform: scale(1.15) rotate(5deg);
+  }
+
+  /* Nav hover effect on touch */
+  .nav-hover:active::before {
+    width: 80%;
+  }
+
+  /* Footer link on touch */
+  .footer-link:active::after {
+    width: 100%;
+  }
+
+  /* CTA icon on touch */
+  .cta-icon:active {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 12px 24px -6px rgba(0, 94, 184, 0.3);
+  }
+
+  /* Credential chip on touch */
+  .credential-chip:active {
+    background: white;
+    box-shadow: 0 8px 24px -8px rgba(0, 94, 184, 0.2);
+    transform: translateY(-4px);
+  }
+
+  /* Magnetic button effect on touch */
+  .magnetic-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Scale shadow on touch */
+  .scale-shadow:active {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px -10px rgba(0, 94, 184, 0.4);
+  }
+
+  /* Auto-playing subtle animations for mobile */
+  .mobile-auto-pulse {
+    animation: gentle-pulse 4s ease-in-out infinite;
+  }
+
+  .mobile-auto-shimmer {
+    animation: shimmer 6s ease-in-out infinite;
+  }
+
+  .mobile-auto-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Kaleidoscope frame reduced animation on touch devices */
+  .kaleidoscope-frame::before {
+    animation: kaleidoscope-rotate 30s linear infinite;
+  }
+
+  .kaleidoscope-frame:active::before {
+    inset: -6px;
+    opacity: 1;
+    animation: kaleidoscope-rotate 12s linear infinite;
+  }
+}
+
+/* New touch feedback keyframes */
+@keyframes touch-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes gentle-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 94, 184, 0);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 2px rgba(0, 94, 184, 0.15);
+    transform: scale(1.01);
+  }
+}
+
+/* Touch active utility classes */
+.touch-active {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.touch-active:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* Touch ripple effect */
+.touch-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.touch-ripple::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(0, 94, 184, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.touch-ripple:active::after {
+  animation: touch-ripple-expand 0.6s ease-out;
+}
+
+/* Touch ripple animation */
+@keyframes touch-ripple-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* ===========================================
+   REDUCED MOTION SUPPORT
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable particle effects */
+  .particle,
+  .cursor-trail,
+  .particle-container {
+    display: none !important;
+  }
+
+  /* Simplify complex animations */
+  .kaleidoscope-frame::before,
+  .kaleidoscope-frame::after {
+    animation: none !important;
+  }
+
+  .metallic-text {
+    animation: none !important;
+    background: var(--foreground);
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .pearl-surface::after {
+    animation: none !important;
+  }
+
+  /* Keep essential transitions but make them instant */
+  .card-lift:hover,
+  .card-sheen:hover,
+  .music-card:hover,
+  .about-card:hover {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Reduce animation complexity on mobile */
+@media (max-width: 768px) {
+  /* Simplify kaleidoscope animation */
+  .kaleidoscope-frame::before {
+    animation-duration: 40s;
+  }
+
+  /* Use will-change sparingly */
+  .card-lift:active,
+  .music-card:active,
+  .about-card:active {
+    will-change: transform;
+  }
+
+  .card-lift,
+  .music-card,
+  .about-card {
+    will-change: auto;
+  }
+
+  /* Reduce particle count via display none on smaller screens */
+  .particle:nth-child(n + 13) {
+    display: none;
+  }
+
+  /* Optimize glow effects */
+  .glow-border::before,
+  .kaleidoscope-frame::after {
+    filter: blur(4px);
+  }
+
+  /* Reduce shadow complexity */
+  .card-lift:hover,
+  .card-lift:active {
+    box-shadow: 0 8px 16px -4px rgba(0, 94, 184, 0.2);
+  }
+}
+
+/* ===========================================
+   MOBILE LAYOUT SYMMETRY FIXES
+   =========================================== */
+
+@media (max-width: 640px) {
+  /* Ensure consistent spacing in mobile layouts */
+  .mobile-gap-3 {
+    gap: 0.75rem;
+  }
+
+  .mobile-gap-4 {
+    gap: 1rem;
+  }
+
+  /* Center-align elements for better balance */
+  .mobile-center {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Consistent card heights */
+  .mobile-card-min-h {
+    min-height: 200px;
+  }
+
+  /* Balanced grid gaps */
+  .grid.mobile-balanced {
+    gap: 0.75rem;
+  }
+
+  /* Stats row wrapping */
+  .stats-row {
+    justify-content: space-evenly;
+  }
+}

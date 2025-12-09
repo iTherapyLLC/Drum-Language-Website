@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useRef, useState, type ReactNode, type CSSProperties } from "react"
+import { useRef, useState, useEffect, type ReactNode, type CSSProperties } from "react"
 
 const RALLY_BLUE = "#005EB8"
 
@@ -18,9 +18,11 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
   const cardRef = useRef<HTMLDivElement>(null)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
+  const isTouchDeviceRef = useRef(false)
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!cardRef.current) return
+    if (!cardRef.current || isTouchDeviceRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
@@ -41,6 +43,42 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
     setIsHovered(false)
   }
 
+  // Touch support for mobile - simpler effect without complex 3D
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!cardRef.current) return
+    isTouchDeviceRef.current = true
+    setIsHovered(true)
+
+    const rect = cardRef.current.getBoundingClientRect()
+    const touch = e.touches[0]
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+
+    // Simpler effect for touch - just glow and slight scale
+    cardRef.current.style.transform = "scale(1.02)"
+    setGlowPosition({ x: x * 100, y: y * 100 })
+  }
+
+  const handleTouchEnd = () => {
+    if (!cardRef.current) return
+    cardRef.current.style.transform = "scale(1)"
+    
+    // Clear any existing timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current)
+    }
+    touchTimeoutRef.current = setTimeout(() => setIsHovered(false), 300)
+  }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
     <div
       ref={cardRef}
@@ -48,6 +86,8 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{
         transformStyle: "preserve-3d",
         ...style,

@@ -40,6 +40,10 @@ export function SheenEffect() {
 
   // Mouse move handler for sheen effect
   useEffect(() => {
+    let rafId: number | null = null
+    let touchPending = false
+    let touchEndTimeout: NodeJS.Timeout | null = null
+
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 100
       const y = (e.clientY / window.innerHeight) * 100
@@ -62,12 +66,50 @@ export function SheenEffect() {
       setIsActive(false)
     }
 
+    // Touch handler for mobile devices - throttled with requestAnimationFrame
+    const handleTouchMove = (e: TouchEvent) => {
+      if (touchPending) return
+      touchPending = true
+
+      rafId = requestAnimationFrame(() => {
+        const touch = e.touches[0]
+        const x = (touch.clientX / window.innerWidth) * 100
+        const y = (touch.clientY / window.innerHeight) * 100
+        setMousePos({ x, y })
+        setIsActive(true)
+
+        // Update CSS variables for global sheen
+        document.documentElement.style.setProperty("--mouse-x", `${x}%`)
+        document.documentElement.style.setProperty("--mouse-y", `${y}%`)
+        touchPending = false
+      })
+    }
+
+    const handleTouchEnd = () => {
+      // Clear any existing timeout
+      if (touchEndTimeout) {
+        clearTimeout(touchEndTimeout)
+      }
+      // Keep sheen active briefly after touch ends
+      touchEndTimeout = setTimeout(() => setIsActive(false), 500)
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
     document.addEventListener("mouseleave", handleMouseLeave)
+    window.addEventListener("touchmove", handleTouchMove, { passive: true })
+    window.addEventListener("touchend", handleTouchEnd)
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseleave", handleMouseLeave)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+      }
+      if (touchEndTimeout !== null) {
+        clearTimeout(touchEndTimeout)
+      }
     }
   }, [])
 

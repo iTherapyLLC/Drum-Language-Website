@@ -16,16 +16,58 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Matthew Guggemos | Communication Scientist & Technologist",
+  title: "Matthew Guggemos | Intelligence Conductor",
   description:
-    "Communication scientist and licensed speech-language pathologist. Co-founder of iTherapy. Building AI tools that help people connect. Also a drummer with international touring and recording credits.",
+    "Communication scientist and licensed speech-language pathologist. Co-founder of iTherapy. Building AI tools that help people connect. Professional drummer with international touring and recording credits. Orchestrating AI, speech science, and rhythm into breakthrough solutions.",
   generator: "v0.app",
-  keywords: ["AI", "Speech Pathology", "Communication Science", "Music", "Drummer", "iTherapy", "Technology"],
+  keywords: [
+    "AI",
+    "Speech Pathology",
+    "Communication Science",
+    "Music",
+    "Drummer",
+    "iTherapy",
+    "Technology",
+    "Drum Language",
+    "Intelligence Conductor",
+    "Speech Therapy",
+    "Jazz",
+    "Machine Learning",
+  ],
   authors: [{ name: "Matthew Guggemos" }],
+  creator: "Matthew Guggemos",
+  publisher: "iTherapy LLC",
   icons: {
     icon: "/favicon.ico",
     apple: "/favicon.ico",
   },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://drumlanguage.com",
+    siteName: "Drum Language",
+    title: "Matthew Guggemos | Intelligence Conductor",
+    description:
+      "Where AI meets speech science meets rhythm. Communication scientist, technologist, and professional drummer orchestrating breakthrough solutions.",
+    images: [
+      {
+        url: "/og-drum-language.png",
+        width: 1200,
+        height: 630,
+        alt: "Drum Language - A swirling symphony of music, technology, and communication",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Matthew Guggemos | Intelligence Conductor",
+    description:
+      "Where AI meets speech science meets rhythm. Communication scientist, technologist, and professional drummer.",
+    images: ["/og-drum-language.png"],
+    creator: "@drumlanguage",
+  },
+  metadataBase: new URL("https://drumlanguage.com"),
 }
 
 export const viewport: Viewport = {

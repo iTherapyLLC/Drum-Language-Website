@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Matthew Guggemos | Intelligence Conductor",
+  title: "Matthew Guggemos | Systems Conductor",
   description:
     "Communication scientist and licensed speech-language pathologist. Co-founder of iTherapy. Building AI tools that help people connect. Professional drummer with international touring and recording credits. Orchestrating AI, speech science, and rhythm into breakthrough solutions.",
   generator: "v0.app",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "iTherapy",
     "Technology",
     "Drum Language",
-    "Intelligence Conductor",
+    "Systems Conductor",
     "Speech Therapy",
     "Jazz",
     "Machine Learning",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://drumlanguage.com",
     siteName: "Drum Language",
-    title: "Matthew Guggemos | Intelligence Conductor",
+    title: "Matthew Guggemos | Systems Conductor",
     description:
       "Where AI meets speech science meets rhythm. Communication scientist, technologist, and professional drummer orchestrating breakthrough solutions.",
     images: [
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Matthew Guggemos | Intelligence Conductor",
+    title: "Matthew Guggemos | Systems Conductor",
     description:
       "Where AI meets speech science meets rhythm. Communication scientist, technologist, and professional drummer.",
     images: ["/og-drum-language.png"],

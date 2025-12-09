@@ -78,30 +78,30 @@ export default function AIGalleryPage() {
     >
       <div className="max-w-6xl mx-auto px-4">
         {/* Key Metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-16">
           <Card className="text-center">
-            <CardContent className="pt-6">
+            <CardContent className="pt-5 sm:pt-6">
               <DollarSign className="w-8 h-8 text-primary mx-auto mb-3" />
               <p className="font-serif text-2xl font-bold text-foreground">$2.2M+</p>
               <p className="text-sm text-muted-foreground">Federal Grants</p>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="pt-6">
+            <CardContent className="pt-5 sm:pt-6">
               <Award className="w-8 h-8 text-primary mx-auto mb-3" />
               <p className="font-serif text-2xl font-bold text-foreground">10+</p>
               <p className="text-sm text-muted-foreground">Successful SBIRs</p>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="pt-6">
+            <CardContent className="pt-5 sm:pt-6">
               <Users className="w-8 h-8 text-primary mx-auto mb-3" />
               <p className="font-serif text-2xl font-bold text-foreground">NSF + NIH</p>
               <p className="text-sm text-muted-foreground">Grant Partners</p>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="pt-6">
+            <CardContent className="pt-5 sm:pt-6">
               <Lightbulb className="w-8 h-8 text-primary mx-auto mb-3" />
               <p className="font-serif text-2xl font-bold text-foreground">Microsoft</p>
               <p className="text-sm text-muted-foreground">AI Partnership</p>
@@ -116,8 +116,8 @@ export default function AIGalleryPage() {
             {projects.map((project) => (
               <Card key={project.id} id={project.id} className="overflow-hidden">
                 <div className="grid lg:grid-cols-3">
-                  <div className="lg:col-span-2 p-6 lg:p-8">
-                    <div className="flex items-center gap-3 mb-4">
+                  <div className="lg:col-span-2 p-5 sm:p-6 lg:p-8">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
                       <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
                         {project.role}
                       </span>
@@ -145,7 +145,7 @@ export default function AIGalleryPage() {
                       </Button>
                     )}
                   </div>
-                  <div className="bg-muted/50 p-6 lg:p-8 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-border">
+                  <div className="bg-muted/50 p-5 sm:p-6 lg:p-8 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-border">
                     <p className="text-sm text-muted-foreground mb-2">Impact</p>
                     <p className="font-serif text-3xl font-bold text-primary">{project.impact}</p>
                   </div>

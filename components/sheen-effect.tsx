@@ -42,6 +42,7 @@ export function SheenEffect() {
   useEffect(() => {
     let rafId: number | null = null
     let touchPending = false
+    let touchEndTimeout: NodeJS.Timeout | null = null
 
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 100
@@ -85,8 +86,12 @@ export function SheenEffect() {
     }
 
     const handleTouchEnd = () => {
+      // Clear any existing timeout
+      if (touchEndTimeout) {
+        clearTimeout(touchEndTimeout)
+      }
       // Keep sheen active briefly after touch ends
-      setTimeout(() => setIsActive(false), 500)
+      touchEndTimeout = setTimeout(() => setIsActive(false), 500)
     }
 
     window.addEventListener("mousemove", handleMouseMove)
@@ -101,6 +106,9 @@ export function SheenEffect() {
       window.removeEventListener("touchend", handleTouchEnd)
       if (rafId !== null) {
         cancelAnimationFrame(rafId)
+      }
+      if (touchEndTimeout !== null) {
+        clearTimeout(touchEndTimeout)
       }
     }
   }, [])

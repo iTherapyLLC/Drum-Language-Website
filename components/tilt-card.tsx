@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useRef, useState, type ReactNode, type CSSProperties } from "react"
+import { useRef, useState, useEffect, type ReactNode, type CSSProperties } from "react"
 
 const RALLY_BLUE = "#005EB8"
 
@@ -19,6 +19,7 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
   const isTouchDeviceRef = useRef(false)
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current || isTouchDeviceRef.current) return
@@ -61,8 +62,22 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
   const handleTouchEnd = () => {
     if (!cardRef.current) return
     cardRef.current.style.transform = "scale(1)"
-    setTimeout(() => setIsHovered(false), 300)
+    
+    // Clear any existing timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current)
+    }
+    touchTimeoutRef.current = setTimeout(() => setIsHovered(false), 300)
   }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <div

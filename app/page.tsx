@@ -786,6 +786,7 @@ function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]
   )
 }
 
+// /** rest of code here **/
 // CHANGE: Complete rewrite of CredentialChip with mind-blowing atomic orbital animation
 function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
@@ -1188,7 +1189,7 @@ function SpeakingSection() {
                   <img
                     src="/images/national-20academies-20image.jpg"
                     alt="National Academies Workshop - Exploring the Bidirectional Relationship Between AI and Neuroscience"
-                    className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
 
@@ -1601,109 +1602,6 @@ function DrummingPrincipleCard({
 
   const Icon = principle.icon
 
-  return (
-    <div
-      ref={cardRef}
-      className="relative group cursor-pointer"
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false)
-        setMousePosition({ x: 0.5, y: 0.5 })
-      }}
-      style={{
-        transform: isHovered
-          ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -10}deg) rotateY(${(mousePosition.x - 0.5) * 10}deg) scale(1.08)`
-          : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
-        transition: "transform 0.3s ease-out",
-        zIndex: isHovered ? 30 : 10 - index,
-      }}
-    >
-      {/* Outer glow - pointer-events-none so it doesn't block adjacent cards */}
-      <div
-        className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}40, ${STITCH_RED}20, transparent 70%)`,
-        }}
-      />
-
-      {/* Border glow - pointer-events-none */}
-      <div
-        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}, ${STITCH_RED}, ${RALLY_BLUE})`,
-        }}
-      />
-
-      {/* Card content - overflow-hidden to contain text, solid background */}
-      <div className="relative p-5 rounded-2xl border border-white/10 bg-gray-900 backdrop-blur-sm h-full w-[200px] sm:w-[220px] overflow-hidden transition-all duration-300 group-hover:bg-gray-800 group-hover:border-transparent group-hover:shadow-2xl">
-        {/* Cursor-following light */}
-        <div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}15, transparent 50%)`,
-          }}
-        />
-
-        {/* Icon with animated background */}
-        <div className="relative mb-3">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-            style={{
-              backgroundColor: isHovered ? `${RALLY_BLUE}30` : `${RALLY_BLUE}20`,
-              boxShadow: isHovered ? `0 0 30px ${RALLY_BLUE}40` : "none",
-            }}
-          >
-            <Icon size={24} style={{ color: RALLY_BLUE }} />
-          </div>
-          {/* Icon glow pulse */}
-          <div
-            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 animate-pulse pointer-events-none"
-            style={{
-              background: `radial-gradient(circle, ${RALLY_BLUE}20, transparent 70%)`,
-            }}
-          />
-        </div>
-
-        {/* Title - ensure it doesn't overflow */}
-        <h4 className="font-bold text-white text-base mb-2 transition-colors duration-300 group-hover:text-[#4da3ff] line-clamp-2">
-          {principle.title}
-        </h4>
-
-        {/* Description - line clamp for consistent height */}
-        <p className="text-sm text-gray-300 leading-relaxed transition-colors duration-300 group-hover:text-gray-200 line-clamp-3">
-          {principle.description}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function SkiingPrincipleCard({
-  principle,
-  index,
-}: {
-  principle: {
-    title: string
-    description: string
-    icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
-  }
-  index: number
-}) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width
-    const y = (e.clientY - rect.top) / rect.height
-    setMousePosition({ x, y })
-  }
-
-  const Icon = principle.icon
-
   // Ice/snow colors for skiing theme
   const ICE_BLUE = "#38BDF8"
   const SNOW_WHITE = "#F0F9FF"
@@ -1733,12 +1631,6 @@ function SkiingPrincipleCard({
           setMousePosition({ x: 0.5, y: 0.5 })
         }}
         style={{
-          width: CARD_WIDTH,
-          minWidth: CARD_WIDTH,
-          maxWidth: CARD_WIDTH,
-          height: CARD_HEIGHT,
-          minHeight: CARD_HEIGHT,
-          maxHeight: CARD_HEIGHT,
           transform: isHovered
             ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -8}deg) rotateY(${(mousePosition.x - 0.5) * 8}deg) scale(1.05)`
             : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
@@ -1828,6 +1720,167 @@ function SkiingPrincipleCard({
 
           {/* Description */}
           <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{principle.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// CHANGE: SkiingPrincipleCard component added with mobile optimization
+function SkiingPrincipleCard({
+  principle,
+  index,
+}: {
+  principle: {
+    title: string
+    description: string
+    icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  }
+  index: number
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+  const [isHovered, setIsHovered] = useState(false)
+  const [isTouched, setIsTouched] = useState(false)
+
+  const isActive = isHovered || isTouched
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+    setMousePosition({ x, y })
+  }
+
+  const handleTouchStart = () => {
+    setIsTouched(true)
+  }
+
+  const handleTouchEnd = () => {
+    setTimeout(() => setIsTouched(false), 300)
+  }
+
+  const Icon = principle.icon
+
+  // Ice/snow colors for skiing theme
+  const ICE_BLUE = "#38BDF8"
+  const SNOW_WHITE = "#F0F9FF"
+
+  // Responsive card dimensions
+  const CARD_WIDTH_MOBILE = 160
+  const CARD_WIDTH_DESKTOP = 200
+  const CARD_HEIGHT_MOBILE = 160
+  const CARD_HEIGHT_DESKTOP = 180
+
+  return (
+    <div className="p-2 sm:p-4 flex-grow-0 flex-shrink-0">
+      <div
+        ref={cardRef}
+        className="relative group cursor-pointer w-[160px] h-[160px] sm:w-[200px] sm:h-[180px]"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false)
+          setMousePosition({ x: 0.5, y: 0.5 })
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          transform: isActive
+            ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -8}deg) rotateY(${(mousePosition.x - 0.5) * 8}deg) scale(1.05)`
+            : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+          transition: "transform 0.2s ease-out",
+          zIndex: isActive ? 10 : 1,
+        }}
+      >
+        {/* Outer glow - icy blue shimmer */}
+        <div
+          className="absolute -inset-3 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}50, ${RALLY_BLUE}30, transparent 70%)`,
+            opacity: isActive ? 1 : 0,
+          }}
+        />
+
+        {/* Animated border - frost effect */}
+        <div
+          className="absolute -inset-[2px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}, ${SNOW_WHITE}, ${RALLY_BLUE}, ${ICE_BLUE})`,
+            opacity: isActive ? 1 : 0,
+          }}
+        />
+
+        {/* Card content */}
+        <div
+          className="relative p-3 sm:p-5 rounded-2xl border border-sky-100 bg-white transition-all duration-300 group-hover:border-transparent overflow-hidden h-full"
+          style={{
+            boxShadow: isActive
+              ? `0 20px 40px -10px ${ICE_BLUE}30, 0 0 30px ${ICE_BLUE}20`
+              : "0 4px 20px rgba(0,0,0,0.08)",
+          }}
+        >
+          {/* Cursor-following light - snow sparkle effect */}
+          <div
+            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            style={{
+              background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}25, transparent 50%)`,
+              opacity: isActive ? 1 : 0,
+            }}
+          />
+
+          {/* Snowflake particles on hover */}
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
+                                radial-gradient(circle at 80% 20%, white 1px, transparent 1px),
+                                radial-gradient(circle at 40% 70%, white 1px, transparent 1px),
+                                radial-gradient(circle at 70% 80%, white 1px, transparent 1px)`,
+              backgroundSize: "100% 100%",
+              opacity: isActive ? 0.3 : 0,
+            }}
+          />
+
+          {/* Icon with animated background */}
+          <div className="relative mb-2 sm:mb-3">
+            <div
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+              style={{
+                backgroundColor: isActive ? `${ICE_BLUE}30` : `${RALLY_BLUE}10`,
+                boxShadow: isActive ? `0 0 25px ${ICE_BLUE}50, inset 0 0 15px ${SNOW_WHITE}30` : "none",
+              }}
+            >
+              <Icon
+                size={20}
+                className="sm:w-6 sm:h-6"
+                style={{ color: isActive ? ICE_BLUE : RALLY_BLUE, transition: "color 0.3s" }}
+              />
+            </div>
+            {/* Icon glow ring */}
+            <div
+              className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${ICE_BLUE}30, transparent 70%)`,
+                animation: isActive ? "pulse 2s ease-in-out infinite" : "none",
+                opacity: isActive ? 1 : 0,
+              }}
+            />
+          </div>
+
+          {/* Title with hover color shift */}
+          <h4
+            className="font-semibold text-sm sm:text-base mb-1 sm:mb-2 transition-colors duration-300"
+            style={{ color: isActive ? ICE_BLUE : "#0a0a0a" }}
+          >
+            {principle.title}
+          </h4>
+
+          {/* Description */}
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+            {principle.description}
+          </p>
         </div>
       </div>
     </div>

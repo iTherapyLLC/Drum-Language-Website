@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { X, Send, ArrowRight, Volume2, VolumeX, Loader2, Mic, MicOff } from "lucide-react"
+import { X, Send, ArrowRight, Volume2, VolumeX, Loader2, Mic, MicOff, Music, Pause } from "lucide-react"
 import Image from "next/image"
+import { useMusic } from "@/lib/music-context"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -51,6 +52,8 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
   const [speechSupported, setSpeechSupported] = useState(false)
   const recognitionRef = useRef<any>(null)
 
+  const { isPlaying: isMusicPlaying, toggle: toggleMusic, volume: musicVolume, setVolume: setMusicVolume } = useMusic()
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -68,7 +71,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
             .join("")
           setInputValue(transcript)
 
-          // If this is a final result, stop listening
           if (event.results[0].isFinal) {
             setIsListening(false)
           }
@@ -136,9 +138,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
   }, [])
 
   const speakMessage = async (message: Message) => {
-    console.log("[v0] speakMessage called for:", message.id)
-
-    // Toggle off if already speaking this message
     if (speakingMessageId === message.id) {
       if (audioRef.current) {
         audioRef.current.pause()
@@ -148,7 +147,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       return
     }
 
-    // Stop any existing playback
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current = null
@@ -164,8 +162,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
         body: JSON.stringify({ text: message.content }),
       })
 
-      console.log("[v0] Speak API response:", response.status)
-
       if (!response.ok) {
         const errorText = await response.text()
         console.error("[v0] Speak API error:", errorText)
@@ -173,19 +169,16 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       }
 
       const audioBlob = await response.blob()
-      console.log("[v0] Audio blob size:", audioBlob.size)
 
       if (audioBlob.size === 0) {
         throw new Error("Empty audio response")
       }
 
-      // Create audio element and play
       const audioUrl = URL.createObjectURL(audioBlob)
       const audio = new Audio(audioUrl)
       audioRef.current = audio
 
       audio.onended = () => {
-        console.log("[v0] Audio ended")
         setSpeakingMessageId(null)
         URL.revokeObjectURL(audioUrl)
       }
@@ -197,7 +190,6 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
       }
 
       await audio.play()
-      console.log("[v0] Audio playing")
     } catch (error) {
       console.error("[v0] speakMessage error:", error)
       setSpeakingMessageId(null)
@@ -371,6 +363,15 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={toggleMusic}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                isMusicPlaying ? "bg-white/30" : "bg-white/10 hover:bg-white/20"
+              }`}
+              title={isMusicPlaying ? "Pause theme music" : "Play theme music"}
+            >
+              {isMusicPlaying ? <Pause className="w-4 h-4 text-white" /> : <Music className="w-4 h-4 text-white/70" />}
+            </button>
+            <button
               onClick={() => setAutoSpeak(!autoSpeak)}
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
                 autoSpeak ? "bg-white/30" : "bg-white/10 hover:bg-white/20"
@@ -405,6 +406,16 @@ export function AIDocent({ onNavigate, onHighlightProject }: DocentProps) {
                 Welcome to the exhibit. I'm the Drum Language Docent. There's a lot here: tech, music, the physical
                 practice side. Where do you want to start?
               </p>
+
+              {!isMusicPlaying && (
+                <button
+                  onClick={toggleMusic}
+                  className="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-[#005EB8]/10 text-[#005EB8] hover:bg-[#005EB8]/20 transition-colors"
+                >
+                  <Music className="w-3.5 h-3.5" />
+                  Play the theme song while you explore
+                </button>
+              )}
 
               <div className="grid grid-cols-2 gap-2 mt-4">
                 {quickActions.map((action) => (

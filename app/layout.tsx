@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { DM_Sans, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { MusicProvider } from "@/lib/music-context"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -44,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased">
-        {children}
+        <MusicProvider>{children}</MusicProvider>
         <Analytics />
       </body>
     </html>

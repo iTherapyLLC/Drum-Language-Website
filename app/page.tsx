@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
+import { ThemeMusicPlayer } from "@/components/theme-music-player"
 import { VideoPreview } from "@/components/video-preview"
 import { TiltCard } from "@/components/tilt-card"
 import { RevealOnScroll } from "@/components/reveal-on-scroll"
@@ -43,8 +44,8 @@ import Image from "next/image"
 import { SwirledCard } from "@/components/swirled-card"
 import { ContactForm } from "@/components/contact-form"
 import { AnimatedProfile } from "@/components/animated-profile"
-import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
 import { useTouchHover } from "@/hooks/use-touch-hover"
+import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -334,6 +335,7 @@ const navItems = [
   { label: "Projects", section: "projects" },
   { label: "Music", section: "music" },
   { label: "Speaking", section: "speaking" },
+  { label: "Teaching", section: "harmonized-learning" },
   { label: "Philosophy", section: "philosophy" },
   { label: "Skiing", section: "skiing" },
   { label: "BJJ", section: "bjj" },
@@ -784,10 +786,27 @@ function FeaturedAlbumCard({ album, index }: { album: (typeof featuredAlbums)[0]
   )
 }
 
+// CHANGE: Complete rewrite of CredentialChip with mind-blowing atomic orbital animation
 function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mouseAngle, setMouseAngle] = useState(0)
   const chipRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const animationRef = useRef<number | null>(null)
+  const particlesRef = useRef<
+    Array<{
+      angle: number
+      radius: number
+      speed: number
+      size: number
+      opacity: number
+      trail: Array<{ x: number; y: number; opacity: number }>
+      orbitTilt: number
+      orbitRotation: number
+      color: string
+    }>
+  >([])
 
   // Icons for each credential type
   const getIcon = () => {
@@ -800,6 +819,182 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
     return <Star size={20} />
   }
 
+  // Initialize particles for orbital animation
+  useEffect(() => {
+    const colors = [RALLY_BLUE, RED_STITCH, "#00D4FF", "#FF6B6B", "#4ECDC4", "#FFE66D"]
+    const particles: typeof particlesRef.current = []
+
+    // Create multiple orbital shells
+    const shells = [
+      { count: 6, baseRadius: 45, speedMult: 1.2 },
+      { count: 8, baseRadius: 65, speedMult: 0.8 },
+      { count: 4, baseRadius: 85, speedMult: 1.5 },
+    ]
+
+    shells.forEach((shell, shellIndex) => {
+      for (let i = 0; i < shell.count; i++) {
+        particles.push({
+          angle: (i / shell.count) * Math.PI * 2 + Math.random() * 0.5,
+          radius: shell.baseRadius + Math.random() * 10 - 5,
+          speed: (0.02 + Math.random() * 0.015) * shell.speedMult * (Math.random() > 0.5 ? 1 : -1),
+          size: 2 + Math.random() * 2,
+          opacity: 0.6 + Math.random() * 0.4,
+          trail: [],
+          orbitTilt: (shellIndex * 60 + Math.random() * 30) * (Math.PI / 180),
+          orbitRotation: shellIndex * 45 * (Math.PI / 180),
+          color: colors[Math.floor(Math.random() * colors.length)],
+        })
+      }
+    })
+
+    particlesRef.current = particles
+  }, [])
+
+  // Animate the orbital particles
+  useEffect(() => {
+    if (!isHovered || !canvasRef.current) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      return
+    }
+
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const centerX = canvas.width / 2
+    const centerY = canvas.height / 2
+    let time = 0
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      time += 0.016
+
+      // Draw quantum probability cloud
+      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100)
+      gradient.addColorStop(0, `${RALLY_BLUE}15`)
+      gradient.addColorStop(0.5, `${RALLY_BLUE}08`)
+      gradient.addColorStop(1, "transparent")
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      // Draw energy waves emanating from center
+      for (let w = 0; w < 3; w++) {
+        const waveRadius = (time * 30 + w * 40) % 120
+        const waveOpacity = Math.max(0, 1 - waveRadius / 120) * 0.3
+        ctx.beginPath()
+        ctx.arc(centerX, centerY, waveRadius, 0, Math.PI * 2)
+        ctx.strokeStyle = `rgba(0, 94, 184, ${waveOpacity})`
+        ctx.lineWidth = 1.5
+        ctx.stroke()
+      }
+
+      // Draw orbital paths (faint)
+      const orbits = [45, 65, 85]
+      orbits.forEach((radius, i) => {
+        ctx.save()
+        ctx.translate(centerX, centerY)
+        ctx.rotate(i * (Math.PI / 6))
+        ctx.scale(1, 0.4 + i * 0.1)
+        ctx.beginPath()
+        ctx.arc(0, 0, radius, 0, Math.PI * 2)
+        ctx.strokeStyle = `${RALLY_BLUE}20`
+        ctx.lineWidth = 1
+        ctx.stroke()
+        ctx.restore()
+      })
+
+      // Update and draw particles with trails
+      particlesRef.current.forEach((p) => {
+        p.angle += p.speed
+
+        // Calculate 3D position with orbital tilt
+        const x3d = Math.cos(p.angle) * p.radius
+        const y3d = Math.sin(p.angle) * p.radius * Math.cos(p.orbitTilt)
+        const z3d = Math.sin(p.angle) * p.radius * Math.sin(p.orbitTilt)
+
+        // Apply rotation and project to 2D
+        const rotatedX = x3d * Math.cos(p.orbitRotation) - z3d * Math.sin(p.orbitRotation)
+        const rotatedZ = x3d * Math.sin(p.orbitRotation) + z3d * Math.cos(p.orbitRotation)
+
+        const perspective = 200 / (200 + rotatedZ)
+        const screenX = centerX + rotatedX * perspective
+        const screenY = centerY + y3d * perspective
+
+        // Add to trail
+        p.trail.unshift({ x: screenX, y: screenY, opacity: 1 })
+        if (p.trail.length > 12) p.trail.pop()
+
+        // Draw trail with gradient
+        if (p.trail.length > 1) {
+          for (let t = 0; t < p.trail.length - 1; t++) {
+            const trailOpacity = (1 - t / p.trail.length) * p.opacity * 0.6
+            ctx.beginPath()
+            ctx.moveTo(p.trail[t].x, p.trail[t].y)
+            ctx.lineTo(p.trail[t + 1].x, p.trail[t + 1].y)
+            ctx.strokeStyle =
+              p.color +
+              Math.floor(trailOpacity * 255)
+                .toString(16)
+                .padStart(2, "0")
+            ctx.lineWidth = p.size * perspective * (1 - t / p.trail.length)
+            ctx.lineCap = "round"
+            ctx.stroke()
+          }
+        }
+
+        // Draw particle with glow
+        const particleSize = p.size * perspective
+        const depth = (rotatedZ + p.radius) / (p.radius * 2)
+        const finalOpacity = p.opacity * (0.5 + depth * 0.5)
+
+        // Outer glow
+        const glowGradient = ctx.createRadialGradient(screenX, screenY, 0, screenX, screenY, particleSize * 4)
+        glowGradient.addColorStop(
+          0,
+          p.color +
+            Math.floor(finalOpacity * 100)
+              .toString(16)
+              .padStart(2, "0"),
+        )
+        glowGradient.addColorStop(1, "transparent")
+        ctx.fillStyle = glowGradient
+        ctx.fillRect(screenX - particleSize * 4, screenY - particleSize * 4, particleSize * 8, particleSize * 8)
+
+        // Core particle
+        ctx.beginPath()
+        ctx.arc(screenX, screenY, particleSize, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${finalOpacity})`
+        ctx.fill()
+        ctx.beginPath()
+        ctx.arc(screenX, screenY, particleSize * 0.6, 0, Math.PI * 2)
+        ctx.fillStyle = p.color
+        ctx.fill()
+      })
+
+      // Draw nucleus glow at center
+      const nucleusGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 25)
+      const pulseIntensity = 0.3 + Math.sin(time * 3) * 0.1
+      nucleusGradient.addColorStop(0, `rgba(0, 94, 184, ${pulseIntensity})`)
+      nucleusGradient.addColorStop(0.5, `rgba(220, 38, 38, ${pulseIntensity * 0.5})`)
+      nucleusGradient.addColorStop(1, "transparent")
+      ctx.fillStyle = nucleusGradient
+      ctx.beginPath()
+      ctx.arc(centerX, centerY, 25, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    animate()
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [isHovered])
+
   // Magnetic tilt effect on mouse move
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!chipRef.current) return
@@ -807,6 +1002,10 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
     const x = (e.clientX - rect.left - rect.width / 2) / 10
     const y = (e.clientY - rect.top - rect.height / 2) / 10
     setMousePosition({ x, y })
+
+    // Calculate angle for particle attraction
+    const angle = Math.atan2(e.clientY - rect.top - rect.height / 2, e.clientX - rect.left - rect.width / 2)
+    setMouseAngle(angle)
   }
 
   const handleMouseLeave = () => {
@@ -817,27 +1016,43 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
   const content = (
     <div
       ref={chipRef}
-      className="credential-chip relative text-center p-6 rounded-2xl transition-all duration-500 cursor-pointer overflow-hidden group/chip"
+      className="credential-chip relative text-center p-6 rounded-2xl transition-all duration-500 cursor-pointer overflow-visible group/chip"
       style={{
         animationDelay: `${index * 50}ms`,
-        background: isHovered ? `linear-gradient(135deg, ${RALLY_BLUE}15, ${RED_STITCH}10)` : "white",
+        background: isHovered ? `linear-gradient(135deg, ${RALLY_BLUE}08, ${RED_STITCH}05)` : "white",
         transform: isHovered
-          ? `perspective(1000px) rotateX(${-mousePosition.y}deg) rotateY(${mousePosition.x}deg) scale(1.05)`
+          ? `perspective(1000px) rotateX(${-mousePosition.y}deg) rotateY(${mousePosition.x}deg) scale(1.08)`
           : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
         boxShadow: isHovered
-          ? `0 20px 40px rgba(0,94,184,0.2), 0 0 0 2px ${RALLY_BLUE}40, inset 0 0 30px rgba(0,94,184,0.05)`
+          ? `0 25px 60px rgba(0,94,184,0.25), 0 0 0 2px ${RALLY_BLUE}50, 0 0 80px rgba(0,94,184,0.15)`
           : "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05)",
+        zIndex: isHovered ? 50 : 1,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Atomic orbital canvas - positioned behind content */}
+      <canvas
+        ref={canvasRef}
+        width={240}
+        height={240}
+        className="absolute pointer-events-none transition-opacity duration-500"
+        style={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          opacity: isHovered ? 1 : 0,
+          zIndex: 0,
+        }}
+      />
+
       {/* Animated border gradient */}
       <div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        className="absolute inset-0 rounded-2xl opacity-0 group-hover/chip:opacity-100 transition-opacity duration-500"
         style={{
-          background: `linear-gradient(90deg, ${RALLY_BLUE}, ${RED_STITCH}, ${RALLY_BLUE})`,
-          backgroundSize: "200% 100%",
+          background: `linear-gradient(90deg, ${RALLY_BLUE}, ${RED_STITCH}, #00D4FF, ${RALLY_BLUE})`,
+          backgroundSize: "300% 100%",
           animation: isHovered ? "shimmer 2s linear infinite" : "none",
           padding: "2px",
           WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -846,43 +1061,49 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
         }}
       />
 
-      {/* Floating particles effect */}
-      {isHovered && (
-        <>
-          <div
-            className="absolute top-2 left-4 w-1 h-1 rounded-full animate-ping"
-            style={{ backgroundColor: RALLY_BLUE, animationDuration: "1s" }}
-          />
-          <div
-            className="absolute bottom-4 right-6 w-1.5 h-1.5 rounded-full animate-ping"
-            style={{ backgroundColor: RED_STITCH, animationDuration: "1.5s", animationDelay: "0.3s" }}
-          />
-          <div
-            className="absolute top-1/2 right-3 w-1 h-1 rounded-full animate-ping"
-            style={{ backgroundColor: RALLY_BLUE, animationDuration: "1.2s", animationDelay: "0.6s" }}
-          />
-        </>
-      )}
-
-      {/* Icon that reveals on hover */}
+      {/* Icon that reveals on hover - THE NUCLEUS */}
       <div
-        className="mx-auto mb-3 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500"
+        className="relative z-10 mx-auto mb-3 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500"
         style={{
           backgroundColor: isHovered ? RALLY_BLUE : `${RALLY_BLUE}10`,
           color: isHovered ? "white" : RALLY_BLUE,
-          transform: isHovered ? "translateY(0) scale(1)" : "translateY(-5px) scale(0.9)",
+          transform: isHovered ? "translateY(0) scale(1.1)" : "translateY(-5px) scale(0.9)",
           opacity: isHovered ? 1 : 0.7,
+          boxShadow: isHovered ? `0 0 30px ${RALLY_BLUE}60, 0 0 60px ${RALLY_BLUE}30` : "none",
         }}
       >
         {getIcon()}
+        {/* Nucleus pulse rings */}
+        {isHovered && (
+          <>
+            <div
+              className="absolute inset-0 rounded-xl animate-ping"
+              style={{
+                backgroundColor: RALLY_BLUE,
+                opacity: 0.3,
+                animationDuration: "1.5s",
+              }}
+            />
+            <div
+              className="absolute inset-0 rounded-xl animate-ping"
+              style={{
+                backgroundColor: RALLY_BLUE,
+                opacity: 0.2,
+                animationDuration: "2s",
+                animationDelay: "0.5s",
+              }}
+            />
+          </>
+        )}
       </div>
 
       {/* Label with underline animation */}
-      <div className="relative inline-block mb-2">
+      <div className="relative z-10 inline-block mb-2">
         <p
           className="font-semibold text-base transition-all duration-300"
           style={{
             color: isHovered ? RALLY_BLUE : "inherit",
+            textShadow: isHovered ? `0 0 20px ${RALLY_BLUE}40` : "none",
           }}
         >
           {cred.label}
@@ -893,13 +1114,14 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
             backgroundColor: RALLY_BLUE,
             width: isHovered ? "100%" : "0%",
             transform: "translateX(-50%)",
+            boxShadow: isHovered ? `0 0 10px ${RALLY_BLUE}` : "none",
           }}
         />
       </div>
 
       {/* Detail text */}
       <p
-        className="text-sm transition-all duration-300"
+        className="relative z-10 text-sm transition-all duration-300"
         style={{
           color: isHovered ? "#555" : "#888",
         }}
@@ -910,7 +1132,7 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
       {/* External link indicator that slides up */}
       {cred.url && (
         <div
-          className="mt-3 flex items-center justify-center gap-1 text-xs font-medium transition-all duration-500"
+          className="relative z-10 mt-3 flex items-center justify-center gap-1 text-xs font-medium transition-all duration-500"
           style={{
             color: RALLY_BLUE,
             opacity: isHovered ? 1 : 0,
@@ -922,15 +1144,7 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
         </div>
       )}
 
-      {/* Corner accent */}
-      <div
-        className="absolute -top-1 -right-1 w-8 h-8 transition-all duration-500"
-        style={{
-          background: `linear-gradient(135deg, transparent 50%, ${isHovered ? RALLY_BLUE : "transparent"} 50%)`,
-          opacity: isHovered ? 1 : 0,
-          borderRadius: "0 16px 0 0",
-        }}
-      />
+      {/* CHANGE: Removed the ugly corner accent/fold element that clashed with the atomic orbital design */}
     </div>
   )
 
@@ -982,35 +1196,37 @@ function SpeakingSection() {
                 <div className="flex-1 p-6 flex flex-col">
                   {/* Header with title and badge */}
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-all duration-300">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300">
                       National Academies Workshop
                     </h3>
                     <span
-                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300"
+                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:bg-white/20 group-hover:text-white"
                       style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
                     >
                       Invited Speaker
                     </span>
                     <ArrowRight
                       size={20}
-                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 ml-auto"
+                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
                       style={{ color: RALLY_BLUE }}
                     />
                   </div>
 
-                  {/* Subtitle */}
-                  <p className="text-lg text-foreground/80 transition-colors duration-300 mt-4">AI and Neuroscience</p>
+                  {/* Subtitle - white on hover */}
+                  <p className="text-lg text-foreground/80 group-hover:text-white transition-colors duration-300 mt-4">
+                    AI and Neuroscience
+                  </p>
 
-                  {/* Description */}
-                  <p className="text-sm sm:text-base text-muted-foreground mt-3 flex-1">
+                  {/* Description - white on hover */}
+                  <p className="text-sm sm:text-base text-muted-foreground group-hover:text-white/90 transition-colors duration-300 mt-3 flex-1">
                     Bidirectional Relationship Between AI and Neuroscience. October 2024 workshop exploring how advances
                     in AI and neuroscience inform each other.
                   </p>
 
-                  {/* Footer link */}
-                  <div className="mt-auto pt-4 border-t border-border/50 transition-colors duration-300">
+                  {/* Footer link - border and text white on hover */}
+                  <div className="mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
                     <span
-                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all duration-300"
+                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 group-hover:text-white transition-all duration-300"
                       style={{ color: RALLY_BLUE }}
                     >
                       View workshop
@@ -1046,36 +1262,38 @@ function SpeakingSection() {
                 <div className="flex-1 p-6 flex flex-col">
                   {/* Header with title and badge */}
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-all duration-300">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300">
                       Mensa Research Journal
                     </h3>
                     <span
-                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300"
-                      style={{ backgroundColor: `${RED_STITCH}15`, color: RED_STITCH }}
+                      className="px-2 py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:bg-white/20 group-hover:text-white"
+                      style={{ backgroundColor: `${STITCH_RED}15`, color: STITCH_RED }}
                     >
                       Guest Editor
                     </span>
                     <ArrowRight
                       size={20}
-                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 ml-auto"
-                      style={{ color: RED_STITCH }}
+                      className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto"
+                      style={{ color: STITCH_RED }}
                     />
                   </div>
 
-                  {/* Subtitle */}
-                  <p className="text-lg text-foreground/80 transition-colors duration-300 mt-4">Summer 2025 Edition</p>
+                  {/* Subtitle - white on hover */}
+                  <p className="text-lg text-foreground/80 group-hover:text-white transition-colors duration-300 mt-4">
+                    Summer 2025 Edition
+                  </p>
 
-                  {/* Description */}
-                  <p className="text-sm sm:text-base text-muted-foreground mt-3 flex-1">
+                  {/* Description - white on hover */}
+                  <p className="text-sm sm:text-base text-muted-foreground group-hover:text-white/90 transition-colors duration-300 mt-3 flex-1">
                     Guest Editor for Summer 2025 edition. Curating research at the intersection of intelligence,
                     technology, and human potential.
                   </p>
 
-                  {/* Footer link */}
-                  <div className="mt-auto pt-4 border-t border-border/50 transition-colors duration-300">
+                  {/* Footer link - border and text white on hover */}
+                  <div className="mt-auto pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
                     <span
-                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all duration-300"
-                      style={{ color: RED_STITCH }}
+                      className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 group-hover:text-white transition-all duration-300"
+                      style={{ color: RALLY_BLUE }}
                     >
                       Read Journal
                       <ExternalLink size={14} className="transition-all duration-500 group-hover:translate-x-1" />
@@ -1090,6 +1308,9 @@ function SpeakingSection() {
     </section>
   )
 }
+
+// FIX: Removed duplicate HarmonizedLearningSection function definition
+// The real HarmonizedLearningSection is now imported from components/harmonized-learning-section.tsx
 
 function PhilosophySection() {
   return (
@@ -1293,7 +1514,7 @@ function DrummingSection() {
         </RevealOnScroll>
 
         <div className="grid lg:grid-cols-2 gap-8 items-stretch text-left">
-          {/* Drum Video Card with interactive hover */}
+          {/* Drum Video Card with interactive animations */}
           <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
             <div className="h-full">
               <DrumVideoCard />
@@ -1335,11 +1556,17 @@ function DrummingSection() {
           </RevealOnScroll>
         </div>
 
+        {/* CHANGE: Update drumming cards container - use flex with negative margins for overlap, add z-index on hover */}
         <div className="mt-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 justify-items-center">
+          <div className="flex flex-wrap justify-center items-stretch">
             {drummingPrinciples.map((principle, index) => (
               <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
-                <DrummingPrincipleCard principle={principle} index={index} />
+                <div
+                  className="relative hover:z-20 transition-all duration-300"
+                  style={{ marginLeft: index > 0 ? "-20px" : "0" }}
+                >
+                  <DrummingPrincipleCard principle={principle} index={index} />
+                </div>
               </RevealOnScroll>
             ))}
           </div>
@@ -1386,29 +1613,30 @@ function DrummingPrincipleCard({
       }}
       style={{
         transform: isHovered
-          ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -10}deg) rotateY(${(mousePosition.x - 0.5) * 10}deg) scale(1.05)`
+          ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -10}deg) rotateY(${(mousePosition.x - 0.5) * 10}deg) scale(1.08)`
           : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
         transition: "transform 0.3s ease-out",
+        zIndex: isHovered ? 30 : 10 - index,
       }}
     >
-      {/* Outer glow ring */}
+      {/* Outer glow - pointer-events-none so it doesn't block adjacent cards */}
       <div
-        className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+        className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
         style={{
           background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}40, ${STITCH_RED}20, transparent 70%)`,
         }}
       />
 
-      {/* Border glow */}
+      {/* Border glow - pointer-events-none */}
       <div
-        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{
           background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}, ${STITCH_RED}, ${RALLY_BLUE})`,
         }}
       />
 
-      {/* Card content */}
-      <div className="relative p-6 rounded-2xl border border-white/10 bg-gray-900/90 backdrop-blur-sm h-full w-[220px] sm:w-[260px] transition-all duration-300 group-hover:bg-gray-800/90 group-hover:border-transparent">
+      {/* Card content - overflow-hidden to contain text, solid background */}
+      <div className="relative p-5 rounded-2xl border border-white/10 bg-gray-900 backdrop-blur-sm h-full w-[200px] sm:w-[220px] overflow-hidden transition-all duration-300 group-hover:bg-gray-800 group-hover:border-transparent group-hover:shadow-2xl">
         {/* Cursor-following light */}
         <div
           className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
@@ -1418,34 +1646,496 @@ function DrummingPrincipleCard({
         />
 
         {/* Icon with animated background */}
-        <div className="relative mb-4">
+        <div className="relative mb-3">
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+            className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
             style={{
               backgroundColor: isHovered ? `${RALLY_BLUE}30` : `${RALLY_BLUE}20`,
               boxShadow: isHovered ? `0 0 30px ${RALLY_BLUE}40` : "none",
             }}
           >
-            <Icon size={28} style={{ color: RALLY_BLUE }} />
+            <Icon size={24} style={{ color: RALLY_BLUE }} />
           </div>
           {/* Icon glow pulse */}
           <div
-            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 animate-pulse"
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 animate-pulse pointer-events-none"
             style={{
               background: `radial-gradient(circle, ${RALLY_BLUE}20, transparent 70%)`,
             }}
           />
         </div>
 
-        {/* Title */}
-        <h4 className="font-bold text-white text-lg mb-2 transition-colors duration-300 group-hover:text-[#4da3ff]">
+        {/* Title - ensure it doesn't overflow */}
+        <h4 className="font-bold text-white text-base mb-2 transition-colors duration-300 group-hover:text-[#4da3ff] line-clamp-2">
           {principle.title}
         </h4>
 
-        {/* Description */}
-        <p className="text-sm text-gray-300 leading-relaxed transition-colors duration-300 group-hover:text-gray-200">
+        {/* Description - line clamp for consistent height */}
+        <p className="text-sm text-gray-300 leading-relaxed transition-colors duration-300 group-hover:text-gray-200 line-clamp-3">
           {principle.description}
         </p>
+      </div>
+    </div>
+  )
+}
+
+function SkiingPrincipleCard({
+  principle,
+  index,
+}: {
+  principle: {
+    title: string
+    description: string
+    icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  }
+  index: number
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+    setMousePosition({ x, y })
+  }
+
+  const Icon = principle.icon
+
+  // Ice/snow colors for skiing theme
+  const ICE_BLUE = "#38BDF8"
+  const SNOW_WHITE = "#F0F9FF"
+
+  const CARD_WIDTH = 200
+  const CARD_HEIGHT = 180
+
+  return (
+    <div
+      className="p-4 flex-grow-0 flex-shrink-0"
+      style={{
+        width: CARD_WIDTH + 32,
+        minWidth: CARD_WIDTH + 32,
+        maxWidth: CARD_WIDTH + 32,
+        height: CARD_HEIGHT + 32,
+        minHeight: CARD_HEIGHT + 32,
+        maxHeight: CARD_HEIGHT + 32,
+      }}
+    >
+      <div
+        ref={cardRef}
+        className="relative group cursor-pointer"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false)
+          setMousePosition({ x: 0.5, y: 0.5 })
+        }}
+        style={{
+          width: CARD_WIDTH,
+          minWidth: CARD_WIDTH,
+          maxWidth: CARD_WIDTH,
+          height: CARD_HEIGHT,
+          minHeight: CARD_HEIGHT,
+          maxHeight: CARD_HEIGHT,
+          transform: isHovered
+            ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -8}deg) rotateY(${(mousePosition.x - 0.5) * 8}deg) scale(1.05)`
+            : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+          transition: "transform 0.2s ease-out",
+          zIndex: isHovered ? 10 : 1,
+        }}
+      >
+        {/* Outer glow - icy blue shimmer - contained within padding */}
+        <div
+          className="absolute -inset-3 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}50, ${RALLY_BLUE}30, transparent 70%)`,
+          }}
+        />
+
+        {/* Animated border - frost effect */}
+        <div
+          className="absolute -inset-[2px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}, ${SNOW_WHITE}, ${RALLY_BLUE}, ${ICE_BLUE})`,
+          }}
+        />
+
+        {/* Card content - fixed width AND height */}
+        <div
+          className="relative p-5 rounded-2xl border border-sky-100 bg-white transition-all duration-300 group-hover:border-transparent overflow-hidden"
+          style={{
+            width: CARD_WIDTH,
+            minWidth: CARD_WIDTH,
+            maxWidth: CARD_WIDTH,
+            height: CARD_HEIGHT,
+            minHeight: CARD_HEIGHT,
+            maxHeight: CARD_HEIGHT,
+            boxShadow: isHovered
+              ? `0 20px 40px -10px ${ICE_BLUE}30, 0 0 30px ${ICE_BLUE}20`
+              : "0 4px 20px rgba(0,0,0,0.08)",
+          }}
+        >
+          {/* Cursor-following light - snow sparkle effect */}
+          <div
+            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            style={{
+              background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}25, transparent 50%)`,
+            }}
+          />
+
+          {/* Snowflake particles on hover */}
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
+                                radial-gradient(circle at 80% 20%, white 1px, transparent 1px),
+                                radial-gradient(circle at 40% 70%, white 1px, transparent 1px),
+                                radial-gradient(circle at 70% 80%, white 1px, transparent 1px)`,
+              backgroundSize: "100% 100%",
+            }}
+          />
+
+          {/* Icon with animated background */}
+          <div className="relative mb-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+              style={{
+                backgroundColor: isHovered ? `${ICE_BLUE}30` : `${RALLY_BLUE}10`,
+                boxShadow: isHovered ? `0 0 25px ${ICE_BLUE}50, inset 0 0 15px ${SNOW_WHITE}30` : "none",
+              }}
+            >
+              <Icon size={24} style={{ color: isHovered ? ICE_BLUE : RALLY_BLUE, transition: "color 0.3s" }} />
+            </div>
+            {/* Icon glow ring */}
+            <div
+              className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${ICE_BLUE}30, transparent 70%)`,
+                animation: isHovered ? "pulse 2s ease-in-out infinite" : "none",
+              }}
+            />
+          </div>
+
+          {/* Title with hover color shift */}
+          <h4
+            className="font-semibold text-base mb-2 transition-colors duration-300"
+            style={{ color: isHovered ? ICE_BLUE : "#0a0a0a" }}
+          >
+            {principle.title}
+          </h4>
+
+          {/* Description */}
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{principle.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// CHANGE: SkiPhilosophyCard component added with aurora borealis effect after SkiingPrincipleCard
+function SkiPhilosophyCard() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isTouched, setIsTouched] = useState(false)
+  const mousePos = useRef({ x: 0.5, y: 0.5 })
+  const animationRef = useRef<number>()
+
+  const isActive = isHovered || isTouched
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!canvas || !container) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const resize = () => {
+      const rect = container.getBoundingClientRect()
+      canvas.width = rect.width * 2
+      canvas.height = rect.height * 2
+      ctx.scale(2, 2)
+    }
+    resize()
+    window.addEventListener("resize", resize)
+
+    // Aurora ribbons
+    const ribbons: Array<{
+      y: number
+      amplitude: number
+      frequency: number
+      speed: number
+      color: string
+      opacity: number
+      phase: number
+    }> = []
+
+    const colors = [
+      "rgba(0, 94, 184, 0.6)", // Rally Blue
+      "rgba(34, 197, 94, 0.5)", // Green
+      "rgba(139, 92, 246, 0.4)", // Purple
+      "rgba(6, 182, 212, 0.5)", // Cyan
+      "rgba(236, 72, 153, 0.3)", // Pink
+    ]
+
+    for (let i = 0; i < 8; i++) {
+      ribbons.push({
+        y: 0.2 + i * 0.08,
+        amplitude: 20 + Math.random() * 40,
+        frequency: 0.005 + Math.random() * 0.01,
+        speed: 0.3 + Math.random() * 0.5,
+        color: colors[i % colors.length],
+        opacity: 0.3 + Math.random() * 0.4,
+        phase: Math.random() * Math.PI * 2,
+      })
+    }
+
+    // Snow particles
+    const snowflakes: Array<{
+      x: number
+      y: number
+      size: number
+      speed: number
+      drift: number
+      opacity: number
+    }> = []
+
+    for (let i = 0; i < 60; i++) {
+      snowflakes.push({
+        x: Math.random(),
+        y: Math.random(),
+        size: 1 + Math.random() * 2,
+        speed: 0.2 + Math.random() * 0.3,
+        drift: Math.random() * 0.5 - 0.25,
+        opacity: 0.3 + Math.random() * 0.5,
+      })
+    }
+
+    // Stars
+    const stars: Array<{ x: number; y: number; size: number; twinkle: number }> = []
+    for (let i = 0; i < 40; i++) {
+      stars.push({
+        x: Math.random(),
+        y: Math.random() * 0.6,
+        size: 0.5 + Math.random() * 1.5,
+        twinkle: Math.random() * Math.PI * 2,
+      })
+    }
+
+    let time = 0
+
+    const animate = () => {
+      const rect = container.getBoundingClientRect()
+      const w = rect.width
+      const h = rect.height
+
+      ctx.clearRect(0, 0, w, h)
+
+      // Dark sky gradient
+      const skyGradient = ctx.createLinearGradient(0, 0, 0, h)
+      skyGradient.addColorStop(0, "rgba(15, 23, 42, 0.95)")
+      skyGradient.addColorStop(0.5, "rgba(30, 41, 59, 0.9)")
+      skyGradient.addColorStop(1, "rgba(51, 65, 85, 0.85)")
+      ctx.fillStyle = skyGradient
+      ctx.fillRect(0, 0, w, h)
+
+      // Stars
+      stars.forEach((star) => {
+        const twinkle = 0.5 + 0.5 * Math.sin(time * 2 + star.twinkle)
+        ctx.beginPath()
+        ctx.arc(star.x * w, star.y * h, star.size * twinkle, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + twinkle * 0.5})`
+        ctx.fill()
+      })
+
+      // Aurora ribbons - respond to mouse
+      const mx = mousePos.current.x
+      const my = mousePos.current.y
+
+      ribbons.forEach((ribbon, i) => {
+        ctx.beginPath()
+
+        const baseY = ribbon.y * h + (my - 0.5) * 50
+
+        for (let x = 0; x <= w; x += 3) {
+          const normalizedX = x / w
+          const distFromMouse = Math.abs(normalizedX - mx)
+          const mouseInfluence = Math.max(0, 1 - distFromMouse * 2) * (isActive ? 1 : 0.3)
+
+          const wave1 = Math.sin(x * ribbon.frequency + time * ribbon.speed + ribbon.phase) * ribbon.amplitude
+          const wave2 = Math.sin(x * ribbon.frequency * 1.5 + time * ribbon.speed * 0.7) * ribbon.amplitude * 0.5
+          const mouseWave = Math.sin(x * 0.02 + time) * 30 * mouseInfluence
+
+          const y = baseY + wave1 + wave2 + mouseWave
+
+          if (x === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            ctx.lineTo(x, y)
+          }
+        }
+
+        // Create ribbon thickness
+        for (let x = w; x >= 0; x -= 3) {
+          const normalizedX = x / w
+          const distFromMouse = Math.abs(normalizedX - mx)
+          const mouseInfluence = Math.max(0, 1 - distFromMouse * 2) * (isActive ? 1 : 0.3)
+
+          const wave1 = Math.sin(x * ribbon.frequency + time * ribbon.speed + ribbon.phase) * ribbon.amplitude
+          const wave2 = Math.sin(x * ribbon.frequency * 1.5 + time * ribbon.speed * 0.7) * ribbon.amplitude * 0.5
+          const mouseWave = Math.sin(x * 0.02 + time) * 30 * mouseInfluence
+
+          const ribbonHeight = 30 + mouseInfluence * 40
+          const y = baseY + wave1 + wave2 + mouseWave + ribbonHeight
+
+          ctx.lineTo(x, y)
+        }
+
+        ctx.closePath()
+
+        // Gradient fill for ribbon
+        const gradient = ctx.createLinearGradient(0, baseY - 50, 0, baseY + 80)
+        gradient.addColorStop(0, "transparent")
+        gradient.addColorStop(0.3, ribbon.color)
+        gradient.addColorStop(0.7, ribbon.color)
+        gradient.addColorStop(1, "transparent")
+
+        ctx.fillStyle = gradient
+        ctx.globalAlpha = ribbon.opacity * (isActive ? 1.2 : 0.7)
+        ctx.fill()
+        ctx.globalAlpha = 1
+      })
+
+      // Cursor glow
+      if (isActive) {
+        const glowGradient = ctx.createRadialGradient(mx * w, my * h, 0, mx * w, my * h, 150)
+        glowGradient.addColorStop(0, "rgba(0, 94, 184, 0.4)")
+        glowGradient.addColorStop(0.5, "rgba(34, 197, 94, 0.2)")
+        glowGradient.addColorStop(1, "transparent")
+        ctx.fillStyle = glowGradient
+        ctx.fillRect(0, 0, w, h)
+      }
+
+      // Snow
+      snowflakes.forEach((flake) => {
+        flake.y += flake.speed * 0.003
+        flake.x += flake.drift * 0.001 + Math.sin(time + flake.x * 10) * 0.001
+
+        if (flake.y > 1) {
+          flake.y = 0
+          flake.x = Math.random()
+        }
+        if (flake.x > 1) flake.x = 0
+        if (flake.x < 0) flake.x = 1
+
+        ctx.beginPath()
+        ctx.arc(flake.x * w, flake.y * h, flake.size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`
+        ctx.fill()
+      })
+
+      // Mountain silhouette at bottom
+      ctx.beginPath()
+      ctx.moveTo(0, h)
+      ctx.lineTo(0, h * 0.85)
+      ctx.lineTo(w * 0.15, h * 0.7)
+      ctx.lineTo(w * 0.25, h * 0.8)
+      ctx.lineTo(w * 0.4, h * 0.65)
+      ctx.lineTo(w * 0.5, h * 0.75)
+      ctx.lineTo(w * 0.65, h * 0.6)
+      ctx.lineTo(w * 0.8, h * 0.72)
+      ctx.lineTo(w * 0.9, h * 0.68)
+      ctx.lineTo(w, h * 0.8)
+      ctx.lineTo(w, h)
+      ctx.closePath()
+
+      const mountainGradient = ctx.createLinearGradient(0, h * 0.6, 0, h)
+      mountainGradient.addColorStop(0, "rgba(30, 41, 59, 0.9)")
+      mountainGradient.addColorStop(1, "rgba(15, 23, 42, 1)")
+      ctx.fillStyle = mountainGradient
+      ctx.fill()
+
+      time += 0.016
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    return () => {
+      window.removeEventListener("resize", resize)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [isActive])
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (rect) {
+      mousePos.current = {
+        x: (e.clientX - rect.left) / rect.width,
+        y: (e.clientY - rect.top) / rect.height,
+      }
+    }
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    const touch = e.touches[0]
+    if (rect && touch) {
+      mousePos.current = {
+        x: (touch.clientX - rect.left) / rect.width,
+        y: (touch.clientY - rect.top) / rect.height,
+      }
+    }
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative rounded-2xl overflow-hidden h-full min-h-[400px] cursor-crosshair"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      onTouchStart={() => setIsTouched(true)}
+      onTouchEnd={() => setIsTouched(false)}
+      onTouchMove={handleTouchMove}
+    >
+      {/* Aurora canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ imageRendering: "auto" }} />
+
+      {/* Content overlay */}
+      <div className="relative z-10 p-8 h-full flex flex-col justify-center">
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+          <div className="prose prose-lg space-y-5">
+            <p className="text-white/90 leading-relaxed text-lg drop-shadow-lg">
+              Skiing exposes you to decisions with real consequences at whatever level of challenge you're willing to
+              accept. At speed, you make split-second choices. Turn the wrong way and you end up in terrain you have to
+              deal with immediately.
+            </p>
+            <p className="text-white/90 leading-relaxed text-lg drop-shadow-lg">
+              The mountain teaches balanced thinking. Too far left risks trees. Too far right risks rocks. Straight down
+              the center builds dangerous speed. The optimal path requires constant calibration between competing risks,
+              and the bravery to commit once you've chosen.
+            </p>
+            <blockquote className="border-l-4 border-[#005EB8] pl-4 italic text-white/80 drop-shadow-lg">
+              This applies beyond the mountain. In drumming, if you take a chance on an abstract polyrhythm that crosses
+              the bar line, you have to resolve it. In AI system design, if you chain together services in an
+              unconventional pipeline, you have to make the output coherent. Skiing makes this principle physically
+              tangible: commit to a decision, adapt when new information appears, find your way back to balance.
+            </blockquote>
+          </div>
+        </div>
+      </div>
+
+      {/* Interaction hint */}
+      <div
+        className={`absolute bottom-4 right-4 text-white/60 text-sm transition-opacity duration-500 ${isActive ? "opacity-0" : "opacity-100"}`}
+      >
+        Move cursor to interact
       </div>
     </div>
   )
@@ -1469,8 +2159,8 @@ function SkiingSection() {
           </div>
         </RevealOnScroll>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
-          {/* Video Preview */}
+        {/* Video Preview - now centered as standalone element */}
+        <div className="max-w-md mx-auto mb-12">
           <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
             <div className="relative rounded-2xl overflow-hidden">
               <VideoPreview
@@ -1478,73 +2168,36 @@ function SkiingSection() {
                 title="Powder Day"
                 platform="instagram"
                 aspectRatio="portrait"
-                className="max-w-sm mx-auto lg:mx-0"
+                className="w-full"
               />
             </div>
           </RevealOnScroll>
+        </div>
 
-          {/* Philosophy and Principles */}
-          <div className="space-y-8">
-            <div className="prose prose-lg space-y-4">
-              <p className="text-foreground/90 leading-relaxed">
-                Skiing exposes you to decisions with real consequences at whatever level of challenge you're willing to
-                accept. At speed, you make split-second choices. Turn the wrong way and you end up in terrain you have
-                to deal with immediately.
-              </p>
-              <p className="text-foreground/90 leading-relaxed">
-                The mountain teaches balanced thinking. Too far left risks trees. Too far right risks rocks. Straight
-                down the center builds dangerous speed. The optimal path requires constant calibration between competing
-                risks, and the bravery to commit once you've chosen.
-              </p>
-              <p className="text-foreground/90 leading-relaxed text-sm text-muted-foreground italic">
-                This applies beyond the mountain. In drumming, if you take a chance on an abstract polyrhythm that
-                crosses the bar line, you have to resolve it. In AI system design, if you chain together services in an
-                unconventional pipeline, you have to make the output coherent. Skiing makes this principle physically
-                tangible: commit to a decision, adapt when new information appears, find your way back to balance.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center gap-3">
-              {/* Top row - first 3 cards */}
-              <div className="flex flex-wrap justify-center gap-3">
-                {skiingPrinciples.slice(0, 3).map((principle) => (
-                  <TiltCard key={principle.title} intensity={8}>
-                    <div className="p-3 rounded-xl border border-border bg-white h-full w-[160px] lg:w-[180px]">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${RALLY_BLUE}10` }}
-                        >
-                          <principle.icon size={16} style={{ color: RALLY_BLUE }} />
-                        </div>
-                        <h4 className="font-semibold text-foreground text-sm">{principle.title}</h4>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{principle.description}</p>
-                    </div>
-                  </TiltCard>
-                ))}
-              </div>
-              {/* Bottom row - last 2 cards centered */}
-              <div className="flex flex-wrap justify-center gap-3">
-                {skiingPrinciples.slice(3).map((principle) => (
-                  <TiltCard key={principle.title} intensity={8}>
-                    <div className="p-3 rounded-xl border border-border bg-white h-full w-[160px] lg:w-[180px]">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${RALLY_BLUE}10` }}
-                        >
-                          <principle.icon size={16} style={{ color: RALLY_BLUE }} />
-                        </div>
-                        <h4 className="font-semibold text-foreground text-sm">{principle.title}</h4>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{principle.description}</p>
-                    </div>
-                  </TiltCard>
-                ))}
-              </div>
-            </div>
+        {/* CHANGE: Restructured skiing cards into 2 symmetrical rows: 3 on top, 2 centered below */}
+        <div className="mt-16">
+          {/* First row: 3 cards */}
+          <div className="flex justify-center items-stretch gap-4 mb-4">
+            {skiingPrinciples.slice(0, 3).map((principle, index) => (
+              <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
+                <SkiingPrincipleCard principle={principle} index={index} />
+              </RevealOnScroll>
+            ))}
           </div>
+          {/* Second row: 2 cards centered */}
+          <div className="flex justify-center items-stretch gap-4">
+            {skiingPrinciples.slice(3, 5).map((principle, index) => (
+              <RevealOnScroll key={principle.title} variant="slide-up" delay={(index + 3) * 80}>
+                <SkiingPrincipleCard principle={principle} index={index + 3} />
+              </RevealOnScroll>
+            ))}
+          </div>
+          {/* Aurora philosophy card - the ONLY version now */}
+          <RevealOnScroll variant="fade-in" delay={1000} duration={1200}>
+            <div className="mt-8 h-[400px] max-w-4xl mx-auto">
+              <SkiPhilosophyCard />
+            </div>
+          </RevealOnScroll>
         </div>
       </div>
     </section>
@@ -1664,11 +2317,6 @@ function BJJSection() {
                     BJJ operates the same way. You can't just do anything. There are rules, positions, physics. But
                     within those constraints, the combinations become infinite.{" "}
                     <span className="text-white font-medium">Finite moves, infinite responses.</span>
-                  </p>
-                  <p>
-                    This is why having millions of techniques doesn't make you more creative. What creates creative
-                    potential is understanding how elements combine. A musician with three chords can write a thousand
-                    songs. A practitioner with five submissions can find them from anywhere.
                   </p>
                   <p>
                     The training also teaches something harder to articulate: how to respond rather than react. When
@@ -2310,6 +2958,7 @@ export default function PortfolioPage() {
 
       <DrummingSection />
 
+      {/* Skiing section was refactored and now includes SkiPhilosophyCard */}
       <SkiingSection />
 
       <BJJSection />
@@ -2381,6 +3030,9 @@ export default function PortfolioPage() {
 
       {/* AI Docent */}
       <AIDocent />
+
+      {/* CHANGE: Add ThemeMusicPlayer component */}
+      <ThemeMusicPlayer />
     </div>
   )
 }

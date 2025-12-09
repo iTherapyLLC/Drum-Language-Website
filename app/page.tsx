@@ -19,10 +19,8 @@ import {
   Shuffle,
   Compass,
   Baby,
-  Music2,
   Presentation,
   Play,
-  Video,
   Music,
   Brain,
   Award,
@@ -32,10 +30,11 @@ import {
   Layers,
   Drum,
   Sparkles,
+  Github,
+  Mail,
+  Linkedin,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
-import { AIDocent } from "@/components/ai-docent"
-import { ThemeMusicPlayer } from "@/components/theme-music-player"
 import { VideoPreview } from "@/components/video-preview"
 import { TiltCard } from "@/components/tilt-card"
 import { RevealOnScroll } from "@/components/reveal-on-scroll"
@@ -45,12 +44,15 @@ import { SwirledCard } from "@/components/swirled-card"
 import { ContactForm } from "@/components/contact-form"
 import { AnimatedProfile } from "@/components/animated-profile"
 import { useTouchHover } from "@/hooks/use-touch-hover"
-import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
+import { AIDocent } from "@/components/ai-docent"
+import { ThemeMusicPlayer } from "@/components/theme-music-player"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 const SOFT_GRAY = "#F8F9FA"
 const STITCH_RED = "#DC2626"
+const ICE_BLUE = "#38BDF8"
+const SNOW_WHITE = "#F0F9FF"
 
 const projects = [
   {
@@ -200,7 +202,7 @@ const featuredAlbums = [
     albumUrl: "https://mirthkon.bandcamp.com/album/format-original-motion-picture-soundtrack",
     featuredTrack: "Automaton",
     trackUrl: "https://mirthkon.bandcamp.com/track/automaton-2",
-    color: "#0a192f",
+    color: "#0a092f",
     imageUrl: "/images/mirthkon-format.png",
   },
   {
@@ -347,10 +349,14 @@ function ProjectCard({
   project,
   index,
   isHighlighted = false,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   project: (typeof projects)[0]
   index: number
   isHighlighted?: boolean
+  onMouseEnter: () => void
+  onMouseLeave: () => void
 }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -379,6 +385,7 @@ function ProjectCard({
     if (!cardRef.current) return
     cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
     setIsHovered(false)
+    onMouseLeave()
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -408,7 +415,10 @@ function ProjectCard({
     <SwirledCard className={`${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
       <div
         ref={cardRef}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => {
+          setIsHovered(true)
+          onMouseEnter()
+        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
@@ -451,22 +461,14 @@ function ProjectCard({
               className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
               style={{ backgroundColor: `${RALLY_BLUE}10` }}
             >
-              {project.logoUrl ? (
-                <img
-                  src={project.logoUrl || "/placeholder.svg"}
-                  alt={`${project.name} logo`}
-                  className="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110"
-                  style={{
-                    filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
-                  }}
-                />
-              ) : (
-                <project.Icon
-                  size={28}
-                  color={RALLY_BLUE}
-                  className="transition-transform duration-300 group-hover:scale-110"
-                />
-              )}
+              <img
+                src={project.logoUrl || "/placeholder.svg"}
+                alt={`${project.name} logo`}
+                className="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110"
+                style={{
+                  filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+                }}
+              />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -1557,9 +1559,9 @@ function DrummingSection() {
           </RevealOnScroll>
         </div>
 
-        {/* CHANGE: Update drumming cards container - use flex with negative margins for overlap, add z-index on hover */}
+        {/* CHANGE: Update drumming cards container - use grid instead of flex */}
         <div className="mt-12">
-          <div className="flex flex-wrap justify-center items-stretch">
+          <div className="hidden xl:flex flex-wrap justify-center items-stretch">
             {drummingPrinciples.map((principle, index) => (
               <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
                 <div
@@ -1568,6 +1570,14 @@ function DrummingSection() {
                 >
                   <DrummingPrincipleCard principle={principle} index={index} />
                 </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+          {/* Mobile/Tablet: Simple centered grid without overlap */}
+          <div className="xl:hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+            {drummingPrinciples.map((principle, index) => (
+              <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
+                <DrummingPrincipleCard principle={principle} index={index} />
               </RevealOnScroll>
             ))}
           </div>
@@ -1601,10 +1611,6 @@ function DrummingPrincipleCard({
   }
 
   const Icon = principle.icon
-
-  // Ice/snow colors for skiing theme
-  const ICE_BLUE = "#38BDF8"
-  const SNOW_WHITE = "#F0F9FF"
 
   const CARD_WIDTH = 200
   const CARD_HEIGHT = 180
@@ -1726,7 +1732,7 @@ function DrummingPrincipleCard({
   )
 }
 
-// CHANGE: SkiingPrincipleCard component added with mobile optimization
+// CHANGE: SkiingPrincipleCard component added with aurora borealis effect after SkiingPrincipleCard
 function SkiingPrincipleCard({
   principle,
   index,
@@ -1743,8 +1749,6 @@ function SkiingPrincipleCard({
   const [isHovered, setIsHovered] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
 
-  const isActive = isHovered || isTouched
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
@@ -1753,141 +1757,88 @@ function SkiingPrincipleCard({
     setMousePosition({ x, y })
   }
 
-  const handleTouchStart = () => {
-    setIsTouched(true)
-  }
-
+  const handleTouchStart = () => setIsTouched(true)
   const handleTouchEnd = () => {
     setTimeout(() => setIsTouched(false), 300)
   }
 
   const Icon = principle.icon
+  const isActive = isHovered || isTouched
 
   // Ice/snow colors for skiing theme
-  const ICE_BLUE = "#38BDF8"
-  const SNOW_WHITE = "#F0F9FF"
-
-  // Responsive card dimensions
-  const CARD_WIDTH_MOBILE = 160
-  const CARD_WIDTH_DESKTOP = 200
-  const CARD_HEIGHT_MOBILE = 160
-  const CARD_HEIGHT_DESKTOP = 180
 
   return (
-    <div className="p-2 sm:p-4 flex-grow-0 flex-shrink-0">
+    <div
+      ref={cardRef}
+      className="relative group cursor-pointer flex-shrink-0"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false)
+        setMousePosition({ x: 0.5, y: 0.5 })
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        transform: isActive
+          ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -5}deg) rotateY(${(mousePosition.x - 0.5) * 5}deg) scale(1.03)`
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+        transition: "transform 0.2s ease-out",
+      }}
+    >
+      {/* Outer glow */}
       <div
-        ref={cardRef}
-        className="relative group cursor-pointer w-[160px] h-[160px] sm:w-[200px] sm:h-[180px]"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false)
-          setMousePosition({ x: 0.5, y: 0.5 })
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg pointer-events-none"
         style={{
-          transform: isActive
-            ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -8}deg) rotateY(${(mousePosition.x - 0.5) * 8}deg) scale(1.05)`
-            : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
-          transition: "transform 0.2s ease-out",
-          zIndex: isActive ? 10 : 1,
+          background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}40, transparent 70%)`,
+        }}
+      />
+
+      {/* Card content */}
+      <div
+        className="relative p-4 sm:p-5 rounded-2xl border border-sky-100 bg-white transition-all duration-300 group-hover:border-sky-200 overflow-hidden w-[160px] h-[160px] sm:w-[200px] sm:h-[180px]"
+        style={{
+          boxShadow: isActive
+            ? `0 15px 30px -8px ${ICE_BLUE}25, 0 0 20px ${ICE_BLUE}15`
+            : "0 4px 20px rgba(0,0,0,0.08)",
         }}
       >
-        {/* Outer glow - icy blue shimmer */}
+        {/* Cursor-following light */}
         <div
-          className="absolute -inset-3 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
+          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}50, ${RALLY_BLUE}30, transparent 70%)`,
-            opacity: isActive ? 1 : 0,
+            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}20, transparent 50%)`,
           }}
         />
 
-        {/* Animated border - frost effect */}
-        <div
-          className="absolute -inset-[2px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          style={{
-            background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}, ${SNOW_WHITE}, ${RALLY_BLUE}, ${ICE_BLUE})`,
-            opacity: isActive ? 1 : 0,
-          }}
-        />
-
-        {/* Card content */}
-        <div
-          className="relative p-3 sm:p-5 rounded-2xl border border-sky-100 bg-white transition-all duration-300 group-hover:border-transparent overflow-hidden h-full"
-          style={{
-            boxShadow: isActive
-              ? `0 20px 40px -10px ${ICE_BLUE}30, 0 0 30px ${ICE_BLUE}20`
-              : "0 4px 20px rgba(0,0,0,0.08)",
-          }}
-        >
-          {/* Cursor-following light - snow sparkle effect */}
+        {/* Icon */}
+        <div className="relative mb-2 sm:mb-3">
           <div
-            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
             style={{
-              background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${ICE_BLUE}25, transparent 50%)`,
-              opacity: isActive ? 1 : 0,
+              backgroundColor: isActive ? `${ICE_BLUE}20` : `${RALLY_BLUE}10`,
             }}
-          />
-
-          {/* Snowflake particles on hover */}
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
-            style={{
-              backgroundImage: `radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
-                                radial-gradient(circle at 80% 20%, white 1px, transparent 1px),
-                                radial-gradient(circle at 40% 70%, white 1px, transparent 1px),
-                                radial-gradient(circle at 70% 80%, white 1px, transparent 1px)`,
-              backgroundSize: "100% 100%",
-              opacity: isActive ? 0.3 : 0,
-            }}
-          />
-
-          {/* Icon with animated background */}
-          <div className="relative mb-2 sm:mb-3">
-            <div
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-              style={{
-                backgroundColor: isActive ? `${ICE_BLUE}30` : `${RALLY_BLUE}10`,
-                boxShadow: isActive ? `0 0 25px ${ICE_BLUE}50, inset 0 0 15px ${SNOW_WHITE}30` : "none",
-              }}
-            >
-              <Icon
-                size={20}
-                className="sm:w-6 sm:h-6"
-                style={{ color: isActive ? ICE_BLUE : RALLY_BLUE, transition: "color 0.3s" }}
-              />
-            </div>
-            {/* Icon glow ring */}
-            <div
-              className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-              style={{
-                background: `radial-gradient(circle, ${ICE_BLUE}30, transparent 70%)`,
-                animation: isActive ? "pulse 2s ease-in-out infinite" : "none",
-                opacity: isActive ? 1 : 0,
-              }}
-            />
-          </div>
-
-          {/* Title with hover color shift */}
-          <h4
-            className="font-semibold text-sm sm:text-base mb-1 sm:mb-2 transition-colors duration-300"
-            style={{ color: isActive ? ICE_BLUE : "#0a0a0a" }}
           >
-            {principle.title}
-          </h4>
-
-          {/* Description */}
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
-            {principle.description}
-          </p>
+            <Icon size={20} style={{ color: isActive ? ICE_BLUE : RALLY_BLUE, transition: "color 0.3s" }} />
+          </div>
         </div>
+
+        {/* Title */}
+        <h4
+          className="font-semibold text-sm sm:text-base mb-1 sm:mb-2 transition-colors duration-300"
+          style={{ color: isActive ? ICE_BLUE : "#0a0a0a" }}
+        >
+          {principle.title}
+        </h4>
+
+        {/* Description */}
+        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">{principle.description}</p>
       </div>
     </div>
   )
 }
 
-// CHANGE: SkiPhilosophyCard component added with aurora borealis effect after SkiingPrincipleCard
+// CHANGE: SkiPhilosophyCard component with aurora borealis effect
 function SkiPhilosophyCard() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -2149,7 +2100,7 @@ function SkiPhilosophyCard() {
   return (
     <div
       ref={containerRef}
-      className="relative rounded-2xl overflow-hidden h-full min-h-[400px] cursor-crosshair"
+      className="relative rounded-2xl overflow-hidden h-full min-h-[600px] sm:min-h-[500px] md:min-h-[400px] cursor-crosshair"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onMouseMove={handleMouseMove}
@@ -2160,21 +2111,21 @@ function SkiPhilosophyCard() {
       {/* Aurora canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ imageRendering: "auto" }} />
 
-      {/* Content overlay */}
-      <div className="relative z-10 p-8 h-full flex flex-col justify-center">
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-          <div className="prose prose-lg space-y-5">
-            <p className="text-white/90 leading-relaxed text-lg drop-shadow-lg">
+      {/* Content overlay - Responsive padding and text sizes */}
+      <div className="relative z-10 p-4 sm:p-6 md:p-8 h-full flex flex-col justify-center">
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-5 md:p-6 border border-white/20">
+          <div className="prose prose-sm sm:prose-base md:prose-lg space-y-3 sm:space-y-4 md:space-y-5">
+            <p className="text-white/90 leading-relaxed text-sm sm:text-base md:text-lg drop-shadow-lg">
               Skiing exposes you to decisions with real consequences at whatever level of challenge you're willing to
               accept. At speed, you make split-second choices. Turn the wrong way and you end up in terrain you have to
               deal with immediately.
             </p>
-            <p className="text-white/90 leading-relaxed text-lg drop-shadow-lg">
+            <p className="text-white/90 leading-relaxed text-sm sm:text-base md:text-lg drop-shadow-lg">
               The mountain teaches balanced thinking. Too far left risks trees. Too far right risks rocks. Straight down
               the center builds dangerous speed. The optimal path requires constant calibration between competing risks,
               and the bravery to commit once you've chosen.
             </p>
-            <blockquote className="border-l-4 border-[#005EB8] pl-4 italic text-white/80 drop-shadow-lg">
+            <blockquote className="border-l-4 border-[#005EB8] pl-3 sm:pl-4 italic text-white/80 text-xs sm:text-sm md:text-base drop-shadow-lg">
               This applies beyond the mountain. In drumming, if you take a chance on an abstract polyrhythm that crosses
               the bar line, you have to resolve it. In AI system design, if you chain together services in an
               unconventional pipeline, you have to make the output coherent. Skiing makes this principle physically
@@ -2184,11 +2135,12 @@ function SkiPhilosophyCard() {
         </div>
       </div>
 
-      {/* Interaction hint */}
+      {/* Interaction hint - Updated for mobile touch */}
       <div
-        className={`absolute bottom-4 right-4 text-white/60 text-sm transition-opacity duration-500 ${isActive ? "opacity-0" : "opacity-100"}`}
+        className={`absolute bottom-4 right-4 text-white/60 text-xs sm:text-sm transition-opacity duration-500 ${isActive ? "opacity-0" : "opacity-100"}`}
       >
-        Move cursor to interact
+        <span className="hidden sm:inline">Move cursor to interact</span>
+        <span className="sm:hidden">Tap and drag to interact</span>
       </div>
     </div>
   )
@@ -2227,27 +2179,55 @@ function SkiingSection() {
           </RevealOnScroll>
         </div>
 
-        {/* CHANGE: Restructured skiing cards into 2 symmetrical rows: 3 on top, 2 centered below */}
         <div className="mt-16">
-          {/* First row: 3 cards */}
-          <div className="flex justify-center items-stretch gap-4 mb-4">
-            {skiingPrinciples.slice(0, 3).map((principle, index) => (
-              <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
-                <SkiingPrincipleCard principle={principle} index={index} />
-              </RevealOnScroll>
-            ))}
+          {/* Mobile: Horizontal scrollable row with scroll hint */}
+          <div className="sm:hidden relative">
+            <div className="overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
+              <div className="flex gap-3 w-max">
+                {skiingPrinciples.map((principle, index) => (
+                  <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
+                    <SkiingPrincipleCard principle={principle} index={index} />
+                  </RevealOnScroll>
+                ))}
+              </div>
+            </div>
+            {/* Scroll indicator */}
+            <div className="flex justify-center mt-2 gap-1">
+              <span className="text-xs text-muted-foreground">Swipe to see more</span>
+              <svg
+                className="w-4 h-4 text-muted-foreground animate-bounce-x"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
           </div>
-          {/* Second row: 2 cards centered */}
-          <div className="flex justify-center items-stretch gap-4">
-            {skiingPrinciples.slice(3, 5).map((principle, index) => (
-              <RevealOnScroll key={principle.title} variant="slide-up" delay={(index + 3) * 80}>
-                <SkiingPrincipleCard principle={principle} index={index + 3} />
-              </RevealOnScroll>
-            ))}
+
+          {/* Desktop: 3-2 grid layout */}
+          <div className="hidden sm:block">
+            {/* First row: 3 cards */}
+            <div className="flex justify-center items-stretch gap-4 mb-4">
+              {skiingPrinciples.slice(0, 3).map((principle, index) => (
+                <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
+                  <SkiingPrincipleCard principle={principle} index={index} />
+                </RevealOnScroll>
+              ))}
+            </div>
+            {/* Second row: 2 cards centered */}
+            <div className="flex justify-center items-stretch gap-4">
+              {skiingPrinciples.slice(3, 5).map((principle, index) => (
+                <RevealOnScroll key={principle.title} variant="slide-up" delay={(index + 3) * 80}>
+                  <SkiingPrincipleCard principle={principle} index={index + 3} />
+                </RevealOnScroll>
+              ))}
+            </div>
           </div>
-          {/* Aurora philosophy card - the ONLY version now */}
+
+          {/* Aurora philosophy card - responsive height */}
           <RevealOnScroll variant="fade-in" delay={1000} duration={1200}>
-            <div className="mt-8 h-[400px] max-w-4xl mx-auto">
+            <div className="mt-8 min-h-[600px] sm:min-h-[500px] md:h-[400px] max-w-4xl mx-auto">
               <SkiPhilosophyCard />
             </div>
           </RevealOnScroll>
@@ -2465,51 +2445,20 @@ function DrumVideoCard() {
     const rect = videoRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
-
-    const rotateX = (y - 0.5) * -8
-    const rotateY = (x - 0.5) * 10
-
-    videoRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
     setGlowPosition({ x: x * 100, y: y * 100 })
   }
 
-  const handleMouseLeave = () => {
-    if (!videoRef.current) return
-    videoRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
-    setIsHovered(false)
-  }
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!videoRef.current) return
-    setIsHovered(true)
-    const touch = e.touches[0]
-    const rect = videoRef.current.getBoundingClientRect()
-    const x = (touch.clientX - rect.left) / rect.width
-    const y = (touch.clientY - rect.top) / rect.height
-    setGlowPosition({ x: x * 100, y: y * 100 })
-    videoRef.current.style.transform = `perspective(1000px) rotateX(-2deg) rotateY(2deg) scale(1.02)`
-  }
-
-  const handleTouchEnd = () => {
-    if (!videoRef.current) return
-    setTimeout(() => {
-      if (videoRef.current) {
-        videoRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
-      }
-      setIsHovered(false)
-    }, 300)
-  }
+  const googleDriveFileId = "1vUar0ekOgc_sHHRnnIym3woAIt9tKTrm"
+  const embedUrl = `https://drive.google.com/file/d/${googleDriveFileId}/preview`
+  const directUrl = `https://drive.google.com/file/d/${googleDriveFileId}/view?usp=sharing`
 
   return (
     <div
       ref={videoRef}
-      className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300 ease-out shadow-2xl"
+      className="relative rounded-2xl overflow-hidden group transition-all duration-300 ease-out shadow-2xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      style={{ transformStyle: "preserve-3d" }}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Glow effect */}
       <div
@@ -2519,40 +2468,128 @@ function DrumVideoCard() {
         }}
       />
 
-      {/* Video */}
-      <div className="relative aspect-video overflow-hidden">
+      {/* Video container */}
+      <div className="relative aspect-video overflow-hidden bg-[#1a1a2e]">
+        {/* Google Drive embedded video - always visible */}
         <iframe
-          src="https://drive.google.com/file/d/1vUar0ekOgc_sHHRnnIym3woAIt9tKTrm/preview"
-          className="w-full h-full"
-          allow="autoplay; encrypted-media"
+          src={embedUrl}
+          className="absolute inset-0 w-full h-full border-0 z-10"
+          allow="autoplay; encrypted-media; fullscreen"
           allowFullScreen
-          title="Matthew Guggemos drum performance - real-time problem solving"
+          title="Matthew Guggemos drum performance - Mahavishnu-ish Swing"
+          loading="lazy"
         />
 
-        {/* Overlay gradient */}
+        {/* Platform badge */}
         <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, transparent 100%)`,
-          }}
-        />
-
-        {/* Sheen effect */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)`,
-            transform: isHovered ? "translateX(100%)" : "translateX(-100%)",
-            transition: "transform 0.8s ease-out",
-          }}
-        />
-
-        {/* "Watch Drumming" hint */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-          Watch Drumming
+          className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white/90 backdrop-blur-sm z-20 pointer-events-none"
+          style={{ background: `linear-gradient(135deg, ${RALLY_BLUE}cc, ${RED_STITCH}cc)` }}
+        >
+          30+ Years Behind the Kit
         </div>
+
+        {/* Fallback link - positioned at bottom */}
+        <a
+          href={directUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 px-3 py-1.5 rounded-lg text-xs font-medium text-white/90 backdrop-blur-sm z-20 hover:bg-white/20 transition-colors flex items-center gap-1.5"
+          style={{ background: `rgba(0,0,0,0.5)` }}
+        >
+          <ExternalLink className="w-3 h-3" />
+          Open in Google Drive
+        </a>
+      </div>
+
+      {/* Caption */}
+      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-10">
+        <p className="text-white font-semibold text-sm sm:text-base">Mahavishnu-ish Swing</p>
+        <p className="text-white/70 text-xs sm:text-sm">Real-time problem solving in music</p>
       </div>
     </div>
+  )
+}
+
+// Placeholder for HarmonizedLearningSection, assuming it's imported elsewhere
+const HarmonizedLearningSection = () => (
+  <section id="harmonized-learning" className="py-20 px-6 bg-gray-50 relative overflow-hidden">
+    <SpiralKaleidoscope opacity={0.05} className="z-0" />
+    <div className="relative z-10 max-w-5xl mx-auto text-center">
+      <RevealOnScroll variant="wave" duration={800}>
+        <div className="mb-12">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <Presentation size={32} style={{ color: RALLY_BLUE }} />
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+                Harmonized Learning
+              </MagicHeading>
+            </h2>
+          </div>
+          <p className="text-muted-foreground text-lg">
+            A comprehensive framework for integrating diverse learning styles and modalities.
+          </p>
+        </div>
+      </RevealOnScroll>
+      <div className="prose prose-lg max-w-3xl mx-auto text-left text-muted-foreground">
+        <p>
+          Harmonized Learning is a pedagogical framework designed to create adaptive and engaging educational
+          experiences. It synthesizes insights from cognitive science, educational psychology, and user experience
+          design to cater to a wide spectrum of learners.
+        </p>
+        <ul className="list-disc pl-6">
+          <li>
+            **Multimodal Content Delivery:** Information is presented through various formats including text, video,
+            interactive simulations, audio lectures, and hands-on exercises.
+          </li>
+          <li>
+            **Personalized Learning Paths:** Learners can progress at their own pace, with adaptive algorithms
+            suggesting next steps based on performance and stated preferences.
+          </li>
+          <li>
+            **Active Learning Strategies:** Emphasis is placed on application and practice, encouraging learners to
+            actively engage with the material rather than passively consuming it.
+          </li>
+          <li>
+            **Feedback and Assessment:** Continuous feedback loops and diverse assessment methods ensure learners
+            understand their progress and identify areas for improvement.
+          </li>
+        </ul>
+        <p>
+          This approach is particularly effective for complex subjects that benefit from conceptual understanding,
+          practical application, and varied reinforcement.
+        </p>
+      </div>
+    </div>
+  </section>
+)
+
+function CredentialsSection() {
+  return (
+    <section id="credentials" className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+      <SpiralKaleidoscope opacity={0.05} className="z-0" />
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <RevealOnScroll variant="wave" duration={800}>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+              <MagicHeading as="span" className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                Credentials & Recognition
+              </MagicHeading>
+            </h2>
+            <p className="text-lg sm:text-xl text-muted-foreground italic px-4">
+              A glimpse into impactful contributions and distinguished roles.
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {credentials.map((cred, index) => (
+            <RevealOnScroll key={cred.label} variant="slide-up" delay={index * 80} duration={600}>
+              <CredentialChip cred={cred} index={index} />
+            </RevealOnScroll>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -2696,7 +2733,7 @@ export default function PortfolioPage() {
             </span>
           </div>
 
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-4 sm:mb-6">
             <AnimatedProfile src="/images/mensa-headshot.jpeg" alt="Matthew Guggemos" />
           </div>
 
@@ -2798,293 +2835,147 @@ export default function PortfolioPage() {
               </h2>
               <p
                 className="text-lg sm:text-xl text-muted-foreground italic px-4"
-                style={{ textShadow: "0 1px 10px rgba(255,255,255,0.8)" }}
+                style={{ textShadow: "0 1px 8px rgba(255,255,255,0.8)" }}
               >
-                Each product has its own dedicated site. Click to explore.
+                "Great conductors may not master every instrument, but they deeply understand each one's role."
               </p>
             </div>
           </RevealOnScroll>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project, index) => (
-              <RevealOnScroll key={project.id} variant="scale-rotate" delay={index * 80} duration={700}>
-                <a
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block h-full group perspective-container"
-                >
-                  <div
-                    className="p-5 sm:p-6 md:p-8 rounded-2xl relative overflow-hidden bg-white border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500 h-[260px] sm:h-[280px] flex flex-col tilt-card glow-border"
-                    style={{
-                      transitionDelay: `${index * 100}ms`,
-                      transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    }}
-                  >
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
-                    </div>
-
-                    {/* Header section */}
-                    <div className="relative z-10 h-[72px] flex flex-col justify-start">
-                      <div className="flex items-start gap-3 sm:gap-4">
-                        <div
-                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-[360deg] group-hover:bg-white/20 icon-morph"
-                          style={{ backgroundColor: `${RALLY_BLUE}10` }}
-                        >
-                          {project.logoUrl ? (
-                            <img
-                              src={project.logoUrl || "/placeholder.svg"}
-                              alt={`${project.name} logo`}
-                              className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-0 group-hover:invert"
-                              style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))" }}
-                            />
-                          ) : (
-                            <project.Icon
-                              size={24}
-                              color={RALLY_BLUE}
-                              className="transition-transform duration-500 group-hover:scale-125 sm:w-7 sm:h-7"
-                            />
-                          )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 sm:gap-3 mb-1 flex-wrap">
-                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground group-hover:text-white transition-all duration-300 truncate text-reveal">
-                              {project.name}
-                            </h3>
-                            <span
-                              className="px-2 py-0.5 sm:py-1 text-xs rounded-full font-medium shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:text-white animate-pulse-glow"
-                              style={{ backgroundColor: `${RALLY_BLUE}15`, color: RALLY_BLUE }}
-                            >
-                              {project.stat}
-                            </span>
-                            <ArrowRight
-                              size={18}
-                              className="shrink-0 opacity-30 group-hover:opacity-100 group-hover:translate-x-2 group-hover:text-white transition-all duration-500 ml-auto hidden sm:block"
-                              style={{ color: RALLY_BLUE }}
-                            />
-                          </div>
-                          <p className="text-sm sm:text-lg text-foreground/80 truncate group-hover:text-white/90 transition-colors duration-300">
-                            {project.tagline}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Description section */}
-                    <div className="relative z-10 flex-1 mt-5 sm:mt-6 h-[72px] overflow-hidden">
-                      <p className="text-xs sm:text-sm md:text-base text-muted-foreground line-clamp-3 group-hover:text-white/80 transition-colors duration-300">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    {/* Footer section */}
-                    <div className="relative z-10 mt-auto pt-3 sm:pt-4 border-t border-border/50 group-hover:border-white/30 transition-colors duration-300">
-                      <span
-                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium group-hover:gap-4 group-hover:text-white transition-all duration-300 underline-slide"
-                        style={{ color: RALLY_BLUE }}
-                      >
-                        Visit site
-                        <ExternalLink
-                          size={12}
-                          className="transition-all duration-500 group-hover:translate-x-2 group-hover:scale-125 sm:w-3.5 sm:h-3.5"
-                        />
-                      </span>
-                    </div>
-
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
-                      <div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"
-                        style={{ width: "50%" }}
-                      />
-                    </div>
-                  </div>
-                </a>
+              <RevealOnScroll key={project.id} variant="slide-up" delay={index * 100} duration={600}>
+                <ProjectCard
+                  project={project}
+                  index={index}
+                  isHighlighted={highlightedProject === project.id}
+                  onMouseEnter={() => setHighlightedProject(project.id)}
+                  onMouseLeave={() => setHighlightedProject(null)}
+                />
               </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Music Section - Better mobile padding and spacing */}
-      <section id="music" className="py-16 sm:py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
+      {/* Music Section */}
+      <section
+        id="music"
+        className="py-16 sm:py-24 px-6 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+      >
         <SpiralKaleidoscope opacity={0.08} variant="dark" className="z-0" />
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
-          <RevealOnScroll variant="glitch" duration={600}>
-            <div className="mb-10 sm:mb-16">
-              <MagicHeading as="h2" className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" baseColor="light">
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <RevealOnScroll variant="flip-up" duration={800}>
+            <div className="text-center mb-10 sm:mb-16">
+              <h2
+                className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
+                style={{ textShadow: "0 2px 15px rgba(0,0,0,0.7)" }}
+              >
                 Music
-              </MagicHeading>
+              </h2>
+              <p className="text-lg sm:text-xl text-gray-400 italic px-4">Exploring rhythm, harmony, and sound.</p>
             </div>
           </RevealOnScroll>
 
-          <RevealOnScroll variant="blur" delay={100} duration={800}>
-            <div className="mb-10 sm:mb-16">
-              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
-                <Video className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
-                Featured Performances
-              </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {music.map((item, index) => (
+              <RevealOnScroll key={item.band + index} variant="slide-up" delay={index * 100} duration={600}>
+                <MusicCard item={item} index={index} />
+              </RevealOnScroll>
+            ))}
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-                {featuredVideos
-                  .filter((v) => v.platform === "youtube")
-                  .map((video, index) => (
-                    <RevealOnScroll key={video.url} variant="flip-left" delay={index * 150} duration={800}>
-                      <div className="relative">
-                        <VideoPreview
-                          url={video.url}
-                          title={video.title}
-                          platform={video.platform}
-                          aspectRatio={video.aspectRatio}
-                        />
-                        {video.band && (
-                          <p className="mt-2 text-xs sm:text-sm text-white/60 text-center">{video.band}</p>
-                        )}
-                      </div>
-                    </RevealOnScroll>
-                  ))}
+          {/* Featured Albums */}
+          <div className="mt-16 sm:mt-24">
+            <RevealOnScroll variant="flip-up" duration={800}>
+              <div className="text-center mb-10 sm:mb-16">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Featured Albums</h3>
+                <p className="text-lg sm:text-xl text-gray-400 italic px-4">A selection of releases.</p>
               </div>
-
-              {/* Portrait videos with bounce animation */}
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
-                {featuredVideos
-                  .filter((v) => v.platform !== "youtube")
-                  .map((video, index) => (
-                    <RevealOnScroll key={video.url} variant="bounce" delay={index * 100} duration={700}>
-                      <div className="w-[calc(50%-6px)] sm:w-[calc(33.333%-16px)]">
-                        <VideoPreview
-                          url={video.url}
-                          title={video.title}
-                          platform={video.platform}
-                          aspectRatio={video.aspectRatio}
-                        />
-                      </div>
-                    </RevealOnScroll>
-                  ))}
-              </div>
-            </div>
-          </RevealOnScroll>
-
-          {/* Bands Grid */}
-          <div className="mb-10 sm:mb-16">
-            <RevealOnScroll variant="slide-blur" duration={700}>
-              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
-                <Music className="w-4 h-4 sm:w-5 sm:h-5 text-[#005EB8]" />
-                Bands & Collaborations
-              </h3>
             </RevealOnScroll>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              {music.map((item, index) => (
-                <RevealOnScroll key={item.band} variant="swing" delay={index * 100} duration={800}>
-                  <MusicCard item={item} index={index} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredAlbums.map((album, index) => (
+                <RevealOnScroll key={album.album} variant="slide-up" delay={index * 100} duration={600}>
+                  <FeaturedAlbumCard album={album} index={index} />
                 </RevealOnScroll>
               ))}
             </div>
           </div>
-
-          {/* Albums Grid */}
-          <div>
-            <RevealOnScroll variant="curtain" duration={700}>
-              <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-6 flex items-center gap-2">
-                <Music2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC2626]" />
-                Featured Albums
-                <span className="ml-2 px-2 py-0.5 rounded-full bg-white/10 text-xs">
-                  {featuredAlbums.length} releases
-                </span>
-              </h3>
-            </RevealOnScroll>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              {featuredAlbums.map((album, index) => (
-                <FeaturedAlbumCard key={album.album} album={album} index={index} />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
+      {/* Speaking Section */}
       <SpeakingSection />
 
+      {/* Harmonized Learning Section */}
       <HarmonizedLearningSection />
 
+      {/* Philosophy Section */}
       <PhilosophySection />
 
+      {/* Drumming Section */}
       <DrummingSection />
 
-      {/* Skiing section was refactored and now includes SkiPhilosophyCard */}
+      {/* Skiing Section */}
       <SkiingSection />
 
+      {/* BJJ Section */}
       <BJJSection />
 
       {/* Credentials Section */}
-      <section id="credentials" className="py-20 px-6 bg-gray-50 relative overflow-hidden transition-all duration-500">
-        <SpiralKaleidoscope opacity={0.04} className="z-0" />
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <RevealOnScroll variant="blur-scale" duration={800}>
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-3">
-                <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
-                  Credentials
-                </MagicHeading>
-              </h2>
-              <p className="text-muted-foreground text-lg">Recognition and contributions</p>
-            </div>
-          </RevealOnScroll>
+      <CredentialsSection />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {credentials.map((cred, index) => (
-              <RevealOnScroll key={cred.label} variant="scale-rotate" delay={index * 60} duration={600}>
-                <CredentialChip cred={cred} index={index} />
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section - Added */}
+      {/* Contact Section */}
       <ContactSection />
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-[#0a0a0a] text-white relative overflow-hidden">
-        <SpiralKaleidoscope opacity={0.06} variant="dark" className="z-0" />
-        <div className="relative z-10 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: RALLY_BLUE }}
-            >
-              <span className="text-white font-bold text-lg">M</span>
+      <footer className="bg-[#0a0a0a] text-white py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold overflow-hidden"
+                style={{ backgroundColor: RALLY_BLUE }}
+              >
+                <img
+                  src="/images/drum-reflection-logo.png"
+                  alt="Matthew Guggemos"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="font-semibold">Matthew Guggemos</span>
             </div>
-            <span className="font-semibold">Matthew Guggemos</span>
+            <div className="flex items-center gap-6">
+              <a
+                href="https://linkedin.com/in/matthewguggemos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Linkedin size={20} />
+              </a>
+              <a
+                href="https://github.com/matthewguggemos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Github size={20} />
+              </a>
+              <a href="mailto:matt@itherapyllc.com" className="text-gray-400 hover:text-white transition-colors">
+                <Mail size={20} />
+              </a>
+            </div>
+            <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Matthew Guggemos. All rights reserved.</p>
           </div>
-
-          <div className="flex gap-6 text-sm text-white/60">
-            <a
-              href="https://www.itherapyllc.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-link hover:text-white transition-colors"
-            >
-              iTherapy LLC
-            </a>
-            <a
-              href="https://www.linkedin.com/in/matthew-guggemos-slp-researcher-drummer/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-link hover:text-white transition-colors"
-            >
-              LinkedIn
-            </a>
-          </div>
-
-          <p className="text-sm text-white/40">CCC-ASHA / M.S. Speech Pathology</p>
         </div>
       </footer>
 
       {/* AI Docent */}
-      <AIDocent />
+      <AIDocent onNavigate={handleNavigate} />
 
-      {/* CHANGE: Add ThemeMusicPlayer component */}
+      {/* Theme Music Player */}
       <ThemeMusicPlayer />
     </div>
   )

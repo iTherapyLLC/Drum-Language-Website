@@ -62,12 +62,34 @@ export function SheenEffect() {
       setIsActive(false)
     }
 
+    // Touch handler for mobile devices
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0]
+      const x = (touch.clientX / window.innerWidth) * 100
+      const y = (touch.clientY / window.innerHeight) * 100
+      setMousePos({ x, y })
+      setIsActive(true)
+
+      // Update CSS variables for global sheen
+      document.documentElement.style.setProperty("--mouse-x", `${x}%`)
+      document.documentElement.style.setProperty("--mouse-y", `${y}%`)
+    }
+
+    const handleTouchEnd = () => {
+      // Keep sheen active briefly after touch ends
+      setTimeout(() => setIsActive(false), 500)
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
     document.addEventListener("mouseleave", handleMouseLeave)
+    window.addEventListener("touchmove", handleTouchMove, { passive: true })
+    window.addEventListener("touchend", handleTouchEnd)
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseleave", handleMouseLeave)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
     }
   }, [])
 

@@ -69,6 +69,25 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
     setMousePosition({ x, y })
   }
 
+  // Touch support for mobile devices
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const touch = e.touches[0]
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setMousePosition({ x, y })
+    setIsHovered(true)
+  }
+
+  const handleTouchEnd = () => {
+    // Keep the effect active briefly after touch ends
+    setTimeout(() => {
+      setIsHovered(false)
+      setMousePosition({ x: 0.5, y: 0.5 })
+    }, 1500)
+  }
+
   // Calculate dynamic transforms based on scroll and hover
   const rotateX = isHovered ? (mousePosition.y - 0.5) * -20 : 0
   const rotateY = isHovered ? (mousePosition.x - 0.5) * 20 : 0
@@ -96,6 +115,8 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
         setMousePosition({ x: 0.5, y: 0.5 })
       }}
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{ perspective: "1000px" }}
     >
       <div

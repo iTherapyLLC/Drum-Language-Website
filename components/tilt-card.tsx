@@ -18,10 +18,10 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
   const cardRef = useRef<HTMLDivElement>(null)
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const isTouchDeviceRef = useRef(false)
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!cardRef.current || isTouchDevice) return
+    if (!cardRef.current || isTouchDeviceRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
@@ -45,7 +45,7 @@ export function TiltCard({ children, className = "", glowColor = RALLY_BLUE, int
   // Touch support for mobile - simpler effect without complex 3D
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!cardRef.current) return
-    setIsTouchDevice(true)
+    isTouchDeviceRef.current = true
     setIsHovered(true)
 
     const rect = cardRef.current.getBoundingClientRect()

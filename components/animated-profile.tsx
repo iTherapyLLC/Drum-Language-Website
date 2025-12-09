@@ -20,6 +20,7 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [hasEntered, setHasEntered] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Intersection Observer for entrance/exit animations
   useEffect(() => {
@@ -81,12 +82,25 @@ export function AnimatedProfile({ src, alt }: AnimatedProfileProps) {
   }
 
   const handleTouchEnd = () => {
+    // Clear any existing timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current)
+    }
     // Keep the effect active briefly after touch ends
-    setTimeout(() => {
+    touchTimeoutRef.current = setTimeout(() => {
       setIsHovered(false)
       setMousePosition({ x: 0.5, y: 0.5 })
     }, 1500)
   }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Calculate dynamic transforms based on scroll and hover
   const rotateX = isHovered ? (mousePosition.y - 0.5) * -20 : 0

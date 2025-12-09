@@ -1226,17 +1226,29 @@ a:not(.readable-text) *,
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0;
-  height: 0;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: rgba(0, 94, 184, 0.3);
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0);
   opacity: 0;
   pointer-events: none;
 }
 
 .touch-ripple:active::after {
-  animation: ripple 0.6s ease-out;
+  animation: touch-ripple-expand 0.6s ease-out;
+}
+
+/* Touch ripple animation */
+@keyframes touch-ripple-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
 }
 
 /* ===========================================
@@ -1312,11 +1324,6 @@ a:not(.readable-text) *,
   /* Reduce particle count via display none on smaller screens */
   .particle:nth-child(n + 13) {
     display: none;
-  }
-
-  /* Simplify 3D transforms on mobile */
-  .tilt-card {
-    transform-style: flat;
   }
 
   /* Optimize glow effects */

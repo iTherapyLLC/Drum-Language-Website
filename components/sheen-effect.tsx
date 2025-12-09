@@ -40,6 +40,9 @@ export function SheenEffect() {
 
   // Mouse move handler for sheen effect
   useEffect(() => {
+    let rafId: number | null = null
+    let touchPending = false
+
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 100
       const y = (e.clientY / window.innerHeight) * 100
@@ -62,17 +65,23 @@ export function SheenEffect() {
       setIsActive(false)
     }
 
-    // Touch handler for mobile devices
+    // Touch handler for mobile devices - throttled with requestAnimationFrame
     const handleTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0]
-      const x = (touch.clientX / window.innerWidth) * 100
-      const y = (touch.clientY / window.innerHeight) * 100
-      setMousePos({ x, y })
-      setIsActive(true)
+      if (touchPending) return
+      touchPending = true
 
-      // Update CSS variables for global sheen
-      document.documentElement.style.setProperty("--mouse-x", `${x}%`)
-      document.documentElement.style.setProperty("--mouse-y", `${y}%`)
+      rafId = requestAnimationFrame(() => {
+        const touch = e.touches[0]
+        const x = (touch.clientX / window.innerWidth) * 100
+        const y = (touch.clientY / window.innerHeight) * 100
+        setMousePos({ x, y })
+        setIsActive(true)
+
+        // Update CSS variables for global sheen
+        document.documentElement.style.setProperty("--mouse-x", `${x}%`)
+        document.documentElement.style.setProperty("--mouse-y", `${y}%`)
+        touchPending = false
+      })
     }
 
     const handleTouchEnd = () => {
@@ -90,6 +99,9 @@ export function SheenEffect() {
       document.removeEventListener("mouseleave", handleMouseLeave)
       window.removeEventListener("touchmove", handleTouchMove)
       window.removeEventListener("touchend", handleTouchEnd)
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+      }
     }
   }, [])
 

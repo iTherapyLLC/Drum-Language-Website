@@ -29,6 +29,9 @@ import {
   DollarSign,
   Star,
   MessageSquare,
+  Layers,
+  Drum,
+  Sparkles,
 } from "lucide-react"
 import { MagicHeading } from "@/components/magic-text"
 import { AIDocent } from "@/components/ai-docent"
@@ -46,6 +49,7 @@ import { useTouchHover } from "@/hooks/use-touch-hover"
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
 const SOFT_GRAY = "#F8F9FA"
+const STITCH_RED = "#DC2626"
 
 const projects = [
   {
@@ -287,6 +291,34 @@ const skiingPrinciples = [
     icon: Zap,
     description: "Hesitation creates more danger than a committed wrong choice.",
     title: "Commit Fully",
+  },
+]
+
+const drummingPrinciples = [
+  {
+    title: "Limb Independence",
+    description: "Coordinating four limbs while tracking dozens of variables simultaneously",
+    icon: Zap,
+  },
+  {
+    title: "Context Awareness",
+    description: "In jazz, the ride cymbal leads. In rock, bass and snare punch forward",
+    icon: Compass,
+  },
+  {
+    title: "Pattern Systems",
+    description: "Patterns that repeat, alternate, or cross bar lines to manage complexity",
+    icon: Layers,
+  },
+  {
+    title: "Physical Constraints",
+    description: "Speed ceilings and impossible combinations, like phonemes in speech",
+    icon: Target,
+  },
+  {
+    title: "Infinite Expression",
+    description: "Finite elements combining within constraints to produce endless variation",
+    icon: Sparkles,
   },
 ]
 
@@ -1078,7 +1110,7 @@ function PhilosophySection() {
         </RevealOnScroll>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left">
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-6 sm:space-8">
             <RevealOnScroll variant="curtain" delay={200} duration={1000}>
               <div className="relative">
                 <div
@@ -1167,48 +1199,55 @@ function PhilosophySection() {
                   }}
                 />
 
-                <div className="relative overflow-hidden">
-                  <img
-                    src="/images/ludwig-restored.png"
-                    alt="1966 Ludwig Club Date drum kit in silver sparkle, restored by Matthew Guggemos"
-                    className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105"
+                {/* CHANGE: Replace video with drum kit IMAGE - Kintsugi is about RESTORATION, not performance */}
+                <div className="relative aspect-[4/3] bg-black">
+                  <Image
+                    src="/images/aq613fkizyx9pd-zfkf0v.png"
+                    alt="1966 Ludwig Club Date drum kit in silver sparkle - restored following kintsugi philosophy"
+                    fill
+                    className="object-cover transition-all duration-500 group-hover:scale-105"
                   />
-
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 55%, transparent 60%)`,
-                      backgroundSize: "200% 100%",
-                      animation: "shimmer 2s ease-in-out infinite",
-                    }}
-                  />
-
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-20 transition-opacity duration-500"
-                    style={{
-                      background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)",
-                    }}
-                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 pointer-events-none" />
                 </div>
 
-                {/* CHANGE: Updated title and content to "Conducting Intelligence Through Kintsugi" */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent max-h-[70%] overflow-y-auto">
+                {/* CHANGE: Kintsugi content now in separate container below image for visibility */}
+                <div className="p-6 bg-gradient-to-b from-gray-900 to-gray-800">
                   <h4 className="text-white font-semibold text-lg mb-3">Conducting Intelligence Through Kintsugi</h4>
-                  <div className="text-gray-200 text-sm leading-relaxed space-y-3">
+                  <div className="text-gray-200 text-sm leading-relaxed space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600">
                     <p>
                       This 1966 Ludwig kit was in a second-hand shop that didn't recognize its worth. My wife brought it
                       home.
                     </p>
                     <p>
-                      The shells had damage from poorly installed spurs. I used OCR to analyze hardware markings, an LLM
-                      to plan which modern Ludwig parts would retain authenticity, and my own hands to do the repairs.
-                      Technology and manual labor combined to make something beautiful.
+                      The shells had damage from poorly installed bass drum spurs. Over three months, I collaborated
+                      with an <span className="text-[#005EB8] font-medium">LLM</span> to plan the restoration: analyzing
+                      repair options, engineering solutions for structural issues, sourcing era-appropriate parts. I
+                      used <span className="text-[#005EB8] font-medium">OCR</span> to identify hardware markings and
+                      find the right combination of vintage authenticity and modern Ludwig professional-grade upgrades.
+                      Then my hands did the work: repairing shells, reconditioning bearing edges, fitting new heads,
+                      wood hoops, and upgraded tom mounts.
                     </p>
                     <p>
-                      Now it's configured as a left-handed jazz kit that I practice on daily. Even as a lefty who's
-                      played right-handed for 30 years, switching orientation remains a challenge. Orchestrating AI
-                      helped me build an instrument that keeps me motivated to work on something difficult, and
-                      difficulty is where growth happens.
+                      The restoration followed <span className="text-amber-400 font-medium">kintsugi</span> logic. I
+                      didn't hide the kit's history. I highlighted it. Imperfections remain visible, but the instrument
+                      is now more capable than when it left the factory.
+                    </p>
+                    <p>
+                      This kit is configured <span className="text-white font-medium">left-handed</span>. I've played
+                      right-handed my whole life, and switching orientation after decades of muscle memory is genuinely
+                      difficult. I needed something beautiful enough to inspire me to sit down daily and work on
+                      something I'm not good at.
+                    </p>
+                    <p>
+                      This is how I approach any complex problem. Orchestrate available intelligence toward a goal.
+                      Build something that pulls you into productive struggle. Whether restoring drums, designing AI
+                      pipelines, or developing clinical tools, the process is the same: identify what each component
+                      does well, combine them intentionally, and create something that motivates continued effort.
+                    </p>
+                    <p className="text-gray-300 italic border-l-2 border-amber-400 pl-3">
+                      The outcome here is tangible, physical, real. Ancient aesthetic principles guiding modern
+                      technology toward a result that neither human nor machine could achieve alone. The same method
+                      applies to systems that exist entirely in code.
                     </p>
                   </div>
                 </div>
@@ -1228,6 +1267,190 @@ function PhilosophySection() {
         </RevealOnScroll>
       </div>
     </section>
+  )
+}
+
+function DrummingSection() {
+  return (
+    <section
+      id="drumming"
+      className="py-20 px-6 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden transition-all duration-500"
+    >
+      <SpiralKaleidoscope opacity={0.08} className="z-0" />
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        <RevealOnScroll variant="wave" duration={800}>
+          <div className="mb-12">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Drum size={32} style={{ color: RALLY_BLUE }} />
+              <h2 className="text-3xl sm:text-4xl font-bold">
+                <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold" variant="dark">
+                  Problem-Solving in Real Time
+                </MagicHeading>
+              </h2>
+            </div>
+            <p className="text-gray-400 text-lg">Drumming: Where Coordination Meets Cognition</p>
+          </div>
+        </RevealOnScroll>
+
+        {/* CHANGE: Updated grid layout for equal height columns */}
+        <div className="grid lg:grid-cols-2 gap-8 items-stretch text-left">
+          {/* Drum Video Card with interactive hover */}
+          <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
+            <div className="h-full">
+              <DrumVideoCard />
+            </div>
+          </RevealOnScroll>
+
+          {/* Philosophy and Content - matched height */}
+          <div className="flex flex-col h-full">
+            <RevealOnScroll variant="curtain" delay={150} duration={900}>
+              {/* CHANGE: Added flex-1 and hover effects to content card */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex-1 h-full group hover:border-[#005EB8]/30 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)]">
+                <div className="prose prose-invert prose-lg space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                  <p className="text-gray-200 leading-relaxed">
+                    Drumming looks like hitting things. It's actually coordinating four limbs while tracking dozens of
+                    variables simultaneously.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    Are your limbs hitting at the same time? Is the snare obscuring other instruments? Which hand did
+                    you start on, and where will your fill land? In jazz, the ride cymbal leads. In rock, bass and snare
+                    punch forward. Context changes everything, and you're adjusting constantly.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    Drummers develop systems to manage this complexity. Patterns that repeat on the same hand, patterns
+                    that alternate, patterns that cross bar lines. Each system introduces new variables, and the
+                    calculations multiply as tempo increases and song forms become less predictable.
+                  </p>
+                  <blockquote className="border-l-4 border-[#005EB8] pl-4 my-4">
+                    <p className="text-gray-200 italic">
+                      This parallels language. Both have combinatorial rules and physical constraints. Certain rhythmic
+                      phrases have speed ceilings. Certain sound combinations are impossible in speech. Finite elements
+                      combining within constraints to produce infinite expression.
+                    </p>
+                  </blockquote>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Skiing, jiu-jitsu, language, drumming. All involve improvisation within rules. Understanding how to
+                    systematize improvisation helps build better AI systems, particularly ones that need to hold a
+                    conversation.
+                  </p>
+                </div>
+              </div>
+            </RevealOnScroll>
+
+            {/* CHANGE: Replaced small principle cards with larger, interactive DrummingPrincipleCard components */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8">
+              {drummingPrinciples.map((principle, index) => (
+                <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 100}>
+                  <DrummingPrincipleCard principle={principle} index={index} />
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function DrummingPrincipleCard({
+  principle,
+  index,
+}: {
+  principle: {
+    title: string
+    description: string
+    icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  }
+  index: number
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+    setMousePosition({ x, y })
+  }
+
+  const Icon = principle.icon
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative group cursor-pointer"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false)
+        setMousePosition({ x: 0.5, y: 0.5 })
+      }}
+      style={{
+        transform: isHovered
+          ? `perspective(1000px) rotateX(${(mousePosition.y - 0.5) * -10}deg) rotateY(${(mousePosition.x - 0.5) * 10}deg) scale(1.05)`
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+        transition: "transform 0.3s ease-out",
+      }}
+    >
+      {/* Outer glow ring */}
+      <div
+        className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}40, ${STITCH_RED}20, transparent 70%)`,
+        }}
+      />
+
+      {/* Border glow */}
+      <div
+        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: `conic-gradient(from ${mousePosition.x * 360}deg at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}, ${STITCH_RED}, ${RALLY_BLUE})`,
+        }}
+      />
+
+      {/* Card content */}
+      <div className="relative p-6 rounded-2xl border border-white/10 bg-gray-900/90 backdrop-blur-sm h-full w-[220px] sm:w-[260px] transition-all duration-300 group-hover:bg-gray-800/90 group-hover:border-transparent">
+        {/* Cursor-following light */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, ${RALLY_BLUE}15, transparent 50%)`,
+          }}
+        />
+
+        {/* Icon with animated background */}
+        <div className="relative mb-4">
+          <div
+            className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+            style={{
+              backgroundColor: isHovered ? `${RALLY_BLUE}30` : `${RALLY_BLUE}20`,
+              boxShadow: isHovered ? `0 0 30px ${RALLY_BLUE}40` : "none",
+            }}
+          >
+            <Icon size={28} style={{ color: RALLY_BLUE }} />
+          </div>
+          {/* Icon glow pulse */}
+          <div
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 animate-pulse"
+            style={{
+              background: `radial-gradient(circle, ${RALLY_BLUE}20, transparent 70%)`,
+            }}
+          />
+        </div>
+
+        {/* Title */}
+        <h4 className="font-bold text-white text-lg mb-2 transition-colors duration-300 group-hover:text-[#4da3ff]">
+          {principle.title}
+        </h4>
+
+        {/* Description */}
+        <p className="text-sm text-gray-300 leading-relaxed transition-colors duration-300 group-hover:text-gray-200">
+          {principle.description}
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -1331,7 +1554,6 @@ function SkiingSection() {
   )
 }
 
-// CHANGE: Updated BJJ section with rich scrollable text card similar to drum section pattern
 function BJJSection() {
   const domains = [
     {
@@ -1531,6 +1753,108 @@ function ContactSection() {
         </RevealOnScroll>
       </div>
     </section>
+  )
+}
+
+// Define DrumVideoCard component
+function DrumVideoCard() {
+  const videoRef = useRef<HTMLDivElement>(null)
+  const { isActive: isHovered, setIsActive: setIsHovered } = useTouchHover(2000)
+  const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 })
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!videoRef.current) return
+    const rect = videoRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+
+    const rotateX = (y - 0.5) * -8
+    const rotateY = (x - 0.5) * 10
+
+    videoRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+    setGlowPosition({ x: x * 100, y: y * 100 })
+  }
+
+  const handleMouseLeave = () => {
+    if (!videoRef.current) return
+    videoRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+    setIsHovered(false)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!videoRef.current) return
+    setIsHovered(true)
+    const touch = e.touches[0]
+    const rect = videoRef.current.getBoundingClientRect()
+    const x = (touch.clientX - rect.left) / rect.width
+    const y = (touch.clientY - rect.top) / rect.height
+    setGlowPosition({ x: x * 100, y: y * 100 })
+    videoRef.current.style.transform = `perspective(1000px) rotateX(-2deg) rotateY(2deg) scale(1.02)`
+  }
+
+  const handleTouchEnd = () => {
+    if (!videoRef.current) return
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
+      }
+      setIsHovered(false)
+    }, 300)
+  }
+
+  return (
+    <div
+      ref={videoRef}
+      className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300 ease-out shadow-2xl"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {/* Glow effect */}
+      <div
+        className="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+        style={{
+          background: `linear-gradient(135deg, ${RALLY_BLUE}80, ${RED_STITCH}40)`,
+        }}
+      />
+
+      {/* Video */}
+      <div className="relative aspect-video overflow-hidden">
+        <iframe
+          src="https://drive.google.com/file/d/1vUar0ekOgc_sHHRnnIym3woAIt9tKTrm/preview"
+          className="w-full h-full"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          title="Matthew Guggemos drum performance - real-time problem solving"
+        />
+
+        {/* Overlay gradient */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, transparent 100%)`,
+          }}
+        />
+
+        {/* Sheen effect */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)`,
+            transform: isHovered ? "translateX(100%)" : "translateX(-100%)",
+            transition: "transform 0.8s ease-out",
+          }}
+        />
+
+        {/* "Watch Drumming" hint */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          Watch Drumming
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -1800,7 +2124,7 @@ export default function PortfolioPage() {
                     }}
                   >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#005EB8]/5 to-transparent animate-shimmer" />
                     </div>
 
                     {/* Header section */}
@@ -1986,6 +2310,8 @@ export default function PortfolioPage() {
       <HarmonizedLearningSection />
 
       <PhilosophySection />
+
+      <DrummingSection />
 
       <SkiingSection />
 

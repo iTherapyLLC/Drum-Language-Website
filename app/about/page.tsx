@@ -47,10 +47,10 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="pt-24 pb-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12 items-start">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 items-start">
             {/* Profile - Updated for Reid */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24">
+              <div className="lg:sticky lg:top-24">
                 <div className="w-32 h-32 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-serif text-4xl font-bold mb-6">
                   R
                 </div>

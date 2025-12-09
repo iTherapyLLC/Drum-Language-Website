@@ -1292,7 +1292,6 @@ function DrummingSection() {
           </div>
         </RevealOnScroll>
 
-        {/* CHANGE: Updated grid layout for equal height columns */}
         <div className="grid lg:grid-cols-2 gap-8 items-stretch text-left">
           {/* Drum Video Card with interactive hover */}
           <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
@@ -1302,49 +1301,47 @@ function DrummingSection() {
           </RevealOnScroll>
 
           {/* Philosophy and Content - matched height */}
-          <div className="flex flex-col h-full">
-            <RevealOnScroll variant="curtain" delay={150} duration={900}>
-              {/* CHANGE: Added flex-1 and hover effects to content card */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex-1 h-full group hover:border-[#005EB8]/30 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)]">
-                <div className="prose prose-invert prose-lg space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                  <p className="text-gray-200 leading-relaxed">
-                    Drumming looks like hitting things. It's actually coordinating four limbs while tracking dozens of
-                    variables simultaneously.
+          <RevealOnScroll variant="curtain" delay={150} duration={900}>
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 h-full group hover:border-[#005EB8]/30 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)]">
+              <div className="prose prose-invert prose-lg space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <p className="text-gray-200 leading-relaxed">
+                  Drumming looks like hitting things. It's actually coordinating four limbs while tracking dozens of
+                  variables simultaneously.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  Are your limbs hitting at the same time? Is the snare obscuring other instruments? Which hand did you
+                  start on, and where will your fill land? In jazz, the ride cymbal leads. In rock, bass and snare punch
+                  forward. Context changes everything, and you're adjusting constantly.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  Drummers develop systems to manage this complexity. Patterns that repeat on the same hand, patterns
+                  that alternate, patterns that cross bar lines. Each system introduces new variables, and the
+                  calculations multiply as tempo increases and song forms become less predictable.
+                </p>
+                <blockquote className="border-l-4 border-[#005EB8] pl-4 my-4">
+                  <p className="text-gray-200 italic">
+                    This parallels language. Both have combinatorial rules and physical constraints. Certain rhythmic
+                    phrases have speed ceilings. Certain sound combinations are impossible in speech. Finite elements
+                    combining within constraints to produce infinite expression.
                   </p>
-                  <p className="text-gray-300 leading-relaxed">
-                    Are your limbs hitting at the same time? Is the snare obscuring other instruments? Which hand did
-                    you start on, and where will your fill land? In jazz, the ride cymbal leads. In rock, bass and snare
-                    punch forward. Context changes everything, and you're adjusting constantly.
-                  </p>
-                  <p className="text-gray-300 leading-relaxed">
-                    Drummers develop systems to manage this complexity. Patterns that repeat on the same hand, patterns
-                    that alternate, patterns that cross bar lines. Each system introduces new variables, and the
-                    calculations multiply as tempo increases and song forms become less predictable.
-                  </p>
-                  <blockquote className="border-l-4 border-[#005EB8] pl-4 my-4">
-                    <p className="text-gray-200 italic">
-                      This parallels language. Both have combinatorial rules and physical constraints. Certain rhythmic
-                      phrases have speed ceilings. Certain sound combinations are impossible in speech. Finite elements
-                      combining within constraints to produce infinite expression.
-                    </p>
-                  </blockquote>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    Skiing, jiu-jitsu, language, drumming. All involve improvisation within rules. Understanding how to
-                    systematize improvisation helps build better AI systems, particularly ones that need to hold a
-                    conversation.
-                  </p>
-                </div>
+                </blockquote>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Skiing, jiu-jitsu, language, drumming. All involve improvisation within rules. Understanding how to
+                  systematize improvisation helps build better AI systems, particularly ones that need to hold a
+                  conversation.
+                </p>
               </div>
-            </RevealOnScroll>
-
-            {/* CHANGE: Replaced small principle cards with larger, interactive DrummingPrincipleCard components */}
-            <div className="flex flex-wrap justify-center gap-6 mt-8">
-              {drummingPrinciples.map((principle, index) => (
-                <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 100}>
-                  <DrummingPrincipleCard principle={principle} index={index} />
-                </RevealOnScroll>
-              ))}
             </div>
+          </RevealOnScroll>
+        </div>
+
+        <div className="mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 justify-items-center">
+            {drummingPrinciples.map((principle, index) => (
+              <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>
+                <DrummingPrincipleCard principle={principle} index={index} />
+              </RevealOnScroll>
+            ))}
           </div>
         </div>
       </div>

@@ -1602,8 +1602,9 @@ function DrummingPrincipleCard({
 
   const Icon = principle.icon
 
+  // CHANGE: Increase card height to show full text
   const CARD_WIDTH = 200
-  const CARD_HEIGHT = 180
+  const CARD_HEIGHT = 220
 
   return (
     <div
@@ -1715,14 +1716,14 @@ function DrummingPrincipleCard({
           </h4>
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{principle.description}</p>
+          {/* CHANGE: Remove line-clamp-3 to show full text */}
+          <p className="text-sm text-muted-foreground leading-relaxed">{principle.description}</p>
         </div>
       </div>
     </div>
   )
 }
 
-// CHANGE: SkiingPrincipleCard component added with aurora borealis effect after SkiingPrincipleCard
 function SkiingPrincipleCard({
   principle,
   index,

@@ -1510,17 +1510,14 @@ function DrummingSection() {
           </div>
         </RevealOnScroll>
 
-        <div className="grid lg:grid-cols-2 gap-8 items-stretch text-left">
-          {/* Drum Video Card with interactive animations */}
-          <RevealOnScroll variant="zoom-blur" delay={100} duration={900}>
-            <div className="h-full">
-              <DrumVideoCard />
-            </div>
-          </RevealOnScroll>
+        <div className="flex flex-col items-center gap-6">
+          {/* CHANGE: Removed RevealOnScroll from DrumVideoCard to ensure it displays */}
+          <div className="w-full max-w-2xl mx-auto">
+            <DrumVideoCard />
+          </div>
 
-          {/* Philosophy and Content - matched height */}
           <RevealOnScroll variant="curtain" delay={150} duration={900}>
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 h-full group hover:border-[#005EB8]/30 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)]">
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 group hover:border-[#005EB8]/30 hover:bg-white/[0.07] transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,94,184,0.15)] max-w-3xl mx-auto text-left">
               <div className="prose prose-invert prose-lg space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <p className="text-gray-200 leading-relaxed">
                   Drumming looks like hitting things. It's actually coordinating four limbs while tracking dozens of
@@ -1553,8 +1550,7 @@ function DrummingSection() {
           </RevealOnScroll>
         </div>
 
-        {/* CHANGE: Update drumming cards container - use grid instead of flex */}
-        <div className="mt-12">
+        <div className="mt-6">
           <div className="hidden xl:flex flex-wrap justify-center items-stretch">
             {drummingPrinciples.map((principle, index) => (
               <RevealOnScroll key={principle.title} variant="slide-up" delay={index * 80}>

@@ -1,20 +1,12 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { Play, Pause, Volume2, VolumeX, Music } from "lucide-react"
+import { Play, Pause, Music } from "lucide-react"
 import { useMusic } from "@/lib/music-context"
 
 const RALLY_BLUE = "#005EB8"
 
 export function ThemeMusicPlayer() {
-  const { isPlaying, volume, isMuted, toggle, setVolume, toggleMute, autoPlayBlocked } = useMusic()
-  const [showVolume, setShowVolume] = useState(false)
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number.parseFloat(e.target.value)
-    setVolume(newVolume)
-  }
+  const { isPlaying, toggle, autoPlayBlocked } = useMusic()
 
   return (
     <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3">
@@ -37,7 +29,7 @@ export function ThemeMusicPlayer() {
       {/* Player controls */}
       <div className="flex items-center gap-2">
         {/* Main play/pause button */}
-        <div className="relative" onMouseEnter={() => setShowVolume(true)} onMouseLeave={() => setShowVolume(false)}>
+        <div className="relative">
           {/* Animated rings when playing */}
           {isPlaying && (
             <>
@@ -81,43 +73,9 @@ export function ThemeMusicPlayer() {
           </button>
         </div>
 
-        {isPlaying && (
-          <div
-            className="flex items-center gap-2 overflow-hidden transition-all duration-300 sm:w-0 sm:opacity-0 sm:hover:w-[140px] sm:hover:opacity-100"
-            style={{
-              width: showVolume ? "140px" : undefined,
-              opacity: showVolume ? 1 : undefined,
-            }}
-            onMouseEnter={() => setShowVolume(true)}
-            onMouseLeave={() => setShowVolume(false)}
-          >
-            <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-gray-200">
-              <button
-                onClick={toggleMute}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-                aria-label={isMuted ? "Unmute" : "Mute"}
-              >
-                {isMuted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={isMuted ? 0 : volume}
-                onChange={handleVolumeChange}
-                className="w-16 h-1 rounded-full appearance-none cursor-pointer"
-                style={{
-                  background: `linear-gradient(to right, ${RALLY_BLUE} 0%, ${RALLY_BLUE} ${(isMuted ? 0 : volume) * 100}%, #e5e7eb ${(isMuted ? 0 : volume) * 100}%, #e5e7eb 100%)`,
-                }}
-              />
-            </div>
-          </div>
-        )}
-
         {/* Track info when playing */}
         {isPlaying && (
-          <div className="hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-gray-200 animate-in slide-in-from-left-5 duration-300">
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-gray-200 animate-in slide-in-from-left-5 duration-300">
             {/* Animated equalizer bars */}
             <div className="flex items-end gap-0.5 h-4">
               {[0, 1, 2, 3].map((i) => (

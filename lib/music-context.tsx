@@ -13,6 +13,7 @@ interface MusicContextType {
   setVolume: (volume: number) => void
   toggleMute: () => void
   hasUserInteracted: boolean
+  autoPlayBlocked: boolean
 }
 
 const MusicContext = createContext<MusicContextType | null>(null)
@@ -22,6 +23,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const [volume, setVolumeState] = useState(0.25) // Start at 25% - not too loud
   const [isMuted, setIsMuted] = useState(false)
   const [hasUserInteracted, setHasUserInteracted] = useState(false)
+  const [autoPlayBlocked, setAutoPlayBlocked] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Initialize audio element
@@ -35,7 +37,24 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     const handleEnded = () => setIsPlaying(false)
     audio.addEventListener("ended", handleEnded)
 
+    const attemptAutoplay = async () => {
+      try {
+        await audio.play()
+        setIsPlaying(true)
+        setHasUserInteracted(true)
+        setAutoPlayBlocked(false)
+      } catch (err) {
+        // Browser blocked autoplay - need user interaction
+        setAutoPlayBlocked(true)
+        setIsPlaying(false)
+      }
+    }
+
+    // Small delay to let page settle
+    const timer = setTimeout(attemptAutoplay, 500)
+
     return () => {
+      clearTimeout(timer)
       audio.removeEventListener("ended", handleEnded)
       audio.pause()
       audio.src = ""
@@ -56,6 +75,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         .then(() => {
           setIsPlaying(true)
           setHasUserInteracted(true)
+          setAutoPlayBlocked(false)
         })
         .catch(console.error)
     }
@@ -97,6 +117,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         setVolume,
         toggleMute,
         hasUserInteracted,
+        autoPlayBlocked,
       }}
     >
       {children}

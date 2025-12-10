@@ -46,6 +46,7 @@ import { AnimatedProfile } from "@/components/animated-profile"
 import { useTouchHover } from "@/hooks/use-touch-hover"
 import { AIDocent } from "@/components/ai-docent"
 import { ThemeMusicPlayer } from "@/components/theme-music-player"
+import { HarmonizedLearningSection } from "@/components/harmonized-learning-section"
 
 const RALLY_BLUE = "#005EB8"
 const RED_STITCH = "#DC2626"
@@ -396,13 +397,11 @@ function ProjectCard({
     const x = (touch.clientX - rect.left) / rect.width
     const y = (touch.clientY - rect.top) / rect.height
     setGlowPosition({ x: x * 100, y: y * 100 })
-    // Apply a subtle tilt on touch
     cardRef.current.style.transform = `perspective(1000px) rotateX(-3deg) rotateY(3deg) scale(1.02)`
   }
 
   const handleTouchEnd = () => {
     if (!cardRef.current) return
-    // Reset after a delay so user sees the animation
     setTimeout(() => {
       if (cardRef.current) {
         cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
@@ -423,11 +422,7 @@ function ProjectCard({
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className={`
-          p-6 sm:p-8 rounded-2xl relative overflow-hidden
-          cursor-pointer transition-all duration-300 ease-out
-          ${isHighlighted ? "ring-4 ring-primary shadow-xl" : ""}
-        `}
+        className="p-6 rounded-2xl relative overflow-hidden cursor-pointer transition-all duration-300 ease-out"
         style={{
           transitionDelay: `${index * 100}ms`,
           transformStyle: "preserve-3d",
@@ -454,55 +449,52 @@ function ProjectCard({
           }}
         />
 
-        {/* Header section - fixed height */}
-        <div className="h-[72px] flex flex-col justify-start">
-          <div className="flex items-start gap-4">
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-              style={{ backgroundColor: `${RALLY_BLUE}10` }}
-            >
-              <img
-                src={project.logoUrl || "/placeholder.svg"}
-                alt={`${project.name} logo`}
-                className="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110"
+        <div className="flex items-start gap-3 mb-4" style={{ minHeight: "80px" }}>
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+            style={{ backgroundColor: `${RALLY_BLUE}10` }}
+          >
+            <img
+              src={project.logoUrl || "/placeholder.svg"}
+              alt={`${project.name} logo`}
+              className="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110"
+              style={{
+                filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+              }}
+            />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-[#005EB8] truncate">
+                {project.name}
+              </h3>
+              <span
+                className="stat-badge px-2 py-0.5 text-xs rounded-full font-medium transition-all duration-300 group-hover:scale-105 shrink-0 whitespace-nowrap"
                 style={{
-                  filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
+                  backgroundColor: `${RALLY_BLUE}15`,
+                  color: RALLY_BLUE,
                 }}
+              >
+                {project.stat}
+              </span>
+              <ArrowRight
+                size={18}
+                className="shrink-0 opacity-30 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1 ml-auto"
+                style={{ color: RALLY_BLUE }}
               />
             </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1 flex-wrap">
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-colors duration-300 group-hover:text-[#005EB8] truncate">
-                  {project.name}
-                </h3>
-                <span
-                  className="stat-badge px-2 py-1 text-xs rounded-full font-medium transition-all duration-300 group-hover:scale-105 shrink-0"
-                  style={{
-                    backgroundColor: `${RALLY_BLUE}15`,
-                    color: RALLY_BLUE,
-                  }}
-                >
-                  {project.stat}
-                </span>
-                <ArrowRight
-                  size={20}
-                  className="shrink-0 opacity-30 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1 ml-auto"
-                  style={{ color: RALLY_BLUE }}
-                />
-              </div>
-              <p className="text-lg text-foreground/80 truncate">{project.tagline}</p>
-            </div>
+            <p className="text-base text-foreground/80 line-clamp-2 leading-snug">{project.tagline}</p>
           </div>
         </div>
 
-        {/* Description section - fixed height */}
-        <div className="flex-1 mt-4 h-[72px] overflow-hidden">
-          <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">{project.description}</p>
+        {/* Description section - flex grow */}
+        <div className="flex-1 overflow-hidden">
+          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{project.description}</p>
         </div>
 
         {/* Footer section */}
-        <div className="mt-auto pt-4 border-t border-border/50">
+        <div className="mt-4 pt-4 border-t border-border/50">
           <span
             className="inline-flex items-center gap-2 text-sm font-medium transition-all duration-300 group-hover:gap-3"
             style={{ color: RALLY_BLUE }}
@@ -1052,7 +1044,7 @@ function CredentialChip({ cred, index }: { cred: (typeof credentials)[0]; index:
 
       {/* Animated border gradient */}
       <div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover/chip:opacity-100 transition-opacity duration-500"
+        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
           background: `linear-gradient(90deg, ${RALLY_BLUE}, ${RED_STITCH}, #00D4FF, ${RALLY_BLUE})`,
           backgroundSize: "300% 100%",
@@ -1314,6 +1306,8 @@ function SpeakingSection() {
 
 // FIX: Removed duplicate HarmonizedLearningSection function definition
 // The real HarmonizedLearningSection is now imported from components/harmonized-learning-section.tsx
+
+// CHANGE: Remove placeholder HarmonizedLearningSection - using imported component instead
 
 function PhilosophySection() {
   return (
@@ -2417,8 +2411,8 @@ function ContactSection() {
       <div className="relative z-10 max-w-4xl mx-auto">
         <RevealOnScroll variant="blur-scale" duration={800}>
           <div className="mb-16 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+              <MagicHeading as="span" className="text-3xl sm:text-4xl md:text-5xl font-bold">
                 Get in Touch
               </MagicHeading>
             </h2>
@@ -2511,57 +2505,58 @@ function DrumVideoCard() {
 }
 
 // Placeholder for HarmonizedLearningSection, assuming it's imported elsewhere
-const HarmonizedLearningSection = () => (
-  <section id="harmonized-learning" className="py-20 px-6 bg-gray-50 relative overflow-hidden">
-    <SpiralKaleidoscope opacity={0.05} className="z-0" />
-    <div className="relative z-10 max-w-5xl mx-auto text-center">
-      <RevealOnScroll variant="wave" duration={800}>
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Presentation size={32} style={{ color: RALLY_BLUE }} />
-            <h2 className="text-3xl sm:text-4xl font-bold">
-              <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
-                Harmonized Learning
-              </MagicHeading>
-            </h2>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            A comprehensive framework for integrating diverse learning styles and modalities.
-          </p>
-        </div>
-      </RevealOnScroll>
-      <div className="prose prose-lg max-w-3xl mx-auto text-left text-muted-foreground">
-        <p>
-          Harmonized Learning is a pedagogical framework designed to create adaptive and engaging educational
-          experiences. It synthesizes insights from cognitive science, educational psychology, and user experience
-          design to cater to a wide spectrum of learners.
-        </p>
-        <ul className="list-disc pl-6">
-          <li>
-            **Multimodal Content Delivery:** Information is presented through various formats including text, video,
-            interactive simulations, audio lectures, and hands-on exercises.
-          </li>
-          <li>
-            **Personalized Learning Paths:** Learners can progress at their own pace, with adaptive algorithms
-            suggesting next steps based on performance and stated preferences.
-          </li>
-          <li>
-            **Active Learning Strategies:** Emphasis is placed on application and practice, encouraging learners to
-            actively engage with the material rather than passively consuming it.
-          </li>
-          <li>
-            **Feedback and Assessment:** Continuous feedback loops and diverse assessment methods ensure learners
-            understand their progress and identify areas for improvement.
-          </li>
-        </ul>
-        <p>
-          This approach is particularly effective for complex subjects that benefit from conceptual understanding,
-          practical application, and varied reinforcement.
-        </p>
-      </div>
-    </div>
-  </section>
-)
+// REMOVED: Placeholder HarmonizedLearningSection function definition
+// const HarmonizedLearningSection = () => (
+//   <section id="harmonized-learning" className="py-20 px-6 bg-gray-50 relative overflow-hidden">
+//     <SpiralKaleidoscope opacity={0.05} className="z-0" />
+//     <div className="relative z-10 max-w-5xl mx-auto text-center">
+//       <RevealOnScroll variant="wave" duration={800}>
+//         <div className="mb-12">
+//           <div className="flex items-center justify-center gap-3 mb-3">
+//             <Presentation size={32} style={{ color: RALLY_BLUE }} />
+//             <h2 className="text-3xl sm:text-4xl font-bold">
+//               <MagicHeading as="span" className="text-3xl sm:text-4xl font-bold">
+//                 Harmonized Learning
+//               </MagicHeading>
+//             </h2>
+//           </div>
+//           <p className="text-muted-foreground text-lg">
+//             A comprehensive framework for integrating diverse learning styles and modalities.
+//           </p>
+//         </div>
+//       </RevealOnScroll>
+//       <div className="prose prose-lg max-w-3xl mx-auto text-left text-muted-foreground">
+//         <p>
+//           Harmonized Learning is a pedagogical framework designed to create adaptive and engaging educational
+//           experiences. It synthesizes insights from cognitive science, educational psychology, and user experience
+//           design to cater to a wide spectrum of learners.
+//         </p>
+//         <ul className="list-disc pl-6">
+//           <li>
+//             **Multimodal Content Delivery:** Information is presented through various formats including text, video,
+//             interactive simulations, audio lectures, and hands-on exercises.
+//           </li>
+//           <li>
+//             **Personalized Learning Paths:** Learners can progress at their own pace, with adaptive algorithms
+//             suggesting next steps based on performance and stated preferences.
+//           </li>
+//           <li>
+//             **Active Learning Strategies:** Emphasis is placed on application and practice, encouraging learners
+//             to actively engage with the material rather than passively consuming it.
+//           </li>
+//           <li>
+//             **Feedback and Assessment:** Continuous feedback loops and diverse assessment methods ensure learners
+//             understand their progress and identify areas for improvement.
+//           </li>
+//         </ul>
+//         <p>
+//           This approach is particularly effective for complex subjects that benefit from conceptual understanding,
+//           practical application, and varied reinforcement.
+//         </p>
+//       </div>
+//     </div>
+//   </section>
+// )
 
 function CredentialsSection() {
   return (
@@ -2880,12 +2875,21 @@ export default function PortfolioPage() {
             </div>
           </RevealOnScroll>
 
+          {/* CHANGE: Only render first 3 bands in grid, not all 4 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {music.map((item, index) => (
+            {music.slice(0, 3).map((item, index) => (
               <RevealOnScroll key={item.band + index} variant="slide-up" delay={index * 100} duration={600}>
                 <MusicCard item={item} index={index} />
               </RevealOnScroll>
             ))}
+          </div>
+          {/* CHANGE: Add centered Larry Vuckovich card separately */}
+          <div className="flex justify-center mt-6">
+            <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+              <RevealOnScroll variant="slide-up" delay={300} duration={600}>
+                <MusicCard item={music[3]} index={3} />
+              </RevealOnScroll>
+            </div>
           </div>
 
           {/* Featured Albums */}
@@ -2896,12 +2900,21 @@ export default function PortfolioPage() {
                 <p className="text-lg sm:text-xl text-gray-400 italic px-4">A selection of releases.</p>
               </div>
             </RevealOnScroll>
+            {/* CHANGE: Restore simple grid layout for album cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredAlbums.map((album, index) => (
+              {featuredAlbums.slice(0, 3).map((album, index) => (
                 <RevealOnScroll key={album.album} variant="slide-up" delay={index * 100} duration={600}>
                   <FeaturedAlbumCard album={album} index={index} />
                 </RevealOnScroll>
               ))}
+            </div>
+            {/* CHANGE: Add centered Snack(s) card separately */}
+            <div className="flex justify-center mt-6">
+              <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                <RevealOnScroll variant="slide-up" delay={300} duration={600}>
+                  <FeaturedAlbumCard album={featuredAlbums[3]} index={3} />
+                </RevealOnScroll>
+              </div>
             </div>
           </div>
         </div>

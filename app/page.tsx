@@ -150,7 +150,7 @@ const music = [
     role: "Current ensemble",
     url: "https://www.instagram.com/invinciblestarjazz/",
     videoUrl: "https://youtu.be/EkljPwVq7FA?si=_gSPTvt_7KpCbjqn",
-    imageUrl: "/images/invincible-star-jazz-anime.jpg",
+    imageUrl: "/images/invincible-star-jazz-anime.png",
     hasVideo: true,
     videoCount: 12,
   },
@@ -2288,8 +2288,16 @@ function BJJSection() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-50" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-t from-[#005EB8]/20 via-transparent to-transparent" />
+                  {/* CHANGE> Wrapped Crosley Gracie text in link to crosleygracie.com */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-center transform transition-transform duration-500 group-hover:translate-y-[-4px]">
-                    <p className="text-white text-xl font-semibold mb-1">Crosley Gracie Jiu-Jitsu</p>
+                    <a
+                      href="https://crosleygracie.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white text-xl font-semibold mb-1 hover:text-[#005EB8] transition-colors duration-300 inline-block"
+                    >
+                      Crosley Gracie Jiu-Jitsu
+                    </a>
                     <p className="text-gray-400 text-sm transition-colors duration-500 group-hover:text-gray-300">
                       Ten years of study under Ryan Murphy
                     </p>

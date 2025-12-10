@@ -173,7 +173,7 @@ const music = [
     band: "Larry Vuckovich",
     role: "Performance",
     url: "https://larryvuckovich.com/audio.htm",
-    imageUrl: "/images/larry-vuckovich-anime.jpg",
+    imageUrl: "/images/larry-vuckovich-anime.png",
     hasVideo: false,
   },
 ]

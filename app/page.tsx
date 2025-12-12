@@ -83,7 +83,7 @@ const projects = [
     name: "Speak & Play",
     tagline: "Parent-directed communication support",
     description:
-      "AI-powered tools helping parents turn everyday moments into learning opportunities. Features Matt Bot, a 24/7 support chatbot trained on Matthew's clinical expertise. NSF-backed research, patent pending.",
+      "Parent support platform with 24/7 AI coaching from SLP expertise. Turn everyday moments into communication breakthroughs.",
     stat: "NSF Backed",
     Icon: Baby,
     url: "https://www.speakandplay.com/",
@@ -2888,7 +2888,7 @@ export default function PortfolioPage() {
               </RevealOnScroll>
             ))}
           </div>
-          {/* CHANGE: Add centered Larry Vuckovich card separately */}
+          {/* CHANGE: Add Larry Vuckovich card separately */}
           <div className="flex justify-center mt-6">
             <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
               <RevealOnScroll variant="slide-up" delay={300} duration={600}>
@@ -2913,7 +2913,7 @@ export default function PortfolioPage() {
                 </RevealOnScroll>
               ))}
             </div>
-            {/* CHANGE: Add centered Snack(s) card separately */}
+            {/* CHANGE: Add Snack(s) card separately */}
             <div className="flex justify-center mt-6">
               <div className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
                 <RevealOnScroll variant="slide-up" delay={300} duration={600}>

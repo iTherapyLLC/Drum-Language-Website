@@ -49,8 +49,11 @@ export function RevealOnScroll({
 }: RevealOnScrollProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isRevealed, setIsRevealed] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -174,7 +177,7 @@ export function RevealOnScroll({
       },
       typewriter: {
         hidden: { opacity: 0, clipPath: "inset(0 100% 0 0)" },
-        visible: { opacity: 1, clipPath: "inset(0 0% 0 0)" },
+        visible: { opacity: 1, clipPath: "inset(0% 0 0% 0)" },
       },
       glitch: {
         hidden: { opacity: 0, transform: "translateX(-5px) skewX(-5deg)", filter: "hue-rotate(90deg)" },
@@ -210,6 +213,14 @@ export function RevealOnScroll({
       >
         {children}
       </div>
+    )
+  }
+
+  if (!isMounted) {
+    return (
+      <Component ref={ref as any} className={className}>
+        {children}
+      </Component>
     )
   }
 

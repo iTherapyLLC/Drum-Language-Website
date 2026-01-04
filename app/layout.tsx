@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Matthew Guggemos | Systems Conductor",
     description:
-      "Where AI meets speech science meets rhythm. Communication scientist, technologist, and professional drummer.",
+      "Communication scientist, technologist, and professional drummer.",
     images: ["/og-drum-language.png"],
     creator: "@drumlanguage",
   },
